@@ -1,0 +1,43 @@
+#Page titles
+title.login: Log in
+title.home: The Rock
+title.register: Register
+
+#Errors
+error.passwordTooShort: Password is too short
+error.thisFieldDoesNotMeetTheRequiredComplexity: Password does not meet the required complexity
+
+#Login Page
+login.username: Username
+login.password: Password
+login.username.placeholder: Insert Username
+login.password.placeholder: Insert Password
+login.login: Log in
+login.quote: We are all in this together
+login.noAccount: Don't have an account?
+login.registerHere: Register here!
+
+logout: Log out
+
+#Register Page
+register.register: Register
+register.username: Username
+register.username.placeholder: Insert Username
+register.password: Password
+register.password.placeholder: Insert Password
+register.confirmPassword: Confirm Password
+register.confirmPassword.placeholder: Insert Password again
+register.email: Email
+register.email.placeholder: Insert Email
+register.bio: Bio (Optional)
+register.profilePicture: Profile Picture (Optional)
+register.back: Back
+register.alreadyHaveAccount: Already have an account?
+register.loginHere: Log in here!
+register.passwordInstructions: At least 8 characters, one uppercase character, one lowercase character and a number
+
+#Confirmation Email
+confirm.welcome: Welcome on the Rock!
+confirm.helloUser: Hello %username%!
+confirm.verifyEmail: In order to be able to use your account, please click the following link to verify your email.
+confirm.verifyEmailLink: Verify my email

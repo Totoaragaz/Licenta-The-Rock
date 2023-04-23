@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log In{% endblock %}
+
+{% block body %}
+    <div class="login">
+        <div class="bgbox-white">
+            <div class="middle">
+                <div class="header">
+                    <img src="{{ asset('css/sprites/TheRockLogoFinal.png') }}" width=70% alt="The Rock"></a>
+                    <div class="quote">{{ 'login.quote' | trans }}</div>
+                </div>
+                <div class="box">
+                    <h1 class="h1">{{ 'login.login' |trans }}</h1>
+                    <div class="underline"><span></span></div>
+                    <form action="{{ path('login') }}" class="login-form" method="post">
+                        <label class="label">{{ 'login.username'|trans }}</label>
+                            <input class="input" id="username" name="_username" type="text"
+                                           placeholder="{{ 'login.username.placeholder'|trans }}" value="{{  last_username }}"/>
+                                    <span></span>
+                        <label class="label">{{ 'login.password'|trans }}</label>
+                            <input class="input" id="pass" name="_password" type="password" placeholder="{{ 'login.password.placeholder'|trans }}" />
+                        <div class="button-box">
+                        <div class="slight-text">
+                            {{ 'login.noAccount' | trans }}
+                            <a href="{{ path('register') }}" class="register-link">{{ 'login.registerHere'|trans }}</a>
+                            <button type="submit" class="button">{{ 'login.login'|trans }}</button>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

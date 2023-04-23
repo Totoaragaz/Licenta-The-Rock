@@ -1,0 +1,19 @@
+user.username.taken: There is already an account with this username.
+user.email.taken: There is already an account with this email.
+
+hotel.name.tooShort: Hotel name must be at least 2 characters long.
+hotel.location.tooShort: Location must be at least 2 characters long.
+
+error.accountNotVerified: Your account is not verified.
+error.enterName: Please enter a name.
+error.enterEmail: Please enter an email.
+error.enterUsername: Please enter a username.
+error.enterLocation: Please enter a location.
+error.thisFieldDoesNotMeetTheLengthRequirement: This field does not meet the length requirement.
+error.thisFieldDoesNotMeetTheRequiredComplexity: This field does not meet the required complexity.
+error.noNonAlphanumeric: Please do not type non alphanumeric characters or spaces.
+error.maxImageSize: Maximum size is 10MB.
+error.insertValidImage: Insert a valid image.
+error.passwordsMustMatch: Passwords must match.
+error.fieldIsRequired: This field is required.
+error.passwordTooShort: Your Password should be at least 8 characters long.

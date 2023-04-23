@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <header>
+        <nav id="header" class="navbar navbar-default">
+            <li><a href="{{ path('logout') }}" class="btn success">{{ 'logout'|trans }}</a></li>
+        </nav>
+    </header>
+    {% block content %}{% endblock %}
+{% endblock %}

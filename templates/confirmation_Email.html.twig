@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.confirmationEmail'|trans }}{% endblock %}
+
+{% block body %}
+    <br>
+    <h1 style="width:80%; margin-left: auto; margin-right: auto; text-align: center; font-family: 'open_sansbold', Arial; color: #0e8488">{{ 'accountSuccessfullyRegistered'|trans }}</h1>
+    <br>
+    <h3 style="width:60%; margin-left: auto; margin-right: auto; text-align: center; font-family: 'open_sansregular', Arial">{{ 'welcomePitechHMS'|trans }}</h3>
+    <br>
+    <h6 style="width:80%; margin-left: auto; margin-right: auto; text-align: center; font-family: 'open_sansregular', Arial; font-size: large"><a href="{{ path('login') }}">{{ 'clickBackToLogin'|trans }}</a></h6>
+{% endblock %}

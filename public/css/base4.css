@@ -1,0 +1,273 @@
+html{
+    background-image: url("sprites/Regular_Balu.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100vw 100vh;
+}
+
+body {
+    margin: 0;
+}
+
+.login {
+    margin: 0;
+}
+
+.login .h1 {
+    margin-bottom:0;
+    padding-top: 20px;
+}
+
+.login .underline {
+    background-color: #d9d9d9;
+    height: 2px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom:30px;
+}
+
+.login .bgbox-white{
+    left: 15%;
+    margin: auto;
+    width:70%;
+    height: 100vh;
+    background-color: white;
+    position:fixed;
+    background-repeat: no-repeat;
+}
+
+.login .quote{
+    font-size: 2em;
+    font-style: italic;
+    color: #4f4f4f;
+}
+
+.login .header{
+    text-align: center;
+}
+
+.login .middle {
+    position: relative;
+    padding-left: 100px;
+    padding-right: 100px;
+    width:100%;
+    margin: auto;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    font-size:  1.6vw;
+    color: #bd6b15;
+    box-sizing: border-box;
+}
+
+.login .box {
+    margin-top:0;
+    margin-left: 300px;
+    margin-right: 300px;
+    padding-left: 50px;
+    padding-right: 50px;
+    background-color: #eeeeee;
+    border: 200px #e10000;
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding-bottom: 30px;
+}
+
+.login .label {
+    margin-top: 20px;
+    font-size: 1em;
+    color: #8a817a;
+    display:block;
+    width:100%;
+}
+
+.login .input {
+    margin-top: 8px;
+    display: block;
+    width:100%;
+    height:40px;
+    font-size: 0.8em;
+}
+
+.login .slight-text{
+    font-size: 0.7em;
+    color: #a6a6a6;
+    margin-bottom:30px;
+}
+
+.login .button-box{
+    margin-top: 10px;
+    padding-bottom: 50px;
+}
+
+.login .button{
+    margin-top:20px;
+    background-color: #bd6b15;
+    border: none;
+    color: #ffd07d;
+    padding: 20px 30px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+    display:inline-block;
+    font-size: 1em;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    cursor:pointer;
+    margin-bottom: 0;
+}
+.login .button:hover{
+    background-color: #d7842c;
+    color: white;
+}
+
+.login .error {
+    font-size: large;
+    background: #F2DEDE;
+    color: red;
+    padding: 10px;
+    width: 30%;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.register {
+    margin: 0;
+}
+
+.register .h1 {
+    margin-bottom:0;
+    padding-top: 15px;
+}
+
+.register .underline {
+    background-color: #d9d9d9;
+    height: 2px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom:20px;
+}
+
+.register .bgbox-white{
+    left: 15%;
+    margin: auto;
+    width:70%;
+    height: 100vh;
+    background-color: white;
+    position:fixed;
+    background-repeat: no-repeat;
+}
+
+.register .quote{
+    font-size: 1.4em;
+    font-style: italic;
+    color: #4f4f4f;
+}
+
+.register .header{
+    text-align: center;
+}
+
+.register .middle {
+    position: relative;
+    padding-left: 100px;
+    padding-right: 100px;
+    width:100%;
+    margin: auto;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    font-size:  1.6vw;
+    color: #bd6b15;
+    box-sizing: border-box;
+}
+
+.register .password-instructions {
+    margin-top: 1px;
+    padding-top: 0;
+    color: #a2a2a2;
+    font-size: 0.6em;
+}
+
+.register .box {
+    margin-top:0;
+    margin-left: 100px;
+    margin-right: 100px;
+    padding-left: 50px;
+    padding-right: 50px;
+    background-color: #eeeeee;
+    border: 200px #e10000;
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding-bottom: 30px;
+}
+
+.register .label {
+    margin-top: 10px;
+    font-size: 0.8em;
+    color: #8a817a;
+    display:block;
+    width:100%;
+}
+
+.register .input {
+    margin-top: 8px;
+    display: block;
+    width:100%;
+    height:25px;
+    font-size: 0.7em;
+}
+
+.register .bioBox {
+    margin-top: 8px;
+    display: block;
+    width:100%;
+    height:25px;
+    font-size: 0.7em;
+    font-family: Arial, sans-serif;
+}
+
+.register .slight-text{
+    font-size: 0.7em;
+    color: #a6a6a6;
+    margin-bottom:30px;
+    float: left;
+}
+
+.register .button-box{
+    margin-top: 0;
+    padding-bottom: 50px;
+}
+
+.register .button{
+    margin-top:0;
+    background-color: #bd6b15;
+    border: none;
+    color: #ffd07d;
+    padding: 15px 25px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+    display:inline-block;
+    font-size: 1em;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    cursor:pointer;
+    margin-bottom: 0;
+}
+.register .button:hover{
+    background-color: #d7842c;
+    color: white;
+}
+
+.register .form-error {
+    font-size: 0.6em;
+    background: #F2DEDE;
+    color: red;
+    padding: 10px;
+    width: 30%;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
