@@ -2,40 +2,52 @@
 
 {% block title %}{{ 'title.register'|trans }}{% endblock %}
 
+{% block stylesheet %}<link href="css/LoginAndRegisterCSS1.css" media="screen, projection" rel="stylesheet" type="text/css"/>{% endblock %}
+
 {% block body %}
     <div class="register">
-        <div class="bgbox-white">
             <div class="middle">
                 <div class="header">
                     <img src="{{ asset('css/sprites/TheRockLogoFinal.png') }}" width=50% alt="The Rock"></a>
                     <div class="quote">{{ 'login.quote' | trans }}</div>
                 </div>
                 <div class="box">
-                    <h1 class="h1">{{ 'register.register' |trans }}</h1>
-                    <div class="underline"><span></span></div>
-                    {{ form_start(registrationForm) }}
-                    {{ form_row(registrationForm.username, {'id' : 'username'}) }}
-                    <div class="form-error">{{ form_errors(registrationForm.username) }}</div>
-                    {{ form_row(registrationForm.email) }}
-                    {{ form_row(registrationForm.password.first, {'id' : 'password'}) }}
-                    <div class="password-instructions">
-                       ({{ 'register.passwordInstructions'|trans }})
-                    </div>
-                    {{ form_row(registrationForm.password.second) }}
-                    {{ form_row(registrationForm.bio) }}
-                    {{ form_row(registrationForm.profilePicture) }}
-                        <div class="button-box">
-                            <div class="slight-text">
-                                {{ 'register.alreadyHaveAccount' | trans }}
-                                <a href="{{ path('login') }}" class="register-link">{{ 'register.loginHere'|trans }}</a>
-                            </div>
-                            {{ form_row(registrationForm.Submit) }}
+                    <div class="box-content">
+                        <h1 class="h1">{{ 'register.register' |trans }}</h1>
+                        <div class="underline"><span></span></div>
+                        {{ form_start(registrationForm) }}
+                        {{ form_label(registrationForm.username) }}
+                        <div class="form-error">{{ form_errors(registrationForm.username) }}</div>
+                        {{ form_widget(registrationForm.username)}}
+                        {{ form_label(registrationForm.email) }}
+                        <div class="form-error">{{ form_errors(registrationForm.email) }}</div>
+                        {{ form_widget(registrationForm.email)}}
+                        {{ form_label(registrationForm.password.first) }}
+                        <div class="form-error">{{ form_errors(registrationForm.password.first) }}</div>
+                        {{ form_widget(registrationForm.password.first)}}
+                        <div class="password-instructions">
+                           ({{ 'register.passwordInstructions'|trans }})
                         </div>
-                    {{ form_row(registrationForm._token) }}
-                    {{ form_end(registrationForm, {render_rest: false}) }}
-                    </form>
+                        {{ form_label(registrationForm.password.second) }}
+                        <div class="form-error">{{ form_errors(registrationForm.password.second) }}</div>
+                        {{ form_widget(registrationForm.password.second)}}
+                        {{ form_label(registrationForm.bio) }}
+                        <div class="form-error">{{ form_errors(registrationForm.bio) }}</div>
+                        {{ form_widget(registrationForm.bio)}}
+                        {{ form_label(registrationForm.profilePicture) }}
+                        <div class="form-error">{{ form_errors(registrationForm.profilePicture) }}</div>
+                        {{ form_widget(registrationForm.profilePicture)}}
+                            <div class="button-box">
+                                <div class="slight-text">
+                                    {{ 'register.alreadyHaveAccount' | trans }}
+                                    <a href="{{ path('login') }}" class="register-link">{{ 'register.loginHere'|trans }}</a>
+                                </div>
+                                {{ form_row(registrationForm.Submit) }}
+                            </div>
+                        {{ form_row(registrationForm._token) }}
+                        {{ form_end(registrationForm, {render_rest: false}) }}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 {% endblock %}

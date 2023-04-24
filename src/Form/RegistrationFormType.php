@@ -74,7 +74,8 @@ class RegistrationFormType extends AbstractType
             ->add('bio', TextareaType::class, [
                 'required' => false,
                 'attr' => [
-                    'class' => 'input',
+                    'class' => 'bioBox',
+                    'style' => 'min-height: 50px'
                 ],
                 'constraints' => [
                     new Length([
@@ -92,7 +93,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'class' => 'input',
-                    'style' => 'padding-bottom: 30px'
+                    'style' => 'padding-bottom: 10px'
                 ],
                 'constraints' => [
                     new File([
