@@ -7,7 +7,6 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Environment;
 
@@ -22,14 +21,8 @@ class LoginController
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
-        $resendEmail = false;
-        $success = $request->query->get('resentEmail', false);
-
-        if ($error instanceof CustomUserMessageAccountStatusException) {
-            $resendEmail = true;
-        }
-
-        //phpinfo();
+        $successfulRegistration = $request->query->get('successfulRegistration', false);
+        $emailVerified = $request->query->get('emailVerified', false);
 
         return new Response(
             $this->twig->render(
@@ -37,8 +30,8 @@ class LoginController
                 [
                     'last_username' => $lastUsername,
                     'error' => $error,
-                    'resendEmail' => $resendEmail,
-                    'success' => $success
+                    'successfulRegistration' => $successfulRegistration,
+                    'emailVerified' => $emailVerified
                 ]
             )
         );

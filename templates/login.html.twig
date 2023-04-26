@@ -2,7 +2,7 @@
 
 {% block title %}Log In{% endblock %}
 
-{% block stylesheet %}<link href="css/LoginAndRegisterCSS1.css" media="screen, projection" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block stylesheet %}<link href="css/LoginAndRegisterCSS2.css" media="screen, projection" rel="stylesheet" type="text/css"/>{% endblock %}
 
 {% block body %}
     <div class="login">
@@ -11,6 +11,20 @@
                     <img src="{{ asset('css/sprites/TheRockLogoFinal.png') }}" width=70% alt="The Rock"></a>
                     <div class="quote">{{ 'login.quote' | trans }}</div>
                 </div>
+                {% if successfulRegistration %}
+                    <div class="success-box">
+                        <div class="success-box-content">
+                            You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
+                        </div>
+                    </div>
+                {% endif %}
+                {% if emailVerified %}
+                    <div class="success-box">
+                        <div class="success-box-content">
+                            You have successfully verified your email! You may now log in.
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="box">
                     <div class="box-content">
                         <h1 class="h1">{{ 'login.login' |trans }}</h1>
@@ -23,6 +37,9 @@
                             <label class="label">{{ 'login.password'|trans }}</label>
                                 <input class="input" id="pass" name="_password" type="password" placeholder="{{ 'login.password.placeholder'|trans }}" />
                             <div class="button-box">
+                                {% if error %}
+                                    <div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                {% endif %}
                             <div class="slight-text">
                                 {{ 'login.noAccount' | trans }}
                                 <a href="{{ path('register') }}" class="register-link">{{ 'login.registerHere'|trans }}</a>

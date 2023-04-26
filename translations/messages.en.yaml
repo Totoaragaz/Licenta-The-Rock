@@ -3,10 +3,6 @@ title.login: Log in
 title.home: The Rock
 title.register: Register
 
-#Errors
-error.passwordTooShort: Password is too short
-error.thisFieldDoesNotMeetTheRequiredComplexity: Password does not meet the required complexity
-
 #Login Page
 login.username: Username
 login.password: Password
@@ -16,6 +12,7 @@ login.login: Log in
 login.quote: We are all in this together
 login.noAccount: Don't have an account?
 login.registerHere: Register here!
+login.accountNotVerified: Your account is not verified. Please verify it via the email we sent you when you signed up.
 
 logout: Log out
 

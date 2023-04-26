@@ -48,6 +48,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'date')]
     private \DateTime $registrationDate;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $darkMode = false;
+
     public function __construct()
     {
     }
@@ -115,11 +118,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIsVerified(): ?bool
+    public function isVerified(): ?bool
     {
         return $this->isVerified;
     }
-    public function setIsVerified(?bool $isVerified): User
+    public function setVerified(?bool $isVerified): User
     {
         $this->isVerified = $isVerified;
         return $this;

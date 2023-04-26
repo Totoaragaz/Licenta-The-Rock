@@ -26,7 +26,7 @@ class MailServiceImpl implements MailService
                 ->from(new Address('theRockMailBot@noreply.com', 'The Rock'))
                 ->to($user->getEmail())
                 ->subject('Verify your Email')
-                ->htmlTemplate('confirmationPage.html.twig')
+                ->htmlTemplate('confirmationEmail.html.twig')
                 ->context([
                     'username' => $user->getUsername(),
                 ])
@@ -47,12 +47,7 @@ class MailServiceImpl implements MailService
 
     public function confirmEmail(Request $request, int $id, string $email): bool
     {
-        try {
-            $this->emailVerifier->handleEmailConfirmation($request, $id, $email);
-        } catch (VerifyEmailExceptionInterface $e) {
-
-            return false;
-        }
+        $this->emailVerifier->handleEmailConfirmation($request, $id, $email);
 
         return true;
     }

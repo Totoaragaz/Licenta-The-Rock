@@ -33,7 +33,7 @@ class UserServiceImpl
         $this->encodePassword($user);
         $user->setRegistrationDate(date_create_from_format('Y/m/d', date('Y/m/d')));
         $user->setRole('User');
-        $user->setIsVerified(false);
+        $user->setVerified(false);
         if ($this->userRepository->createUser($user)) {
             return true;
         }

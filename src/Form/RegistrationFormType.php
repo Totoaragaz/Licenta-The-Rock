@@ -33,9 +33,9 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 4,
-                        'minMessage' => ErrorMessages::FIELD_DOES_NOT_MEET_LENGTH_REQUIREMENT,
+                        'minMessage' => ErrorMessages::USERNAME_LENGTH_ERROR,
                         'max' => 30,
-                        'maxMessage' => ErrorMessages::FIELD_DOES_NOT_MEET_LENGTH_REQUIREMENT,
+                        'maxMessage' => ErrorMessages::USERNAME_LENGTH_ERROR,
                     ]),
                     new Regex([
                         'pattern' => '/^[a-zA-Z0-9\-_]{1,40}$/',
@@ -59,7 +59,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Regex([
                         'pattern' => '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/',
-                        'message' => ErrorMessages::NO_NONALPHANUMERIC,
+                        'message' => ErrorMessages::INSERT_VALID_EMAIL,
                     ]),
                 ],
                 'attr' => [
@@ -80,7 +80,7 @@ class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new Length([
                         'max' => 255,
-                        'maxMessage' => ErrorMessages::FIELD_DOES_NOT_MEET_LENGTH_REQUIREMENT,
+                        'maxMessage' => ErrorMessages::BIO_LENGTH_ERROR,
                     ])
                 ],
                 'label' => 'register.bio',

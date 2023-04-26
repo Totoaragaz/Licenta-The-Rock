@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'dancing_scriptregular';
+    src: url('./fonts/dancingscript-variablefont_wght-webfont.woff2') format('woff2'),
+    url('./fonts/dancingscript-variablefont_wght-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html{
     background-image: url("sprites/TheRockWhiteBG.jpg");
     background-repeat: no-repeat;
@@ -29,7 +37,8 @@ body {
 }
 
 .login .quote{
-    font-size: 3em;
+    font-size: 3.5em;
+    font-family: dancing_scriptregular, cursive;
     font-style: italic;
     color: #4f4f4f;
 }
@@ -110,13 +119,27 @@ body {
 }
 
 .login .error {
-    font-size: 1.5em;
+    font-size: 1em;
     color: red;
-    padding: 10px;
-    width: 30%;
-    border-radius: 5px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.login .success-box {
+    width: 40%;
+    background-color: #ceffb6;
+    border-radius: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 10px auto 0;
+    border: #47c049 3px solid;
+}
+
+.login .success-box-content {
+    margin: 0  auto;
+    width: 90%;
+    font-size: 1.3em;
+    color: #3a3a3a;
+    text-align: justify;
 }
 
 .register {
@@ -138,7 +161,8 @@ body {
 }
 
 .register .quote{
-    font-size: 2em;
+    font-size: 2.5em;
+    font-family: dancing_scriptregular, cursive;
     font-style: italic;
     color: #4f4f4f;
 }
