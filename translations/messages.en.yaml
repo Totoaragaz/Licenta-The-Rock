@@ -13,6 +13,8 @@ login.quote: We are all in this together
 login.noAccount: Don't have an account?
 login.registerHere: Register here!
 login.accountNotVerified: Your account is not verified. Please verify it via the email we sent you when you signed up.
+login.successfulyRegistered: You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
+login.verifiedEmail: You have successfully verified your email! You may now log in.
 
 logout: Log out
 

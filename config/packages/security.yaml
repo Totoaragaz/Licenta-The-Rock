@@ -20,7 +20,7 @@ security:
                 # "app_login" is the name of the route created previously
                 login_path: login
                 check_path: login
-                default_target_path: home
+                default_target_path: home/setMode
             logout:
                 path: logout
                 target: login

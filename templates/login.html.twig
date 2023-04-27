@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log In{% endblock %}
+{% block title %}{{ 'title.login'|trans }}{% endblock %}
 
 {% block stylesheet %}<link href="css/LoginAndRegisterCSS2.css" media="screen, projection" rel="stylesheet" type="text/css"/>{% endblock %}
 
@@ -14,14 +14,14 @@
                 {% if successfulRegistration %}
                     <div class="success-box">
                         <div class="success-box-content">
-                            You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
+                            {{ 'login.successfullyRegistered'|trans }}
                         </div>
                     </div>
                 {% endif %}
                 {% if emailVerified %}
                     <div class="success-box">
                         <div class="success-box-content">
-                            You have successfully verified your email! You may now log in.
+                            {{ 'login.verifiedEmail'|trans }}
                         </div>
                     </div>
                 {% endif %}

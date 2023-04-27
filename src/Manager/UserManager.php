@@ -31,56 +31,8 @@ class UserManager
         return false;
     }
 
-    public function saveAssociate(User $user, array $userHotels): bool
+    public function getUserMode(int $userId): bool
     {
-        if (true === $this->userService->addAssociateToDB($user, $userHotels)) {
-            $this->mailService->sendEmail($user);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function updateUserSave(User $user): bool
-    {
-        if ($this->userService->updateUser($user)) {
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function verifyEmailForResend(string $email): bool
-    {
-        return $this->userService->verifyEmailForResend($email);
-    }
-
-    public function resendEmail(string $email): bool
-    {
-        $user = $this->userService->getUserWithEmail($email);
-        if ($user !== null) {
-            $this->mailService->sendEmail($user);
-
-            return true;
-        }
-
-        return false;
-    }
-    public function deleteUsers(array $users): void
-    {
-        $this->userService->deleteUsers($users);
-    }
-
-    public function getUserListNumberOfPages(int $hotelId): int
-    {
-        return $this->userService->getUserListNumberOfPages($hotelId);
-        // return intdiv(sizeof($users), 5) - (sizeof($users) % 5 === 0) + 1;
-    }
-
-    public function getUserById(int $userId): ?User
-    {
-        return $this->userService->getUserById($userId);
+        return $this->userService->getUserMode($userId);
     }
 }

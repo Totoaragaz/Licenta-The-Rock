@@ -42,8 +42,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $bio;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $image;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $image = 'DefaultUser.png';
 
     #[ORM\Column(type: 'date')]
     private \DateTime $registrationDate;
@@ -168,6 +168,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
         return $this;
     }
+
+    public function isDarkMode(): bool
+    {
+        return $this->darkMode;
+    }
+
+    public function setDarkMode(bool $darkMode): User
+    {
+        $this->darkMode = $darkMode;
+        return $this;
+    }
+
+
 
 
 

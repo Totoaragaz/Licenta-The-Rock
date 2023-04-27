@@ -47,6 +47,11 @@ class UserRepository extends ServiceEntityRepository
         return false;
     }
 
+    public function getUserMode(int $userId): bool
+    {
+        return $this->find($userId)->isDarkMode();
+    }
+
     public function updateUserRepo(User $user): bool
     {
         try {

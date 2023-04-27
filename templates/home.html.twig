@@ -1,6 +1,6 @@
-{% extends 'page.html.twig' %}
+{% extends darkMode ? 'darkPage.html.twig' : 'lightPage.html.twig' %}
 
-{% block title %}The Rock{% endblock %}
+{% block title %}{{ 'title.home'|trans }}{% endblock %}
 
 {% block content %}
     a
