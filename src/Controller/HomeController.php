@@ -34,7 +34,7 @@ class HomeController extends AbstractController
         ));
     }
 
-    #[Route(path: 'home/setMode', name: 'home/setMode')]
+    #[Route(path: '/home/setMode', name: 'home/setMode')]
     public function setMode(): Response
     {
         /** @var User $user */

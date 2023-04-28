@@ -47,6 +47,11 @@ class UserRepository extends ServiceEntityRepository
         return false;
     }
 
+    public function deleteUser(int $userId): void
+    {
+        $this->getEntityManager()->remove($this->find($userId));
+    }
+
     public function getUserMode(int $userId): bool
     {
         return $this->find($userId)->isDarkMode();
@@ -109,7 +114,7 @@ class UserRepository extends ServiceEntityRepository
     {
         $this->createQueryBuilder('u')
             ->delete()
-            ->where("u.id in (:userIds) and u.roles in ('ROLE_MANAGER','ROLE_EMPLOYEE')")
+            ->where("u.id in (:userIds)")
             ->setParameter('userIds', $users)
             ->getQuery()
             ->execute();

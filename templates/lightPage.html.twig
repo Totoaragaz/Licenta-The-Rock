@@ -1,14 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheet %}
-    <link href="css/light.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+    <link href="css/light1.css" media="screen, projection" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block body %}
     <header>
-        <nav id="header" class="navbar navbar-default">
-            <li><a href="{{ path('logout') }}" class="btn success">{{ 'logout'|trans }}</a></li>
-        </nav>
+        <div class="navbar">
+            <a><img src="css/sprites/TheRockLogoFinal.png" height="100%"></a>
+            <a {% if active == 'home' %} class="active" {% endif %} href="{{ path('home') }}">{{ 'home.home'|trans }}</a>
+            <a {% if active == 'home' %} class="active" {% endif %} href="profilePage.php?profile=">Profile</a>
+            <a {% if active == 'home' %} class="active" {% endif %} href="friendPage.php">Friends</a>
+            <a class="logout" href="logout.php">Log out</a>
+            <div class="navbaroptions">
+                Options
+                <div class="navbaroptions-content">
+                    <a href="blockedPeople.php">Unblock people</a>
+                    <a href="DarkModePage.php">Dark Mode</a>
+                    <a href="AdminPage.php?r=p">Admin stuff</a>
+                </div>
+            </div>
+        </div>
     </header>
     {% block content %}{% endblock %}
 {% endblock %}
