@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -51,8 +53,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $darkMode = false;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Thread::class, orphanRemoval: true)]
+    private Collection $threads;
+
+    #[ORM\Column]
+    private ?bool $mainColumn = null;
+
+    #[ORM\Column]
+    private ?bool $chatColumn = null;
+
+    #[ORM\Column]
+    private ?bool $friendColumn = null;
+
     public function __construct()
     {
+        $this->threads = new ArrayCollection();
     }
 
 
@@ -169,7 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isDarkMode(): bool
+    public function getDarkMode(): bool
     {
         return $this->darkMode;
     }
@@ -180,11 +195,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
-
-
-
-
     /**
     * @see UserInterface
     */
@@ -192,5 +202,71 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Thread>
+     */
+    public function getThreads(): Collection
+    {
+        return $this->threads;
+    }
+
+    public function addThread(Thread $thread): self
+    {
+        if (!$this->threads->contains($thread)) {
+            $this->threads->add($thread);
+            $thread->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThread(Thread $thread): self
+    {
+        if ($this->threads->removeElement($thread)) {
+            // set the owning side to null (unless already changed)
+            if ($thread->getAuthor() === $this) {
+                $thread->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMainColumn(): ?bool
+    {
+        return $this->mainColumn;
+    }
+
+    public function setMainColumn(bool $mainColumn): self
+    {
+        $this->mainColumn = $mainColumn;
+
+        return $this;
+    }
+
+    public function getChatColumn(): ?bool
+    {
+        return $this->chatColumn;
+    }
+
+    public function setChatColumn(bool $chatColumn): self
+    {
+        $this->chatColumn = $chatColumn;
+
+        return $this;
+    }
+
+    public function getFriendColumn(): ?bool
+    {
+        return $this->friendColumn;
+    }
+
+    public function setFriendColumn(bool $friendColumn): self
+    {
+        $this->friendColumn = $friendColumn;
+
+        return $this;
     }
 }

@@ -54,7 +54,32 @@ class UserRepository extends ServiceEntityRepository
 
     public function getUserMode(int $userId): bool
     {
-        return $this->find($userId)->isDarkMode();
+        return $this->find($userId)->getDarkMode();
+    }
+
+    public function getMainColumn(int $userId): bool
+    {
+        return $this->find($userId)->getMainColumn();
+    }
+
+    public function getFriendColumn(int $userId): bool
+    {
+        return $this->find($userId)->getFriendColumn();
+    }
+
+    public function getChatColumn(int $userId): bool
+    {
+        return $this->find($userId)->getChatColumn();
+    }
+
+    public function getUserByUsername(string $username): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('u.username = :username')
+            ->setParameter('username', $username)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function updateUserRepo(User $user): bool

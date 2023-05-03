@@ -1,7 +1,12 @@
 #Page titles
 title.login: Log in
-title.home: The Rock
+title.forum: The Rock
 title.register: Register
+title.yourProfile: Your Profile
+title.friends: Friends
+title.settings: Settings
+title.otherProfile: "%username%'s Profile"
+title.editProfile: Edit Profile
 
 #Login Page
 login.username: Username
@@ -15,8 +20,6 @@ login.registerHere: Register here!
 login.accountNotVerified: Your account is not verified. Please verify it via the email we sent you when you signed up.
 login.successfulyRegistered: You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
 login.verifiedEmail: You have successfully verified your email! You may now log in.
-
-logout: Log out
 
 #Register Page
 register.register: Register
@@ -37,6 +40,31 @@ register.passwordInstructions: At least 8 characters, one uppercase character, o
 
 #Confirmation Email
 confirm.welcome: Welcome on the Rock!
-confirm.helloUser: Hello %username%!
+confirm.helloUser:   Hello %username%!
 confirm.verifyEmail: In order to be able to use your account, please click the following link to verify your email.
 confirm.verifyEmailLink: Verify my email
+
+#Base Page
+page.forum: Forum
+page.profile: Profile
+page.friends: Friends
+page.logout: Log out
+page.settings: Settings
+page.closedEverything: You closed everything. There is nothing left here..
+page.exceptRock: Except Rock.
+page.rockEternal: Rock is eternal.
+
+#Profile Page
+profile.memberSince: Member since
+profile.yourThreads: Your Threads
+profile.usersThreads: "%username%'s Threads"
+profile.youHaveNoThreadsYet: You have not started any threads yet.
+profile.hasNoThreadsYet: "%username% has not started any threads yet."
+profile.editProfile: Edit Profile
+profile.addFriend: Add Friend
+profile.message: Message
+profile.save: Save
+profile.cancel: Cancel
+profile.deleteProfilePicture: Delete profile picture?
+profile.admin: Admin
+profile.changeProfilePicture: Change Profile Picture

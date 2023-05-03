@@ -11,14 +11,10 @@ class UserTransformer
     {
         return (new UserDto())
             ->setId($user->getId())
-            ->setFirstName($user->getFirstName())
-            ->setLastName($user->getLastName())
-            ->setEmail($user->getEmail())
-            ->setAddress($user->getAddress())
+            ->setUsername($user->getUsername())
             ->setImage($user->getImage())
             ->setBio($user->getBio())
-            ->setBirthday($user->getBirthday())
-            ->setRoles(ucfirst(strtolower(str_replace('ROLE_','', $user->getRoles()[0]))))
+            ->setRole($user->getRole())
             ->setRegistrationDate($user->getRegistrationDate());
     }
 }

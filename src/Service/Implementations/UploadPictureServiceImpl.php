@@ -10,7 +10,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UploadPictureServiceImpl implements UploadPictureService
 {
-    private const DEFAULT_IMAGE = 'user.png';
+    private const DEFAULT_IMAGE = 'DefaultUser.png';
     private string $targetDirectory;
     private SluggerInterface $slugger;
 

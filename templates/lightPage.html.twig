@@ -1,26 +1,299 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheet %}
-    <link href="css/light1.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('css/light8.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
 {% endblock %}
+
+{% if active is not defined %}
+    {% set active = 'none' %}
+{% endif %}
 
 {% block body %}
     <header>
         <div class="navbar">
-            <a><img src="css/sprites/TheRockLogoFinal.png" height="100%"></a>
-            <a {% if active == 'home' %} class="active" {% endif %} href="{{ path('home') }}">{{ 'home.home'|trans }}</a>
-            <a {% if active == 'home' %} class="active" {% endif %} href="profilePage.php?profile=">Profile</a>
-            <a {% if active == 'home' %} class="active" {% endif %} href="friendPage.php">Friends</a>
-            <a class="logout" href="logout.php">Log out</a>
-            <div class="navbaroptions">
-                Options
-                <div class="navbaroptions-content">
-                    <a href="blockedPeople.php">Unblock people</a>
-                    <a href="DarkModePage.php">Dark Mode</a>
-                    <a href="AdminPage.php?r=p">Admin stuff</a>
-                </div>
-            </div>
+            <a class="logo"  href="{{ path('forum') }}"><img src="{{asset('css/sprites/TheRockLogoFinal.png')}}" height="100%"></a>
+                <a class="left item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
+                    <div class="item-content">
+                            {{ 'page.forum'|trans }}
+                    </div>
+                </a>
+                <a class="left item {% if active == 'ownProfile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
+                    <div class="item-content">
+                        {{ 'page.profile'|trans }}
+                    </div>
+                </a>
+                <a class="right item" href="{{ path('logout') }}">
+                    <div class="item-content">
+                        {{ 'page.logout'|trans }}
+                    </div>
+                </a>
+                <a class="right item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
+                    <div class="item-content">
+                        {{ 'page.settings'|trans }}
+                    </div>
+                </a>
+                <a href="javascript:void(0);" class="hamburger-menu" onclick="openHamburgerMenu()">
+                    <div class="hamburger-icon">
+                        <i class="fa fa-bars"></i>
+                    </div>
+                    <div id="hamburger-content">
+                        <a class="hamburger-item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
+                            <div class="hamburger-item-content">
+                                {{ 'page.forum'|trans }}
+                            </div>
+                        </a>
+                        <a class="hamburger-item {% if active == 'profile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
+                            <div class="hamburger-item-content">
+                                {{ 'page.profile'|trans }}
+                            </div>
+                        </a>
+                        <a class="hamburger-item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
+                            <div class="hamburger-item-content">
+                                {{ 'page.settings'|trans }}
+                            </div>
+                        </a>
+                        <a class="hamburger-item" href="{{ path('logout') }}">
+                            <div class="hamburger-item-content">
+                                {{ 'page.logout'|trans }}
+                            </div>
+                        </a>
+                    </div>
+                </a>
         </div>
     </header>
-    {% block content %}{% endblock %}
+
+    <div id="bottom-buttons">
+        <a class="bottom-button" href="javascript:void(0);" onclick="openMainColumn()">
+            <i class="fa fa-home"></i>
+        </a>
+        <a class="bottom-button" href="javascript:void(0);" onclick="openChatColumn()">
+            <i class="fa fa-comment"></i>
+        </a>
+        <a class="bottom-button" href="javascript:void(0);" onclick="openFriendColumn()">
+            <i class="fa fa-users"></i>
+        </a>
+    </div>
+
+    <div id="page-empty">
+        <img src="css/sprites/JustRock.png" width="40%">
+        <br>
+        <br>
+        {{ 'page.closedEverything'|trans }}
+        <br>
+        <br>
+        {{ 'page.exceptRock'|trans }}
+        <br>
+        <br>
+        <br>
+        <br>
+        {{ 'page.rockEternal'|trans }}
+    </div>
+
+    <div id="main-column">
+        <div class="column-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div id="chat-column">
+        <div class="column-content">
+            chat stuff
+        </div>
+    </div>
+    <div id="friend-column">
+        <div class="column-content">
+            friend stuff
+        </div>
+    </div>
+
+    <script>
+        const resizeWidth = 750;
+
+        window.addEventListener('resize', function(event) {
+            const width = window.innerWidth;
+            const hamburgerMenu = document.getElementById("hamburger-content");
+            if (width > resizeWidth) {
+                hamburgerMenu.style.display = "none";
+            } else {
+                if (document.getElementById("main-column").style.display === "inline-block" ||
+                    (document.getElementById("chat-column").style.display === "none" &&
+                        document.getElementById("friend-column").style.display === "none"))  {
+                    document.getElementById("main-column").style.width = "100%";
+                    document.getElementById("chat-column").style.display = "none";
+                    document.getElementById("friend-column").style.display = "none";
+                    document.getElementById("page-empty").style.display = "none";
+                } else {
+                    if (document.getElementById("chat-column").style.display === "inline-block") {
+                        document.getElementById("chat-column").style.width = "100%";
+                        document.getElementById("main-column").style.display = "none";
+                        document.getElementById("friend-column").style.display = "none";
+                        document.getElementById("page-empty").style.display = "none";
+                    }
+                    else {
+                        document.getElementById("friend-column").style.width = "100%";
+                        document.getElementById("main-column").style.display = "none";
+                        document.getElementById("chat-column").style.display = "none";
+                        document.getElementById("page-empty").style.display = "none";
+                    }
+                }
+
+            }
+
+
+        }, true);
+
+        window.addEventListener('load', function(event) {
+            if (window.innerWidth > resizeWidth){
+                {% if mainColumn %}
+                openMainColumn();
+                {% endif %}
+                {% if chatColumn %}
+                openChatColumn();
+                {% endif %}
+                {% if friendColumn %}
+                openFriendColumn();
+                {% endif %}
+            } else {
+                {% if mainColumn %}
+                    openMainColumn();
+                {% elseif chatColumn %}
+                    openChatColumn();
+                {% else %}
+                    openFriendColumn();
+                {% endif %}
+            }
+        }, true);
+
+        function setColumnWidths() {
+            const mainColumn = document.getElementById("main-column");
+            const chatColumn = document.getElementById("chat-column");
+            const friendColumn = document.getElementById("friend-column");
+            const pageEmpty =   document.getElementById("page-empty");
+
+            if (mainColumn.style.display === "inline-block") {
+                if (chatColumn.style.display === "inline-block") {
+                    if (friendColumn.style.display === "inline-block") {
+                        chatColumn.style.width = "25%";
+                        friendColumn.style.width = "15%";
+                        mainColumn.style.width = "60%";
+                    } else {
+                        chatColumn.style.width = "30%";
+                        mainColumn.style.width = "70%";
+                    }
+                } else {
+                    if (friendColumn.style.display === "inline-block") {
+                        friendColumn.style.width = "25%";
+                        mainColumn.style.width = "75%";
+                    } else {
+                        mainColumn.style.width = "100%";
+                    }
+                }
+            } else {
+                if (chatColumn.style.display === "inline-block") {
+                    if (friendColumn.style.display === "inline-block") {
+                        chatColumn.style.width = "60%";
+                        friendColumn.style.width = "40%";
+                    } else {
+                        chatColumn.style.width = "100%";
+                    }
+                } else {
+                    if (friendColumn.style.display === "inline-block") {
+                        friendColumn.style.width = "100%";
+                    } else {
+                        pageEmpty.style.display = "block";
+                    }
+                }
+            }
+        }
+
+        function openMainColumn() {
+            const mainColumn = document.getElementById("main-column");
+            const pageEmpty = document.getElementById("page-empty");
+            //CHANGE THIS
+            /*const collection = document.getElementsByClassName("item");
+            for (let i = 0, j = collection.length; i < j; i++) {
+                collection[i].href += link;
+            }
+            collection.forEach(updateLink());
+*/
+            if (window.innerWidth > resizeWidth) {
+                if (pageEmpty.style.display === "block") {
+                    pageEmpty.style.display = "none";
+
+                    mainColumn.style.display = "inline-block";
+                    mainColumn.style.width = "100%";
+                } else {
+                    if (mainColumn.style.display === "inline-block") {
+                        mainColumn.style.display = "none";
+                    } else {
+                        mainColumn.style.display = "inline-block";
+                    }
+                    setColumnWidths();
+                }
+            } else {
+                document.getElementById("chat-column").style.display = "none";
+                document.getElementById("friend-column").style.display = "none";
+                mainColumn.style.display = "inline-block";
+                mainColumn.style.width = "100%";
+            }
+        }
+
+        function openChatColumn() {
+            const chatColumn = document.getElementById("chat-column");
+            const pageEmpty = document.getElementById("page-empty");
+
+            if (window.innerWidth > resizeWidth) {
+                if (pageEmpty.style.display === "block") {
+                    pageEmpty.style.display = "none";
+                    chatColumn.style.display = "inline-block";
+                    chatColumn.style.width = "100%";
+                } else {
+                    if (chatColumn.style.display === "inline-block") {
+                        chatColumn.style.display = "none";
+                    } else {
+                        chatColumn.style.display = "inline-block";
+                    }
+                    setColumnWidths();
+                }
+            } else {
+                document.getElementById("main-column").style.display = "none";
+                document.getElementById("friend-column").style.display = "none";
+                chatColumn.style.display = "inline-block";
+                chatColumn.style.width = "100%";
+            }
+        }
+
+        function openFriendColumn() {
+            const friendColumn = document.getElementById("friend-column");
+            const pageEmpty = document.getElementById("page-empty");
+
+            if (window.innerWidth > resizeWidth) {
+                if (pageEmpty.style.display === "block") {
+                    pageEmpty.style.display = "none";
+                    friendColumn.style.display = "inline-block";
+                    friendColumn.style.width = "100%";
+                } else {
+                    if (friendColumn.style.display === "inline-block") {
+                        friendColumn.style.display = "none";
+                    } else {
+                        friendColumn.style.display = "inline-block";
+                    }
+                    setColumnWidths();
+                }
+            } else {
+                document.getElementById("chat-column").style.display = "none";
+                document.getElementById("main-column").style.display = "none";
+                friendColumn.style.display = "inline-block";
+                friendColumn.style.width = "100%";
+            }
+        }
+
+        function openHamburgerMenu() {
+            const hamburgerMenu = document.getElementById("hamburger-content");
+            if (hamburgerMenu.style.display === "block") {
+                hamburgerMenu.style.display = "none";
+            } else {
+                hamburgerMenu.style.display = "block";
+            }
+        }
+    </script>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends user.darkMode ? 'darkPage.html.twig' : 'lightPage.html.twig' %}
+
+{% block title %}{{ 'title.forum'|trans }}{% endblock %}
+
+{% set active='forum' %}
+
+{% block content %}
+    <div class="search-bar">
+        <form method="get">
+            <button type="submit"><i style="color:#bd6b15;" class="fa fa-search"></i></button>
+            <input type="search" id="search-bar" placeholder="Search in posts, tags, friends">
+        </form>
+    </div>
+{% endblock %}

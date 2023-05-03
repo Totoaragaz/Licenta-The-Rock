@@ -1,0 +1,73 @@
+{% extends user.darkMode ? 'darkPage.html.twig' :'lightPage.html.twig' %}
+
+{% block title %}
+    {% if user.username == viewedUser.username %}
+        {{ 'title.yourProfile'|trans }}
+    {% else %}
+        {{ 'title.otherProfile'|trans({'%username%': user.username}) }}
+    {% endif %}
+{% endblock %}
+
+{% if user.username == viewedUser.username %}
+    {% set active='profile' %}
+{% endif %}
+
+{% block content %}
+    <div class="profile-header">
+        <div class="profile-picture-container">
+            <div class="profile-picture">
+                <img src="{{asset('img/' ~ viewedUser.image)}}" width=100% height=100%>
+            </div>
+        </div>
+        <div class="profile-info-container">
+            <div class="profile-info">
+                <div class="profile-username">
+                    {{ viewedUser.username }}
+                </div>
+                {% if user.role == 'ROLE_ADMIN' %}
+                    <div class="profile-admin">
+                        <i class="fa fa-shield"></i> {{ 'profile.admin'|trans }}
+                    </div>
+                {% endif %}
+                <div class="profile-registered">
+                    {{ 'profile.memberSince'|trans }}{{ registrationDate }}
+                </div>
+                <div class="profile-bio">
+                    {{ viewedUser.bio }}
+                </div>
+                <br>
+                <div class="profile-button-bar">
+                    {% if user.username == viewedUser.username %}
+                        <a href="{{ path('editProfile') }}" class="profile-button">
+                            {{ 'profile.editProfile'|trans }}
+                        </a>
+                    {% else %}
+                        <a href="#" class="profile-button">
+                            {{ 'profile.addFriend'|trans }} <i class="fa fa-plus"></i>
+                        </a>
+                        <a href="#" class="profile-button">
+                            {{ 'profile.message'|trans }} <i class="fa fa-comment"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-threads-container">
+        <div class="profile-threads-title">
+            {% if user.username == viewedUser.username %}
+                {{ 'profile.yourThreads'|trans }}
+            {% else %}
+                {{ 'profile.usersThreads'|trans({'%username%': viewedUser.username}) }}
+            {% endif %}
+        </div>
+
+        <div class="profile-no-threads">
+            {% if user.username == viewedUser.username %}
+                {{ 'profile.youHaveNoThreadsYet'|trans }}
+            {% else %}
+                {{ 'profile.hasNoThreadsYet'|trans({'%username%': viewedUser.username}) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

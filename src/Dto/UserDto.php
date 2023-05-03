@@ -10,14 +10,28 @@ class UserDto
 {
     private ?string $username;
 
-    private ?string $password;
+    private ?string $password = null;
 
     private ?string $email;
+
+    private ?string $role = 'ROLE_USER';
+
     private ?string $bio = '';
 
-    private ?string $image = '';
+    private ?string $image = 'DefaultUser.png';
 
     private ?string $registrationDate;
+
+    private ?bool $verified = true;
+
+    private ?bool $darkMode = null;
+
+    private ?bool $mainColumn = null;
+
+    private ?bool $chatColumn = null;
+
+    private ?bool $friendColumn = null;
+
 
     public function getAddress(): ?string
     {
@@ -55,30 +69,6 @@ class UserDto
         return $this;
     }
 
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): self
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
     public function getEmail(): string
     {
         return $this->email;
@@ -91,26 +81,14 @@ class UserDto
         return $this;
     }
 
-    public function getRoles(): string
+    public function getRole(): string
     {
-        return $this->roles;
+        return $this->role;
     }
 
-    public function setRoles(string $roles): UserDto
+    public function setRole(string $role): UserDto
     {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    public function getBirthday(): ?string
-    {
-        return $this->birthday;
-    }
-
-    public function setBirthday(DateTime $birthday): UserDto
-    {
-        $this->birthday = $birthday->format('Y/m/d');
+        $this->role = $role;
 
         return $this;
     }
@@ -123,18 +101,6 @@ class UserDto
     public function setPassword(?string $password): UserDto
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function getGender(): string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): UserDto
-    {
-        $this->gender = $gender;
 
         return $this;
     }
@@ -163,14 +129,14 @@ class UserDto
         return $this;
     }
 
-    public function getIsVerified(): ?bool
+    public function getVerified(): ?bool
     {
-        return $this->isVerified;
+        return $this->verified;
     }
 
-    public function setIsVerified(?bool $isVerified): UserDto
+    public function setVerified(?bool $verified): UserDto
     {
-        $this->isVerified = $isVerified;
+        $this->verified = $verified;
 
         return $this;
     }
@@ -182,8 +148,82 @@ class UserDto
 
     public function setRegistrationDate(?DateTime $registrationDate): UserDto
     {
-        $this->registrationDate = $registrationDate->format('Y/m/d');
+        $this->registrationDate = $registrationDate->format('d/m/Y');
 
         return $this;
     }
+
+    /**
+     * @return bool|null
+     */
+    public function getDarkMode(): ?bool
+    {
+        return $this->darkMode;
+    }
+
+    /**
+     * @param bool|null $darkMode
+     * @return UserDto
+     */
+    public function setDarkMode(?bool $darkMode): UserDto
+    {
+        $this->darkMode = $darkMode;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getMainColumn(): ?bool
+    {
+        return $this->mainColumn;
+    }
+
+    /**
+     * @param bool|null $mainColumn
+     * @return UserDto
+     */
+    public function setMainColumn(?bool $mainColumn): UserDto
+    {
+        $this->mainColumn = $mainColumn;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getChatColumn(): ?bool
+    {
+        return $this->chatColumn;
+    }
+
+    /**
+     * @param bool|null $chatColumn
+     * @return UserDto
+     */
+    public function setChatColumn(?bool $chatColumn): UserDto
+    {
+        $this->chatColumn = $chatColumn;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFriendColumn(): ?bool
+    {
+        return $this->friendColumn;
+    }
+
+    /**
+     * @param bool|null $friendColumn
+     * @return UserDto
+     */
+    public function setFriendColumn(?bool $friendColumn): UserDto
+    {
+        $this->friendColumn = $friendColumn;
+        return $this;
+    }
+
+
 }
