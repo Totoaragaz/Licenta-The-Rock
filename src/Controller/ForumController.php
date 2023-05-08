@@ -23,45 +23,23 @@ class ForumController extends AbstractController
     {
     }
 
-
-
     #[Route(path: '', name: 'forum')]
-    public function renderForumScreen(Request $request): Response
+    public function renderForumScreen(): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         return new Response($this->twig->render('forum.html.twig', [
             'user' => $user,
-            'mainColumn' => $request->query->get('mainColumn'),
-            'chatColumn' => $request->query->get('chatColumn'),
-            'friendColumn' => $request->query->get('friendColumn'),
-
         ]));
     }
 
-    /*
-    #[Route(path: 'home/search', name: 'search', methods: ['GET'])]
-    public function search(Request $request, string $item = ""): Response
-    {
-        $darkMode = $request->query->get('darkMode');
-        return new Response($this->twig->render('forum.html.twig', []));
-    }*/
-
-    #[Route(path: '/forum/setMode', name: 'forum/setMode')]
-    public function setMode(): Response
+    #[Route(path: '/search/{items}', name: 'search', methods: ['GET'])]
+    public function search(Request $request, string $items): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        return $this->redirectToRoute('forum', [
-            'darkMode' => $this->userManager->getUserMode($user->getId()),
-            'mainColumn' => $this->userManager->getMainColumn($user->getId()),
-            'chatColumn' => $this->userManager->getChatColumn($user->getId()),
-            'friendColumn' => $this->userManager->getFriendColumn($user->getId())
-        ]);
-    }
-
-    #[Route('/logout', name: 'logout', methods: ['GET'])]
-    public function logout(): void
-    {
+        return new Response($this->twig->render('forum.html.twig', [
+            'user' => $user,
+        ]));
     }
 }

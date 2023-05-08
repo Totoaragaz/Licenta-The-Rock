@@ -17,10 +17,9 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                # "app_login" is the name of the route created previously
                 login_path: login
                 check_path: login
-                default_target_path: forum/setMode
+                default_target_path: setSession
             logout:
                 path: logout
                 target: login

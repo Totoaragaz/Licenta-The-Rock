@@ -1,0 +1,291 @@
+<div id="no-friends">
+    {{ 'friends.noFriends'|trans }}
+</div>
+<a id="incomingRequestButton" class="friend-request-button" onclick="setIncomingRequests()">
+    <div class="friend-text-container">
+        {{ 'friends.incomingRequests'|trans }}
+    </div>
+    <div class="friend-arrow">
+        <i id="incomingRequestArrow" class="fa fa-angle-down"></i>
+    </div>
+    <div id="incomingRequestNumber" class="friend-request-number">
+        {{ user.incomingFriendRequests|length }}
+    </div>
+</a>
+<div class="friend-request-menu" id="incomingRequestMenu">
+
+</div>
+<a id="outgoingRequestButton" class="friend-request-button border-top" href="javascript:void(0);"
+   onclick="setOutgoingRequests()">
+    <div class="friend-text-container">
+        {{ 'friends.outgoingRequests'|trans }}
+    </div>
+    <div class="friend-arrow">
+        <i id="outgoingRequestArrow" class="fa fa-angle-down"></i>
+    </div>
+    <div id="outgoingRequestNumber" class="friend-request-number">
+        {{ user.outgoingFriendRequests|length }}
+    </div>
+</a>
+<div id="outgoingRequestMenu" class="friend-request-menu">
+
+</div>
+<a id="friendButton" class="friend-request-button border-top" href="javascript:void(0);" onclick="setFriends()">
+    <div class="friend-text-container">
+        {{ 'friends.friends'|trans }}
+    </div>
+    <div class="friend-arrow">
+        <i id="friendsArrow" class="fa fa-angle-down"></i>
+    </div>
+    <div id="friendNumber" class="friend-request-number">
+        {{ user.friends|length }}
+    </div>
+</a>
+<div id="friendsMenu" class="friend-request-menu">
+
+</div>
+
+<script>
+    const assetDir = "{{ asset('img/') }}"
+
+    function addIncomingRequest(username, img) {
+        const friendRequest = document.createElement('div')
+        friendRequest.className = 'friend-request';
+        friendRequest.id = 'request-' + username;
+        const imgSrc = assetDir + img;
+        let url = '{{ path("profile", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        friendRequest.innerHTML = `
+            <a class="friend-request-wrapper">
+                <div class="friend-profile-picture">
+                    <img src="` + imgSrc + `" height="100%" width="100%">
+                </div>
+                <div class="friend-username">
+                    ` + username + `
+                </div>
+            </a>
+                    <div class="friend-dropdown" id="dropdown-` + username + `" style="display: none">
+                         <a class="friend-dropdown-option" onclick="acceptFriendRequest('` + username + `','` + img + `')">
+                            {{ 'friends.acceptFriendRequest'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" onclick="declineFriendRequest('` + username + `')">
+                            {{ 'friends.declineFriendRequest'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" href="` + url + `">
+                            {{ 'friends.viewProfile'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" href="#">
+                            {{ 'friends.message'|trans }}
+                        </a>
+                    </div>`;
+        friendRequest.onclick = function () {
+            const dropdown = document.getElementById('dropdown-' + username);
+            if (dropdown.style.display === 'none') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        };
+        document.getElementById('incomingRequestMenu').appendChild(friendRequest);
+    }
+
+    function addOutgoingRequest(username, img) {
+        const friendRequest = document.createElement('div')
+        friendRequest.className = 'friend-request';
+        friendRequest.id = 'request-' + username;
+        const imgSrc = assetDir + img;
+        let url = '{{ path("profile", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        friendRequest.innerHTML = `
+            <a class="friend-request-wrapper">
+                <div class="friend-profile-picture">
+                    <img src="` + imgSrc + `" height="100%" width="100%">
+                </div>
+                <div class="friend-username">
+                    ` + username + `
+                </div>
+            </a>
+                    <div class="friend-dropdown" id="dropdown-` + username + `" style="display: none">
+                         <a class="friend-dropdown-option" onclick="revokeFriendRequest('` + username + `')">
+                            {{ 'friends.revokeFriendRequest'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" href="` + url + `">
+                            {{ 'friends.viewProfile'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" href="#">
+                            {{ 'friends.message'|trans }}
+                        </a>
+                    </div>`;
+        friendRequest.onclick = function () {
+            const dropdown = document.getElementById('dropdown-' + username);
+            if (dropdown.style.display === 'none') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        };
+        document.getElementById('outgoingRequestMenu').appendChild(friendRequest);
+    }
+
+    function addFriend(username, img) {
+        const friendRequest = document.createElement('div')
+        friendRequest.className = 'friend-request';
+        friendRequest.id = 'friend-' + username;
+        const imgSrc = assetDir + img;
+        let url = '{{ path("profile", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        friendRequest.innerHTML = `
+            <a class="friend-request-wrapper">
+                <div class="friend-profile-picture">
+                    <img src="` + imgSrc + `" height="100%" width="100%">
+                </div>
+                <div class="friend-username">
+                    ` + username + `
+                </div>
+            </a>
+                    <div class="friend-dropdown" id="dropdown-` + username + `" style="display: none">
+                        <a class="friend-dropdown-option" href="` + url + `">
+                            {{ 'friends.viewProfile'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" href="#">
+                            {{ 'friends.message'|trans }}
+                        </a>
+                        <a class="friend-dropdown-option" onclick="removeFriend('` + username + `')">
+                            {{ 'friends.removeFriend'|trans }}
+                        </a>
+                    </div>`;
+        friendRequest.onclick = function () {
+            const dropdown = document.getElementById('dropdown-' + username);
+            if (dropdown.style.display === 'none') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        };
+        document.getElementById('friendsMenu').appendChild(friendRequest);
+    }
+
+    {% if user.incomingFriendRequests|length == 0 %}
+    document.getElementById('incomingRequestButton').style.display = 'none';
+    {% endif %}
+    {% if user.outgoingFriendRequests|length == 0 %}
+    document.getElementById('outgoingRequestButton').style.display = 'none';
+    {% endif %}
+    {% if user.Friends|length == 0 %}
+    document.getElementById('friendButton').style.display = 'none';
+    {% endif %}
+
+    {% for request in user.incomingFriendRequests %}
+    addIncomingRequest("{{ request.username }}", "{{ request.image }}");
+    {% endfor %}
+    {% for request in user.outgoingFriendRequests %}
+    addOutgoingRequest("{{ request.username }}", "{{ request.image }}");
+    {% endfor %}
+    {% for friend in user.friends %}
+    addFriend("{{ friend.username }}", "{{ friend.image }}");
+    {% endfor %}
+
+    function checkButtons() {
+        return document.getElementById('incomingRequestButton').style.display === 'none' &&
+            document.getElementById('outgoingRequestButton').style.display === 'none' &&
+            document.getElementById('friendButton').style.display === 'none';
+    }
+
+    function showNoFriends() {
+        if (checkButtons()){
+            document.getElementById('no-friends').style.display = 'inline-block';
+        }
+    }
+
+    showNoFriends();
+
+    function removeIncomingRequest(username) {
+
+        document.getElementById('incomingRequestMenu').removeChild(document.getElementById('request-' + username));
+        const incomingRequestNumber = document.getElementById('incomingRequestNumber');
+        const newNumber = (parseInt(incomingRequestNumber.innerText) - 1).toString();
+        if (newNumber === '0') {
+            document.getElementById('incomingRequestButton').style.display = 'none';
+        } else {
+            incomingRequestNumber.innerText = newNumber;
+        }
+    }
+
+    function removeOutgoingRequest(username) {
+
+        document.getElementById('outgoingRequestMenu').removeChild(document.getElementById('request-' + username));
+        const outgoingRequestNumber = document.getElementById('outgoingRequestNumber');
+        const newNumber = (parseInt(outgoingRequestNumber.innerText) - 1).toString();
+        if (newNumber === '0') {
+            document.getElementById('outgoingRequestButton').style.display = 'none';
+        } else {
+            outgoingRequestNumber.innerText = newNumber;
+        }
+    }
+
+    function removeFriend(username) {
+
+        let url = '{{ path("removeFriend", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        fetch(url, {method: 'POST'});
+        document.getElementById('friendsMenu').removeChild(document.getElementById('friend-' + username));
+        const friendNumber = document.getElementById('friendNumber');
+        const newNumber = (parseInt(friendNumber.innerText) - 1).toString();
+        if (newNumber === '0') {
+            document.getElementById('friendButton').style.display = 'none';
+        } else {
+            friendNumber.innerText = newNumber;
+        }
+        showNoFriends()
+    }
+
+    function acceptFriendRequest(username, img) {
+        let url = '{{ path("acceptFriendRequest", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        fetch(url, {method: 'POST'});
+        removeIncomingRequest(username);
+        addFriend(username, img);
+        const friendNumber = document.getElementById('friendNumber');
+        friendNumber.innerText = (parseInt(friendNumber.innerText) + 1).toString();
+        document.getElementById('friendButton').style.display = 'block';
+    }
+
+    function declineFriendRequest(username) {
+        let url = '{{ path("declineFriendRequest", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        fetch(url, {method: 'POST'});
+        removeIncomingRequest(username);
+        showNoFriends()
+    }
+
+    function revokeFriendRequest(username) {
+        let url = '{{ path("revokeFriendRequest", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        fetch(url, {method: 'POST'});
+        removeOutgoingRequest(username);
+        showNoFriends()
+    }
+
+    function sendFriendRequest(username, img) {
+        let url = '{{ path("sendFriendRequest", {username: 'username'}) }}';
+        url = url.replace("username", username);
+        fetch(url, {method: 'POST'});
+        addOutgoingRequest(username, img);
+        document.getElementById('outgoingRequestButton').style.display = 'block';
+        const outgoingRequestNumber = document.getElementById('outgoingRequestNumber');
+        outgoingRequestNumber.innerText = (parseInt(outgoingRequestNumber.innerText) + 1).toString();
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.friend-request')) {
+            const dropdowns = document.getElementsByClassName("friend-dropdown");
+            let i;
+            for (i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>

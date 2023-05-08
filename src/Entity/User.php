@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function Symfony\Component\Translation\t;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -57,17 +58,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $threads;
 
     #[ORM\Column]
-    private ?bool $mainColumn = null;
+    private ?bool $mainColumn = true;
 
     #[ORM\Column]
-    private ?bool $chatColumn = null;
+    private ?bool $chatColumn = true;
 
     #[ORM\Column]
-    private ?bool $friendColumn = null;
+    private ?bool $friendColumn = true;
+
+    #[ORM\Column]
+    private ?bool $chatWarning = true;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'outgoingFriendRequests')]
+    private Collection $incomingFriendRequests;
+
+    #[ORM\JoinTable(name: 'friends')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'friend_user_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: 'User', inversedBy: 'incomingFriendRequests')]
+    private Collection $outgoingFriendRequests;
 
     public function __construct()
     {
         $this->threads = new ArrayCollection();
+        $this->incomingFriendRequests = new ArrayCollection();
+        $this->outgoingFriendRequests = new ArrayCollection();
     }
 
 
@@ -269,4 +284,82 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getChatWarning(): ?bool
+    {
+        return $this->chatWarning;
+    }
+
+    public function setChatWarning(bool $chatWarning): self
+    {
+        $this->chatWarning = $chatWarning;
+
+        return $this;
+    }
+
+    public function getFriends(): Collection
+    {
+        $friends = new ArrayCollection();
+        foreach ($this->outgoingFriendRequests->getValues() as $friend) {
+            if ($this->incomingFriendRequests->contains($friend)) {
+                $friends->add($friend);
+            }
+        }
+        return $friends;
+    }
+
+    public function addOutgoingFriendRequest(self $friend): self
+    {
+        $this->outgoingFriendRequests->add($friend);
+        return $this;
+    }
+
+    public function addIncomingFriendRequest(self $friend): self
+    {
+        $this->incomingFriendRequests->add($friend);
+        return $this;
+    }
+
+    public function removeFriend(self $friend): self
+    {
+        $this->incomingFriendRequests->removeElement($friend);
+        $this->outgoingFriendRequests->removeElement($friend);
+        return $this;
+    }
+
+    public function removeOutgoingFriendRequest(self $friend): self
+    {
+        $this->outgoingFriendRequests->removeElement($friend);
+        return $this;
+    }
+
+    public function removeIncomingFriendRequest(self $friend): self
+    {
+        $this->incomingFriendRequests->removeElement($friend);
+        return $this;
+    }
+
+    public function getIncomingFriendRequests(): Collection
+    {
+        $friendRequests = clone $this->incomingFriendRequests;
+        foreach ($this->outgoingFriendRequests as $friend) {
+            if ($this->incomingFriendRequests->contains($friend)) {
+                $friendRequests->removeElement($friend);
+            }
+        }
+        return $friendRequests;
+    }
+
+    public function getOutgoingFriendRequests(): Collection
+    {
+        $friendRequests = clone $this->outgoingFriendRequests;
+        foreach ($this->incomingFriendRequests as $friend) {
+            if ($this->outgoingFriendRequests->contains($friend)) {
+                $friendRequests->removeElement($friend);
+            }
+        }
+        return $friendRequests;
+    }
+
+
 }

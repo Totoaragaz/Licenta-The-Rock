@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheet %}
-    <link href="{{asset('css/light8.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
+    {% if app.session.get('darkMode') %}
+        <link id="pageStyle"  href="{{asset('css/dark1.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
+    {% else %}
+        <link id="pageStyle"  href="{{asset('css/light7.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
+    {% endif %}
 {% endblock %}
 
 {% if active is not defined %}
@@ -10,72 +14,23 @@
 
 {% block body %}
     <header>
-        <div class="navbar">
-            <a class="logo"  href="{{ path('forum') }}"><img src="{{asset('css/sprites/TheRockLogoFinal.png')}}" height="100%"></a>
-                <a class="left item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
-                    <div class="item-content">
-                            {{ 'page.forum'|trans }}
-                    </div>
-                </a>
-                <a class="left item {% if active == 'ownProfile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
-                    <div class="item-content">
-                        {{ 'page.profile'|trans }}
-                    </div>
-                </a>
-                <a class="right item" href="{{ path('logout') }}">
-                    <div class="item-content">
-                        {{ 'page.logout'|trans }}
-                    </div>
-                </a>
-                <a class="right item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
-                    <div class="item-content">
-                        {{ 'page.settings'|trans }}
-                    </div>
-                </a>
-                <a href="javascript:void(0);" class="hamburger-menu" onclick="openHamburgerMenu()">
-                    <div class="hamburger-icon">
-                        <i class="fa fa-bars"></i>
-                    </div>
-                    <div id="hamburger-content">
-                        <a class="hamburger-item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
-                            <div class="hamburger-item-content">
-                                {{ 'page.forum'|trans }}
-                            </div>
-                        </a>
-                        <a class="hamburger-item {% if active == 'profile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
-                            <div class="hamburger-item-content">
-                                {{ 'page.profile'|trans }}
-                            </div>
-                        </a>
-                        <a class="hamburger-item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
-                            <div class="hamburger-item-content">
-                                {{ 'page.settings'|trans }}
-                            </div>
-                        </a>
-                        <a class="hamburger-item" href="{{ path('logout') }}">
-                            <div class="hamburger-item-content">
-                                {{ 'page.logout'|trans }}
-                            </div>
-                        </a>
-                    </div>
-                </a>
-        </div>
+        {% include 'page-features/navbar.html.twig' %}
     </header>
 
     <div id="bottom-buttons">
-        <a class="bottom-button" href="javascript:void(0);" onclick="openMainColumn()">
+        <a class="bottom-button" href="javascript:void(0);" onclick="setMainColumn()">
             <i class="fa fa-home"></i>
         </a>
-        <a class="bottom-button" href="javascript:void(0);" onclick="openChatColumn()">
+        <a class="bottom-button" href="javascript:void(0);" onclick="setChatColumn()">
             <i class="fa fa-comment"></i>
         </a>
-        <a class="bottom-button" href="javascript:void(0);" onclick="openFriendColumn()">
+        <a class="bottom-button" href="javascript:void(0);" onclick="setFriendColumn()">
             <i class="fa fa-users"></i>
         </a>
     </div>
 
     <div id="page-empty">
-        <img src="css/sprites/JustRock.png" width="40%">
+        <img src="{{ asset('css/sprites/JustRock.png') }}" width="40%">
         <br>
         <br>
         {{ 'page.closedEverything'|trans }}
@@ -96,15 +51,14 @@
     </div>
     <div id="chat-column">
         <div class="column-content">
-            chat stuff
+            {% include 'page-features/chat.html.twig' %}
         </div>
     </div>
     <div id="friend-column">
         <div class="column-content">
-            friend stuff
+            {% include 'page-features/friends.html.twig' %}
         </div>
     </div>
-
     <script>
         const resizeWidth = 750;
 
@@ -143,22 +97,43 @@
 
         window.addEventListener('load', function(event) {
             if (window.innerWidth > resizeWidth){
-                {% if mainColumn %}
+                {% if app.session.get('mainColumn') %}
                 openMainColumn();
                 {% endif %}
-                {% if chatColumn %}
+                {% if app.session.get('chatColumn') %}
                 openChatColumn();
                 {% endif %}
-                {% if friendColumn %}
+                {% if app.session.get('friendColumn') %}
                 openFriendColumn();
+                {% if app.session.get('incomingRequests') %}
+                openIncomingRequests();
+                {% endif %}
+                {% if app.session.get('outgoingRequests') %}
+                openOutgoingRequests();
+                {% endif %}
+                {% if app.session.get('friends') %}
+                openFriends();
+                {% endif %}
+                {% endif %}
+                {% if not (app.session.get('mainColumn') or app.session.get('chatColumn') or app.session.get('friendColumn'))  %}
+                openEmptyPage();
                 {% endif %}
             } else {
-                {% if mainColumn %}
-                    openMainColumn();
-                {% elseif chatColumn %}
-                    openChatColumn();
+                {% if app.session.get('mainColumn') %}
+                openMainColumn();
+                {% elseif app.session.get('chatColumn') %}
+                openChatColumn();
                 {% else %}
-                    openFriendColumn();
+                openFriendColumn();
+                {% if app.session.get('incomingRequests') %}
+                openIncomingRequests();
+                {% endif %}
+                {% if app.session.get('outgoingRequests') %}
+                openOutgoingRequests();
+                {% endif %}
+                {% if app.session.get('friends') %}
+                openFriends();
+                {% endif %}
                 {% endif %}
             }
         }, true);
@@ -205,16 +180,40 @@
             }
         }
 
+        function setMainColumn() {
+            fetch('{{ path('setMainColumn') }}', { method: 'POST'});
+            openMainColumn();
+        }
+
+        function setChatColumn() {
+            fetch('{{ path('setChatColumn') }}', { method: 'POST'});
+            openChatColumn();
+        }
+
+        function setFriendColumn() {
+            fetch('{{ path('setFriendColumn') }}', { method: 'POST'});
+            openFriendColumn();
+        }
+
+        function setIncomingRequests() {
+            fetch('{{ path('setIncomingRequests') }}', { method: 'POST'});
+            openIncomingRequests();
+        }
+
+        function setOutgoingRequests() {
+            fetch('{{ path('setOutgoingRequests') }}', { method: 'POST'});
+            openOutgoingRequests();
+        }
+
+        function setFriends() {
+            fetch('{{ path('setFriends') }}', { method: 'POST'});
+            openFriends();
+        }
+
         function openMainColumn() {
             const mainColumn = document.getElementById("main-column");
             const pageEmpty = document.getElementById("page-empty");
-            //CHANGE THIS
-            /*const collection = document.getElementsByClassName("item");
-            for (let i = 0, j = collection.length; i < j; i++) {
-                collection[i].href += link;
-            }
-            collection.forEach(updateLink());
-*/
+
             if (window.innerWidth > resizeWidth) {
                 if (pageEmpty.style.display === "block") {
                     pageEmpty.style.display = "none";
@@ -287,12 +286,53 @@
             }
         }
 
+        function openEmptyPage() {
+            const pageEmpty = document.getElementById("page-empty");
+            pageEmpty.style.display = "block";
+        }
+
         function openHamburgerMenu() {
             const hamburgerMenu = document.getElementById("hamburger-content");
             if (hamburgerMenu.style.display === "block") {
                 hamburgerMenu.style.display = "none";
             } else {
                 hamburgerMenu.style.display = "block";
+            }
+        }
+
+        function openIncomingRequests() {
+            const incomingRequests = document.getElementById("incomingRequestMenu");
+            const arrow = document.getElementById("incomingRequestArrow");
+            if (incomingRequests.style.display === "block") {
+                incomingRequests.style.display = "none";
+                arrow.className = "fa fa-angle-down";
+            } else {
+                incomingRequests.style.display = "block";
+                arrow.className = "fa fa-angle-up";
+            }
+        }
+
+        function openOutgoingRequests() {
+            const outgoingRequests = document.getElementById("outgoingRequestMenu");
+            const arrow = document.getElementById("outgoingRequestArrow");
+            if (outgoingRequests.style.display === "block") {
+                outgoingRequests.style.display = "none";
+                arrow.className = "fa fa-angle-down";
+            } else {
+                outgoingRequests.style.display = "block";
+                arrow.className = "fa fa-angle-up";
+            }
+        }
+
+        function openFriends() {
+            const friends = document.getElementById("friendsMenu");
+            const arrow = document.getElementById("friendsArrow");
+            if (friends.style.display === "block") {
+                friends.style.display = "none";
+                arrow.className = "fa fa-angle-down";
+            } else {
+                friends.style.display = "block";
+                arrow.className = "fa fa-angle-up";
             }
         }
     </script>

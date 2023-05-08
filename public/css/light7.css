@@ -139,7 +139,8 @@ body {
 }
 
 #friend-column {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: none;
     float:left;
     height: 100vh;
@@ -195,10 +196,145 @@ body {
     color: #949494;
 }
 
+#friend-column #no-friends {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+    font-size: 1em;
+    color: #949494;
+    display: none;
+    margin-top: 100px;
+}
+
+.friend-request-button {
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 2px solid #d9d9d9;
+    display: block;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.friend-request-button.border-top {
+    border-top: 1px solid #d9d9d9;
+}
+
+.friend-request-button:hover {
+    background-color: #d9d9d9;
+}
+
+.friend-request-button .friend-arrow {
+    float: right;
+    font-size: 2em;
+    color: #bd6b15;
+    padding-right: 5px;
+    overflow: hidden;
+}
+
+.friend-request-button .friend-text-container {
+    float:left;
+    padding-top: 9px;
+    padding-left: 5px;
+    font-size: 1em;
+    color: #bd6b15;
+    font-weight: bold;
+}
+
+.friend-request-button .friend-request-number {
+    float:right;
+    font-size: 1em;
+    color: #4f4f4f;
+    padding-top: 9px;
+    padding-right: 2px;
+    font-weight: bold;
+}
+
+#friend-column .friend-request-menu {
+    width: 100%;
+    display: none;
+}
+
+.friend-request-menu .friend-request {
+    width: 100%;
+    box-sizing: border-box;
+    height:35px;
+    border-bottom: 1px solid #d9d9d9;
+    color: #6E6E6E;
+    font-size: 1em;
+    position: relative;
+    cursor: pointer;
+}
+
+.friend-request-menu .friend-request:hover {
+    background-color: #d9d9d9;
+}
+
+.friend-request .friend-request-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.friend-request-menu .friend-request-wrapper:hover {
+    background-color: #d9d9d9;
+}
+
+.friend-request .friend-profile-picture{
+    float:left;
+    height: 33px;
+    width: 33px;
+    margin: 1px;
+    box-sizing: border-box;
+}
+
+.friend-profile-picture img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.friend-request .friend-username {
+    float:left;
+    margin-left: 3px;
+    padding-top: 9px;
+    font-size: 1em;
+    color:#4f4f4f;
+    overflow: hidden;
+}
+
+.friend-request .friend-dropdown {
+    top:100%;
+    position: absolute;
+    display: none;
+    width: 90%;
+    right:5%;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+}
+
+.friend-dropdown .friend-dropdown-option {
+    width: 100%;
+    display: block;
+    border: 1px solid #9b9b9b;
+    background-color: #eaeaea;
+    color: #4f4f4f;
+    font-size: 1em;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.friend-dropdown .friend-dropdown-option:hover {
+    background-color: #d9d9d9;
+}
+
 .profile-header {
     width: 100%;
     border-bottom: 2px #d9d9d9 solid;
-    height: 350px;
 }
 
 .profile-header .profile-picture-container {
@@ -212,7 +348,6 @@ body {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    border: 5px solid #bd6b15;
     box-sizing: border-box;
 }
 
@@ -228,12 +363,15 @@ body {
     padding-top: 125px;
     border-radius: 50%;
     background-color: transparent;
-    border: 5px solid #bd6b15;
     box-sizing: border-box;
     width: 300px;
     height: 300px;
     text-align: center;
     color: transparent;
+}
+
+.profile-header input[type= "file"] {
+    display: none;
 }
 
 .profile-header .profile-picture .profile-change-picture:hover {
@@ -263,6 +401,11 @@ body {
     font-weight: bold;
 }
 
+.profile-info .profile-admin {
+    font-size: 1.3em;
+    color: #d5b000;
+}
+
 .profile-info .profile-registered {
     padding-top: 5px;
     font-size: 1em;
@@ -281,6 +424,19 @@ body {
     border: 2px solid #e3e3e3;
     border-radius: 5px;
     overflow: auto;
+    resize: none;
+    font-family: Arial,sans-serif;
+}
+
+.profile-info ul{
+    margin: 0;
+    padding: 0;
+}
+
+.profile-info .profile-error {
+    font-size: 0.8em;
+    color: red;
+    padding-bottom: 10px;
 }
 
 .profile-header .profile-info .profile-button-bar {
@@ -301,7 +457,24 @@ body {
     border-radius: 5px;
     transition-duration: 0.2s;
     cursor:pointer;
-    margin-bottom: 0;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.profile-button-disabled {
+    background-color: #e5a25c;
+    border: none;
+    color: white;
+    padding: 20px 25px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+    display:inline-block;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: not-allowed;
+    margin-bottom: 20px;
+    margin-left: 20px;
 }
 
 .profile-button-bar .profile-button:hover {
@@ -319,6 +492,7 @@ body {
 .profile-threads-container .profile-threads-title {
     font-size: 1.8em;
     color: #bd6b15;
+    text-align: left;
 }
 
 .profile-threads-container .profile-no-threads {
@@ -331,6 +505,159 @@ body {
     font-size: 1.2em;
     padding-bottom: 70px;
 }
+
+.settings-container {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+}
+
+.settings-container .settings-title {
+    font-size: 2em;
+    color: #bd6b15;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.settings-container .settings-section {
+    margin-left: 20px;
+    border-bottom: #d9d9d9 2px solid;
+    margin-bottom: 25px;
+    padding-right: 35px;
+    width: fit-content;
+    display: block;
+}
+
+.settings-container .settings-instruction {
+    font-size: 1em;
+    color: black;
+    margin-bottom: 5px;
+}
+
+.settings-container .settings-button {
+    background-color: #bd6b15;
+    border: none;
+    color: #ffd07d;
+    padding: 20px 25px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+    display:inline-block;
+    font-size: 1em;
+    border-radius: 5px;
+    transition-duration: 0.2s;
+    cursor:pointer;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.settings-container .settings-button:hover {
+    background-color: #d7842c;
+    color: white;
+}
+
+.settings-container .settings-small-title {
+    font-size: 1.5em;
+    color: #4f4f4f;
+    margin-bottom: 15px;
+}
+
+.settings-container .settings-switch {
+    display: inline-block;
+    height: 17px;
+    position: relative;
+    width: 30px;
+}
+
+.settings-container .settings-switch input {
+    display:none;
+}
+
+.settings-container .settings-slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .2s;
+}
+
+.settings-container .settings-slider:before {
+    background-color: #fff;
+    bottom: 2px;
+    content: "";
+    height: 13px;
+    left: 2px;
+    position: absolute;
+    transition: .2s;
+    width: 13px;
+}
+
+.settings-container input:checked + .settings-slider {
+    background-color: #bd6b15;
+}
+
+.settings-container input:checked + .settings-slider:before {
+    transform: translateX(13px);
+}
+
+.settings-container .settings-slider.round {
+    border-radius: 17px;
+}
+
+.settings-container .settings-slider.round:before {
+    border-radius: 50%;
+}
+
+.forum-header {
+    width: 90%;
+    margin: 10px auto;
+}
+
+.search-bar-container {
+    width: 60%;
+    height: 40px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-button {
+    float: right;
+    color: #bd6b15;
+    font-size: 1.6em;
+    margin-right: 10px;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+.search-bar-container input {
+    height: 40px;
+    font-size: 1em;
+    background-color: #d9d9d9;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 0;
+    width: 80%;
+    color: black;
+    margin-left: 15px;
+}
+
+.search-bar-container input:focus {
+    outline: none;
+    background-color: transparent;
+}
+
+.forum-body {
+    width: 90%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 
 @media screen and (max-width: 750px) {
     .navbar .item {
@@ -361,5 +688,19 @@ body {
     .profile-header .profile-picture-container .profile-picture{
         width: 170px;
         height: 170px;
+    }
+
+    .profile-picture .profile-change-picture {
+        top:65px;
+        left:10px;
+        padding-top: 60px;
+        width: 170px;
+        height: 170px;
+    }
+
+    .profile-button-bar .profile-button {
+        padding: 10px 20px;
+        font-size: 0.8em;
+        margin-left: 10px;
     }
 }

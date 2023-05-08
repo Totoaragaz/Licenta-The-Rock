@@ -18,7 +18,7 @@ login.quote: We are all in this together
 login.noAccount: Don't have an account?
 login.registerHere: Register here!
 login.accountNotVerified: Your account is not verified. Please verify it via the email we sent you when you signed up.
-login.successfulyRegistered: You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
+login.successfullyRegistered: You have successfully registered! In order to use your account, please verify your email first, using the email we sent you.
 login.verifiedEmail: You have successfully verified your email! You may now log in.
 
 #Register Page
@@ -54,6 +54,18 @@ page.closedEverything: You closed everything. There is nothing left here..
 page.exceptRock: Except Rock.
 page.rockEternal: Rock is eternal.
 
+#Friends Column
+friends.noFriends: Your friends and friend-requests will appear here
+friends.incomingRequests: Incoming Requests
+friends.outgoingRequests: Outgoing Requests
+friends.friends: Friends
+friends.message: Message
+friends.viewProfile: View Profile
+friends.removeFriend: Remove Friend
+friends.acceptFriendRequest: Accept Friend Request
+friends.declineFriendRequest: Decline Friend Request
+friends.revokeFriendRequest: Revoke Friend Request
+
 #Profile Page
 profile.memberSince: Member since
 profile.yourThreads: Your Threads
@@ -68,3 +80,20 @@ profile.cancel: Cancel
 profile.deleteProfilePicture: Delete profile picture?
 profile.admin: Admin
 profile.changeProfilePicture: Change Profile Picture
+profile.acceptFriendRequest: Accept Friend Request
+profile.friendRequestSent: Friend Request Sent
+
+#Settings Page
+settings.settings: Settings
+settings.darkMode: Dark mode
+settings.toggleDarkMode: Toggle dark mode
+settings.mainTab: Open main tab on log in
+settings.chatTab: Open chat tab on log in
+settings.friendTab: Open friend tab on log in
+settings.saveChanges: Save Changes
+settings.chat: Chat
+settings.getChatWarning: Get a warning when receiving a message from someone who is not in your friend list
+settings.tabs: Tabs
+
+#Forum Page
+forum.searchPlaceholder: Search for threads, tags, people

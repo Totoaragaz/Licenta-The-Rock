@@ -62,4 +62,33 @@ class UserManager
         return $this->userService->updateUser($user);
     }
 
+    public function removeFriend(User $user, string $friend): bool
+    {
+        return $this->userService->removeFriend($user, $friend);
+    }
+
+    public function acceptFriendRequest(User $user, string $friend): bool
+    {
+        return $this->userService->acceptFriendRequest($user, $friend);
+    }
+
+    public function declineFriendRequest(User $user, string $friend): bool
+    {
+        return $this->userService->declineFriendRequest($user, $friend);
+    }
+
+    public function revokeFriendRequest(User $user, string $friend): bool
+    {
+        return $this->userService->revokeFriendRequest($user, $friend);
+    }
+
+    public function sendFriendRequest(User $user, string $friend): bool
+    {
+        return $this->userService->sendFriendRequest($user, $friend);
+    }
+
+    public function getFriendState(User $user, string $friend): string
+    {
+        return $this->userService->getFriendState($user, $friend);
+    }
 }

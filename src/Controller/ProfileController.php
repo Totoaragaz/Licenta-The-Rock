@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
 
 class ProfileController extends AbstractController
@@ -26,7 +25,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/profile/{username}', name: 'profile')]
-    public function renderProfileScreen(Request $request, string $username): Response
+    public function renderProfileScreen(string $username): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -34,13 +33,10 @@ class ProfileController extends AbstractController
         if ($user->getUsername() == $username) {
             $registrationDate = ' ' . $user->getRegistrationDate()->format('d/m/Y');
             return new Response($this->twig->render('profile.html.twig', [
-                'mainColumn' => 1,
-                'chatColumn' => 1,
-                'friendColumn' => 1,
-                'viewedUser' => $user,
                 'user' => $user,
+                'viewedUser' => $user,
                 'registrationDate' => $registrationDate,
-                'ownProfile' => true,
+                'ownProfile' => true
             ]));
         } else {
             $viewedUser = $this->userManager->getUserByUsername($username);
@@ -48,15 +44,14 @@ class ProfileController extends AbstractController
                 throw $this->createNotFoundException('User ' . $username . ' does not exist');
             }
 
+
             $registrationDate = ' ' . $viewedUser->getRegistrationDate();
             return new Response($this->twig->render('profile.html.twig', [
-                'mainColumn' => 1,
-                'chatColumn' => 1,
-                'friendColumn' => 1,
-                'viewedUser' => $viewedUser,
                 'user' => $user,
+                'viewedUser' => $viewedUser,
                 'registrationDate' => $registrationDate,
                 'ownProfile' => false,
+                'friendState' => $this->userManager->getFriendState($user, $username)
             ]));
         }
     }
@@ -90,9 +85,6 @@ class ProfileController extends AbstractController
             }
         }
         return new Response($this->twig->render('editProfile.html.twig', [
-                'mainColumn' => 1,
-                'chatColumn' => 1,
-                'friendColumn' => 1,
                 'user' => $user,
                 'registrationDate' => $registrationDate,
                 'editProfileForm' => $form->createView()

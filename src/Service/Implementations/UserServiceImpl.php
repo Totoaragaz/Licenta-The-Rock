@@ -83,4 +83,63 @@ class UserServiceImpl
     {
         return $this->userRepository->updateUserRepo($user);
     }
+
+    public function removeFriend(User $user, string $friendUsername): bool
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        $user->removeFriend($friend);
+        $friend->removeFriend($user);
+
+        return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function acceptFriendRequest(User $user, string $friendUsername): bool
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        $user->addOutgoingFriendRequest($friend);
+        $friend->addIncomingFriendRequest($user);
+
+        return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function declineFriendRequest(User $user, string $friendUsername): bool
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        $user->removeIncomingFriendRequest($friend);
+        $friend->removeOutgoingFriendRequest($user);
+
+        return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function revokeFriendRequest(User $user, string $friendUsername): bool
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        $user->removeOutgoingFriendRequest($friend);
+        $friend->removeIncomingFriendRequest($user);
+
+        return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function sendFriendRequest(User $user, string $friendUsername): bool
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        $user->addOutgoingFriendRequest($friend);
+        $friend->addIncomingFriendRequest($user);
+
+        return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function getFriendState(User $user, string $friendUsername): string
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        if ($user->getFriends()->contains($friend)) {
+            return 'friends';
+        } else if ($user->getIncomingFriendRequests()->contains($friend)) {
+            return 'incomingRequest';
+        } else if ($user->getOutgoingFriendRequests()->contains($friend)) {
+            return 'outgoingRequest';
+        } else {
+            return 'none';
+        }
+    }
 }

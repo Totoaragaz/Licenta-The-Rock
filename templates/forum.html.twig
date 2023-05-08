@@ -1,14 +1,32 @@
-{% extends user.darkMode ? 'darkPage.html.twig' : 'lightPage.html.twig' %}
+{% extends 'page.html.twig' %}
 
 {% block title %}{{ 'title.forum'|trans }}{% endblock %}
 
 {% set active='forum' %}
 
 {% block content %}
-    <div class="search-bar">
-        <form method="get">
-            <button type="submit"><i style="color:#bd6b15;" class="fa fa-search"></i></button>
-            <input type="search" id="search-bar" placeholder="Search in posts, tags, friends">
-        </form>
+    <div class="forum-header">
+        <div class="search-bar-container">
+            <input type="text" id="search-bar" placeholder="{{ 'forum.searchPlaceholder'|trans }}">
+            <div class="search-button" onclick="search()">
+                <i class="fa fa-search"></i>
+            </div>
+        </div>
     </div>
+    <div class="forum-body">
+
+    </div>
+
+
+    <script>
+        function search() {
+            let url = '{{ path("search", {items: 'items'}) }}';
+            const items = document.getElementById('search-bar').value;
+            if (items !== '') {
+                url = url.replace("items", items);
+                window.location.replace(url);
+            }
+        }
+
+    </script>
 {% endblock %}

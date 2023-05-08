@@ -1,0 +1,50 @@
+<div class="navbar">
+    <a class="logo"  href="{{ path('forum') }}"><img src="{{asset('css/sprites/TheRockLogoFinal.png')}}" height="100%"></a>
+    <a class="left item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
+        <div class="item-content">
+            {{ 'page.forum'|trans }}
+        </div>
+    </a>
+    <a class="left item {% if active == 'ownProfile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
+        <div class="item-content">
+            {{ 'page.profile'|trans }}
+        </div>
+    </a>
+    <a class="right item" href="{{ path('logout') }}">
+        <div class="item-content">
+            {{ 'page.logout'|trans }}
+        </div>
+    </a>
+    <a class="right item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
+        <div class="item-content">
+            {{ 'page.settings'|trans }}
+        </div>
+    </a>
+    <a href="javascript:void(0);" class="hamburger-menu" onclick="openHamburgerMenu()">
+        <div class="hamburger-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <div id="hamburger-content">
+            <a class="hamburger-item {% if active == 'forum' %} active {% endif %}" href="{{ path('forum') }}">
+                <div class="hamburger-item-content">
+                    {{ 'page.forum'|trans }}
+                </div>
+            </a>
+            <a class="hamburger-item {% if active == 'profile' %} active {% endif %}" href="{{ path('profile', {username: user.username}) }}">
+                <div class="hamburger-item-content">
+                    {{ 'page.profile'|trans }}
+                </div>
+            </a>
+            <a class="hamburger-item {% if active == 'settings' %} active {% endif %}" href="{{ path('settings') }}">
+                <div class="hamburger-item-content">
+                    {{ 'page.settings'|trans }}
+                </div>
+            </a>
+            <a class="hamburger-item" href="{{ path('logout') }}">
+                <div class="hamburger-item-content">
+                    {{ 'page.logout'|trans }}
+                </div>
+            </a>
+        </div>
+    </a>
+</div>

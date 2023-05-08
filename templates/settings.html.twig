@@ -1,9 +1,86 @@
-{% extends darkMode ? 'darkPage.html.twig' : 'lightPage.html.twig' %}
+{% extends 'page.html.twig' %}
 
 {% block title %}{{ 'title.settings'|trans }}{% endblock %}
 
 {% set active='settings' %}
 
 {% block content %}
-    a
+    <div class="settings-container">
+        <div class="settings-title">
+            {{ 'settings.settings'|trans }}
+        </div>
+        <div class="settings-section">
+            {{ form_start(settingsForm) }}
+            <div class="settings-small-title">
+                    {{ 'settings.darkMode'|trans }}
+            </div>
+            <div class="settings-instruction">
+                {{ 'settings.toggleDarkMode'|trans }}
+                <label class="settings-switch" for="settings_form_darkMode">
+                    {{ form_widget(settingsForm.darkMode) }}
+                    <div class="settings-slider round"></div>
+                </label>
+            </div>
+        </div>
+        <div class="settings-section">
+            <div class="settings-small-title">
+                {{ 'settings.tabs'|trans }}
+            </div>
+            <div class="settings-instruction">
+                {{ 'settings.mainTab'|trans }}
+                <label class="settings-switch" for="settings_form_mainColumn">
+                {{ form_widget(settingsForm.mainColumn) }}
+                    <div class="settings-slider round"></div>
+                </label>
+            </div>
+            <div class="settings-instruction">
+                {{ 'settings.chatTab'|trans }}
+                <label class="settings-switch" for="settings_form_chatColumn">
+                {{ form_widget(settingsForm.chatColumn) }}
+                    <div class="settings-slider round"></div>
+                </label>
+            </div>
+            <div class="settings-instruction">
+                {{ 'settings.friendTab'|trans }}
+                <label class="settings-switch" for="settings_form_friendColumn">
+                {{ form_widget(settingsForm.friendColumn) }}
+                    <div class="settings-slider round"></div>
+                </label>
+            </div>
+        </div>
+        <div class="settings-section">
+            <div class="settings-small-title">
+                {{ 'settings.chat'|trans }}
+            </div>
+            <div class="settings-instruction">
+                {{ 'settings.getChatWarning'|trans }}
+                <label class="settings-switch" for="settings_form_darkMode">
+                {{ form_widget(settingsForm.chatWarning) }}
+                    <div class="settings-slider round"></div>
+                </label>
+            </div>
+        </div>
+        {{ form_widget(settingsForm.save) }}
+        {{ form_end(settingsForm) }}
+    </div>
+
+    <script>
+        function swapStyleSheet(sheet) {
+            document.getElementById("pageStyle").setAttribute("href", sheet);
+        }
+
+        function getProtocolAndHost()
+        {
+            return location.protocol + "//" + location.host;
+        }
+
+        function reloadCss()
+        {
+            if (document.getElementById('pageStyle').href.substring(getProtocolAndHost().length) === "{{ asset('css/light9.css') }}") {
+                swapStyleSheet('{{ asset('css/dark1.css') }}');
+            } else {
+                swapStyleSheet('{{ asset('css/light7.css') }}');
+            }
+        }
+    </script>
 {% endblock %}
