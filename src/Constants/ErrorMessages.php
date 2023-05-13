@@ -17,4 +17,6 @@ class ErrorMessages
     public const USERNAME_LENGTH_ERROR = 'error.usernameLengthError';
     public const BIO_LENGTH_ERROR = 'error.bioLengthError';
     public const INSERT_VALID_EMAIL = 'error.insertValidEmail';
+    public const ENTER_TITLE = 'error.enterTitle';
+    public const TITLE_LENGTH_ERROR = 'error.titleLengthError';
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Implementations;
 
-use App\Dto\UserDto;
+use App\Dto\UserProfileDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Transformer\UserTransformer;
@@ -69,14 +69,14 @@ class UserServiceImpl
         return $this->userRepository->getChatColumn($userId);
     }
 
-    public function getUserByUsername(string $username): ?UserDto
+    public function getUserByUsername(string $username): ?UserProfileDto
     {
         $user = $this->userRepository->getUserByUsername($username);
         if (!$user) {
             return null;
         }
 
-        return $this->transformer->transformUserIntoUserDto($user);
+        return $this->transformer->transformUserIntoUserProfileDto($user);
     }
 
     public function updateUser(User $user): bool
@@ -141,5 +141,51 @@ class UserServiceImpl
         } else {
             return 'none';
         }
+    }
+
+    public function getAllOtherUsers(User $user, int $page): array
+    {
+        $users = $this->userRepository->getAllOtherUsersWithPage($user->getUsername(), $page);
+        if ($users) {
+            $userDTOs = [];
+            foreach ($users as $resultUser) {
+                $userDTO = $this->transformer->transformUserIntoUserSearchDto($resultUser);
+                $userDTO->setFriendState($this->getFriendState($user, $resultUser->getUsername()));
+                $userDTOs[] = $userDTO;
+            }
+
+            return $userDTOs;
+        }
+
+        return [];
+    }
+
+    public function getAllOtherUsersNumberOfPages(string $username): int
+    {
+        $users = $this->userRepository->getAllOtherUsers($username);
+        return intdiv(sizeof($users), 10) - (sizeof($users) % 5 === 10) + 1;
+    }
+
+    public function getSearchedUsers(User $user, string $query, int $page): array
+    {
+        $users = $this->userRepository->getSearchedUsersWithPage(strtolower($user->getUsername()), $query, $page);
+        if ($users) {
+            $userDTOs = [];
+            foreach ($users as $resultUser) {
+                $userDTO = $this->transformer->transformUserIntoUserSearchDto($resultUser);
+                $userDTO->setFriendState($this->getFriendState($user, $resultUser->getUsername()));
+                $userDTOs[] = $userDTO;
+            }
+
+            return $userDTOs;
+        }
+
+        return [];
+    }
+
+    public function getSearchedUsersNumberOfPages(string $username, string $query): int
+    {
+        $users = $this->userRepository->getSearchedUsers(strtolower($username), $query);
+        return intdiv(sizeof($users), 10) - (sizeof($users) % 10 === 0) + 1;
     }
 }

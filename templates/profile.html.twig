@@ -23,6 +23,9 @@
             <div class="profile-info">
                 <div class="profile-username">
                     {{ viewedUser.username }}
+                    {% if friendState == 'friends' %}
+                        <i style="color: #07bd16" class="fa fa-users"></i>
+                    {% endif %}
                 </div>
                 {% if viewedUser.role == 'ROLE_ADMIN' %}
                     <div class="profile-admin">
@@ -43,16 +46,25 @@
                         </a>
                     {% else %}
                         {% if friendState == 'incomingRequest' %}
-                            <a id="profileFriendButton" onclick="acceptProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
+                            <a id="profileFriendButton"
+                               onclick="acceptProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
                                class="profile-button">
                                 {{ 'profile.acceptFriendRequest'|trans }} <i class="fa fa-plus"></i>
                             </a>
+                            <a id="profileFriendButton2"
+                               onclick="declineProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
+                               class="profile-button">
+                                {{ 'profile.declineFriendRequest'|trans }} <i class="fa fa-remove"></i>
+                            </a>
                         {% elseif friendState == 'outgoingRequest' %}
-                            <a id="profileFriendButton" class="profile-button-disabled">
-                                {{ 'profile.friendRequestSent'|trans }} <i class="fa fa-check"></i>
+                            <a id="profileFriendButton"
+                               onclick="revokeProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
+                               class="profile-button">
+                                {{ 'profile.revokeFriendRequest'|trans }} <i class="fa fa-remove"></i>
                             </a>
                         {% elseif friendState == 'none' %}
-                            <a id="profileFriendButton" onclick="sendProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
+                            <a id="profileFriendButton"
+                               onclick="sendProfileFriendRequest('{{ viewedUser.username }}','{{ viewedUser.image }}')"
                                class="profile-button">
                                 {{ 'profile.addFriend'|trans }} <i class="fa fa-plus"></i>
                             </a>
@@ -86,14 +98,57 @@
     <script>
         function sendProfileFriendRequest(username, img) {
             const button = document.getElementById('profileFriendButton');
-            button.innerHTML = "{{ 'profile.friendRequestSent'|trans }} <i class='fa fa-check'></i>";
-            button.className += "-disabled";
-            sendFriendRequest(username, img)
+            button.innerHTML = "{{ 'profile.revokeFriendRequest'|trans }} <i class='fa fa-remove'><i>";
+            button.onclick = function () {};
+            sendFriendRequest(username, img);
+            blockProfileButton();
+            delay(1000).then(() => unblockRevokeRequestButton(username, img));
         }
 
         function acceptProfileFriendRequest(username, img) {
             document.getElementById('profileFriendButton').style.display = 'none';
             acceptFriendRequest(username, img);
+        }
+
+        function revokeProfileFriendRequest(username, img) {
+            const button = document.getElementById('profileFriendButton');
+            button.innerHTML = "{{ 'profile.addFriend'|trans }} <i class='fa fa-plus'><i>";
+            button.onclick = function () {};
+            revokeFriendRequest(username);
+            blockProfileButton();
+            delay(1000).then(() => unblockAddFriendButton(username, img));
+        }
+
+        function declineProfileFriendRequest(username, img) {
+            document.getElementById('profileFriendButton2').style.display = 'none';
+            declineFriendRequest(username);
+            const button = document.getElementById('profileFriendButton');
+            button.innerHTML = "{{ 'profile.addFriend'|trans }} <i class='fa fa-plus'><i>";
+            button.onclick = function () {};
+            blockProfileButton();
+            delay(1000).then(() => unblockAddFriendButton(username, img));
+        }
+
+        function blockProfileButton() {
+            const button = document.getElementById('profileFriendButton');
+            button.className = 'profile-button-disabled';
+            button.onclick = function() {};
+        }
+
+        function unblockAddFriendButton(username, img) {
+            const button = document.getElementById('profileFriendButton');
+            button.className = 'profile-button';
+            button.onclick = function() {
+                sendProfileFriendRequest(username,img);
+            }
+        }
+
+        function unblockRevokeRequestButton(username, img) {
+            const button = document.getElementById('profileFriendButton');
+            button.className = 'profile-button';
+            button.onclick = function() {
+                revokeProfileFriendRequest(username,img);
+            }
         }
     </script>
 {% endblock %}

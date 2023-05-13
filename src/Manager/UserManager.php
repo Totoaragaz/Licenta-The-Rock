@@ -3,7 +3,7 @@
 namespace App\Manager;
 
 use App\Dto\RequestDtoUsers;
-use App\Dto\UserDto;
+use App\Dto\UserProfileDto;
 use App\Entity\User;
 use App\Service\Implementations\MailServiceImpl;
 use App\Service\Implementations\UserServiceImpl;
@@ -52,7 +52,7 @@ class UserManager
         return $this->userService->getChatColumn($userId);
     }
 
-    public function getUserByUsername(string $username): ?UserDto
+    public function getUserByUsername(string $username): ?UserProfileDto
     {
         return $this->userService->getUserByUsername($username);
     }
@@ -90,5 +90,25 @@ class UserManager
     public function getFriendState(User $user, string $friend): string
     {
         return $this->userService->getFriendState($user, $friend);
+    }
+
+    public function getAllOtherUsers(User $user, int $page): array
+    {
+        return $this->userService->getAllOtherUsers($user, $page);
+    }
+
+    public function getSearchedUsers(User $user, string $query, int $page): array
+    {
+        return $this->userService->getSearchedUsers($user, $query, $page);
+    }
+
+    public function getAllOtherUsersNumberOfPages(string $username): int
+    {
+        return $this->userService->getAllOtherUsersNumberOfPages($username);
+    }
+
+    public function getSearchedUsersNumberOfPages(string $username, string $query): int
+    {
+        return $this->userService->getSearchedUsersNumberOfPages($username, $query);
     }
 }

@@ -2,18 +2,27 @@
 
 namespace App\Transformer;
 
-use App\Dto\UserDto;
+use App\Dto\UserProfileDto;
+use App\Dto\UserSearchDto;
 use App\Entity\User;
 
 class UserTransformer
 {
-    public function transformUserIntoUserDto(User $user): UserDto
+    public function transformUserIntoUserProfileDto(User $user): UserProfileDto
     {
-        return (new UserDto())
-            ->setId($user->getId())
+        return (new UserProfileDto())
             ->setUsername($user->getUsername())
             ->setImage($user->getImage())
             ->setBio($user->getBio())
+            ->setRole($user->getRole())
+            ->setRegistrationDate($user->getRegistrationDate());
+    }
+
+    public function transformUserIntoUserSearchDto(User $user): UserSearchDto
+    {
+        return (new UserSearchDto())
+            ->setUsername($user->getUsername())
+            ->setImage($user->getImage())
             ->setRole($user->getRole())
             ->setRegistrationDate($user->getRegistrationDate());
     }

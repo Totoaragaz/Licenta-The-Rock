@@ -6,27 +6,239 @@
 
 {% block content %}
     <div class="forum-header">
+        <a class="forum-create-thread-button" href="{{ path('createThread') }}">
+            {{ 'forum.createThread'|trans }} <i class="fa fa-plus"></i>
+        </a>
         <div class="search-bar-container">
-            <input type="text" id="search-bar" placeholder="{{ 'forum.searchPlaceholder'|trans }}">
             <div class="search-button" onclick="search()">
                 <i class="fa fa-search"></i>
+            </div>
+            <div class="search-input">
+                <input type="text" id="search-bar" placeholder="{{ 'forum.searchPlaceholder'|trans }}"
+                    {% if query != ' ' %}value="{{ query }}"{% endif %}>
+            </div>
+        </div>
+        <div class="search-tab left">
+            <div id="threadsSearchTitle" class="search-tab-title" onclick="selectThreads()">
+                {{ 'forum.threads'|trans }}
+            </div>
+        </div>
+        <div class="search-tab right">
+            <div id="peopleSearchTitle" class="search-tab-title" onclick="selectPeople()">
+                {{ 'forum.people'|trans }}
             </div>
         </div>
     </div>
     <div class="forum-body">
-
+        <div id="threadsResults" class="search-results">
+            threads {{ users|length }}
+        </div>
+        <div id="peopleResults" class="search-results">
+            {% if users|length == 0 %}
+                <div class="forum-nothing-found">
+                    {{ 'forum.noUsersFound'|trans({'%query%': query}) }}
+                </div>
+            {% else %}
+                {% for resultUser in users %}
+                    <div class="person-container">
+                        <div class="person-profile-picture">
+                            <img src="{{ asset('img/' ~ resultUser.image) }}" width="100%" height="100%">
+                        </div>
+                        <div class="person-buttons">
+                            <a class="person-button" href="{{ path('profile', {username: resultUser.username}) }}">
+                                {{ 'forum.viewProfile'|trans }}
+                            </a>
+                            <a class="person-button" href="#">
+                                {{ 'forum.message'|trans }} <i class="fa fa-comment"></i>
+                            </a>
+                            {% if resultUser.friendState == 'none' %}
+                                <div id="forumAddFriendButton-{{ resultUser.username }}" class="person-button"
+                                     onclick="addForumFriend('{{ resultUser.username }}','{{ resultUser.image }}')">
+                                    {{ 'forum.addFriend'|trans }} <i class="fa fa-plus"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="person-profile-info">
+                            <div class="person-username">
+                                {{ resultUser.username }}
+                                {% if resultUser.friendState == 'friends' %}
+                                    <i style="color: #07bd16" class="fa fa-users"></i>
+                                {% endif %}
+                            </div>
+                            {% if resultUser.role == 'ROLE_ADMIN' %}
+                                <div class="person-is-admin">
+                                    <i class="fa fa-shield"></i>Admin
+                                </div>
+                            {% endif %}
+                            <div class="person-member-since">
+                                {{ 'forum.memberSince'|trans }} {{ resultUser.registrationDate }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="forum-pages-container">
+                    {% if currentPage == 1 %}
+                        <div class="forum-page-number-disabled">
+                            <i class="fa fa-arrow-left"></i>
+                        </div>
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage - 1, select: 'people'}) }}">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                    {% endif %}
+                    {% if numberOfPages <= 5 %}
+                        {% for page in 1..numberOfPages %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'people'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                    {% elseif currentPage < 4 %}
+                        {% for page in 1..4 %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'people'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: numberOfPages, select: 'people'}) }}">
+                            {{ numberOfPages }}
+                        </a>
+                    {% elseif numberOfPages - currentPage < 3 %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: 1, select: 'people'}) }}">
+                            1
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        {% for page in numberOfPages - 3..numberOfPages %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'people'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: 1, select: 'people'}) }}">
+                            1
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage - 1, select: 'people'}) }}">
+                            {{ currentPage - 1 }}
+                        </a>
+                        <a class="forum-page-number-selected"
+                           href="{{ path('search', {query: query, page: currentPage, select: 'people'}) }}">
+                            {{ currentPage }}
+                        </a>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage + 1, select: 'people'}) }}">
+                            {{ currentPage + 1 }}
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: numberOfPages, select: 'people'}) }}">
+                            {{ numberOfPages }}
+                        </a>
+                    {% endif %}
+                    {% if currentPage == numberOfPages %}
+                        <div class="forum-page-number-disabled">
+                            <i class="fa fa-arrow-right"></i>
+                        </div>
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage + 1, select: 'people'}) }}">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
     </div>
 
 
     <script>
+        document.getElementById('search-bar').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                search();
+            }
+        });
+
+        function selectThreads() {
+            const threadsTitle = document.getElementById('threadsSearchTitle');
+            if (threadsTitle.className !== 'search-tab-title-selected') {
+                threadsTitle.className = 'search-tab-title-selected';
+                document.getElementById('peopleSearchTitle').className = 'search-tab-title';
+                document.getElementById('peopleResults').style.display = 'none';
+                document.getElementById('threadsResults').style.display = 'block';
+            }
+        }
+
+        function selectPeople() {
+            const peopleTitle = document.getElementById('peopleSearchTitle');
+            if (peopleTitle.className !== 'search-tab-title-selected') {
+                peopleTitle.className = 'search-tab-title-selected';
+                document.getElementById('threadsSearchTitle').className = 'search-tab-title';
+                document.getElementById('threadsResults').style.display = 'none';
+                document.getElementById('peopleResults').style.display = 'block';
+            }
+        }
+
+        {% if select == 'people' %}
+        selectPeople();
+        {% else %}
+        selectThreads();
+        {% endif %}
+
         function search() {
-            let url = '{{ path("search", {items: 'items'}) }}';
-            const items = document.getElementById('search-bar').value;
-            if (items !== '') {
-                url = url.replace("items", items);
+            let url = '{{ path("search", {query: 'query'}) }}';
+            const query = document.getElementById('search-bar').value;
+            if (query !== '' && query !== ' ') {
+                url = url.replace("query", query);
                 window.location.replace(url);
             }
         }
+
+        function addForumFriend(username, image) {
+            const button = document.getElementById('forumAddFriendButton-' + username)
+            button.className = 'person-button-disabled';
+            button.style.fontSize = '0.7em';
+            button.innerHTML = `{{ 'forum.revokeFriendRequest'|trans }} <i class='fa fa-remove'><i>`;
+            button.onclick = function (){};
+            sendFriendRequest(username, image);
+            delay(1000).then(() => {
+                button.className = 'person-button';
+                button.onclick = function () {
+                    revokeForumFriendRequest(username, image)
+                }
+            });
+        }
+
+        function revokeForumFriendRequest(username, image) {
+            const button = document.getElementById('forumAddFriendButton-' + username)
+            button.className = 'person-button-disabled';
+            button.style.fontSize = '1em';
+            button.innerHTML = `{{ 'forum.addFriend'|trans }} <i class='fa fa-plus'><i>`;
+            button.onclick = function (){};
+            revokeFriendRequest(username);
+            delay(1000).then(() => {
+                button.className = 'person-button';
+                button.onclick = function () {
+                    addForumFriend(username, image);
+                }
+            });
+        }
+
+
 
     </script>
 {% endblock %}

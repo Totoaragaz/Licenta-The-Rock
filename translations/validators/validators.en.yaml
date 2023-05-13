@@ -1,6 +1,8 @@
 user.username.taken: There is already an account with this username.
 user.email.taken: There is already an account with this email.
 
+tag.tagAlreadyExists: Tag already exists
+
 error.accountNotVerified: Your account is not verified.
 error.enterEmail: Please enter an email.
 error.enterUsername: Please enter a username.

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ThreadRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,12 +29,17 @@ class Thread
     #[ORM\Column]
     private ?bool $closed = null;
 
-    #[ORM\Column]
-    private array $tags = [];
-
     #[ORM\ManyToOne(inversedBy: 'threads')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'threads')]
+    private Collection $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -87,18 +94,6 @@ class Thread
         return $this;
     }
 
-    public function getTags(): array
-    {
-        return $this->tags;
-    }
-
-    public function setTags(array $tags): self
-    {
-        $this->tags = $tags;
-
-        return $this;
-    }
-
     public function getAuthor(): ?User
     {
         return $this->author;
@@ -108,6 +103,47 @@ class Thread
     {
         $this->author = $author;
 
+        return $this;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->addThread($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->removeElement($tag)) {
+            $tag->removeThread($this);
+        }
+
+        return $this;
+    }
+
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function getTagNames(): array
+    {
+        $tagNames = [];
+        foreach ($this->tags as $tag) {
+            $tagNames[] = $tag->getName();
+        }
+
+        return $tagNames;
+
+    }
+
+    public function setTags(Collection $tags): Thread
+    {
+        $this->tags = $tags;
         return $this;
     }
 }

@@ -36,7 +36,8 @@ class ProfileController extends AbstractController
                 'user' => $user,
                 'viewedUser' => $user,
                 'registrationDate' => $registrationDate,
-                'ownProfile' => true
+                'ownProfile' => true,
+                'friendState' => ''
             ]));
         } else {
             $viewedUser = $this->userManager->getUserByUsername($username);

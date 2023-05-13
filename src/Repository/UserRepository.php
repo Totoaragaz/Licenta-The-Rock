@@ -76,10 +76,61 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->select('u')
-            ->where('u.username = :username')
+            ->where('u.username = :username and u.isVerified = true')
             ->setParameter('username', $username)
+            ->orderBy('u.username', 'asc')
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function getAllOtherUsersWithPage(string $username, int $page): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('u.username != :username and u.isVerified = true')
+            ->setParameter('username', $username)
+            ->orderBy('u.username', 'asc')
+            ->setFirstResult(($page - 1) * 10)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getSearchedUsersWithPage(string $username, string $query, int $page): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('LOWER(u.username) LIKE :query and LOWER(u.username) != :username and u.isVerified = true')
+            ->setParameter('query', '%' . $query. '%')
+            ->setParameter('username', $username)
+            ->orderBy('u.username', 'asc')
+            ->setFirstResult(($page - 1) * 10)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllOtherUsers(string $username): ?array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('u.username != :username and u.isVerified = true')
+            ->setParameter('username', $username)
+            ->orderBy('u.username', 'asc')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getSearchedUsers(string $username, string $query): ?array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('LOWER(u.username) LIKE :query and LOWER(u.username) != :username and u.isVerified = true')
+            ->setParameter('query', '%' . $query. '%')
+            ->setParameter('username', $username)
+            ->orderBy('u.username', 'asc')
+            ->getQuery()
+            ->getResult();
     }
 
     public function updateUserRepo(User $user): bool

@@ -7,6 +7,7 @@ title.friends: Friends
 title.settings: Settings
 title.otherProfile: "%username%'s Profile"
 title.editProfile: Edit Profile
+title.createThread: Create a thread
 
 #Login Page
 login.username: Username
@@ -81,7 +82,8 @@ profile.deleteProfilePicture: Delete profile picture?
 profile.admin: Admin
 profile.changeProfilePicture: Change Profile Picture
 profile.acceptFriendRequest: Accept Friend Request
-profile.friendRequestSent: Friend Request Sent
+profile.revokeFriendRequest: Revoke Friend Request
+profile.declineFriendRequest: Decline Friend Request
 
 #Settings Page
 settings.settings: Settings
@@ -97,3 +99,13 @@ settings.tabs: Tabs
 
 #Forum Page
 forum.searchPlaceholder: Search for threads, tags, people
+forum.threads: Threads
+forum.people: People
+forum.memberSince: Member since
+forum.addFriend: Add Friend
+forum.revokeFriendRequest: Revoke Friend Request
+forum.createThread: Create a new Thread
+forum.message: Message
+forum.viewProfile: View Profile
+forum.noUsersFound: "No users were found for '%query%'"
+forum.noThreadsFound: "No threads were found for '%query%'"

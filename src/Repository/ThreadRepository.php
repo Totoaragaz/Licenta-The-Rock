@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Thread;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,9 +18,38 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ThreadRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    protected EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager, ManagerRegistry $registry)
     {
         parent::__construct($registry, Thread::class);
+        $this->$entityManager = $entityManager;
+    }
+
+    public function getAllThreads(string $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t')
+            ->innerJoin('t.author', 'u')
+            ->where('u.username != :author')
+            ->setParameter('author', $user)
+            ->orderBy('t.uploadDate')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAllThreadsWithPage(string $user, int $page): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t')
+            ->innerJoin('t.author', 'u')
+            ->where('u.username != :author')
+            ->setParameter('author', $user)
+            ->orderBy('t.uploadDate')
+            ->setFirstResult(($page - 1) * 10)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
     }
 
     public function save(Thread $entity, bool $flush = false): void
