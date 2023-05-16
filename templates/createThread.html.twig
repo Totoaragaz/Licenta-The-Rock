@@ -5,9 +5,93 @@
 {% set active='forum' %}
 
 {% block content %}
-    <div class="create-thread-container">
-        <div class="create-thread-title-label">
-
+    <div class="create-thread-bottom-white-space">
+        <div class="create-thread-container">
+            <div class="create-thread-title">
+                {{ 'createThread.createThreadTitle'|trans }}
+            </div>
+            {{ form_start(createThreadForm) }}
+            <div class="create-thread-label">
+                {{ 'createThread.threadTitle'|trans }} <span id="title-bubble" class="create-thread-bubble"><i class="fa fa-remove"></i></span>
+            </div>
+            <div class="create-thread-instructions">
+                {{ 'createThread.titleInstructions'|trans }}
+            </div>
+            {{ form_widget(createThreadForm.title) }}
+            <div class="create-thread-label">
+                {{ 'createThread.threadContent'|trans }}
+            </div>
+            <div class="create-thread-instructions">
+                {{ 'createThread.contentInstructions'|trans }}
+            </div>
+            {{ form_widget(createThreadForm.content)}}
+            <div class="create-thread-label">
+                {{ 'createThread.threadTags'|trans }}
+            </div>
+            <div class="create-thread-instructions">
+                {{ 'createThread.tagsInstructions'|trans }}
+            </div>
+                {{ form_widget(createThreadForm.tags) }}
+            <div class="create-thread-bottom-bar">
+                {{ form_row(createThreadForm.submit) }}
+                {{ form_row(createThreadForm.images) }}
+            </div>
+            {{ form_end(createThreadForm) }}
         </div>
     </div>
+
+    <script>
+        const contentId = "create_thread_form_content";
+        addTextArea();
+        const inputElement = document.getElementById("{{ createThreadForm.images.vars.id }}");
+        inputElement.addEventListener("change", addImages, false);
+        let imagesArray = []
+
+        document.getElementById(contentId).addEventListener('click', function (e) {
+            if (e.target.className !== 'create-thread-content-text') {
+                const children = document.getElementById(contentId).children;
+                const textarea = children.item(children.length - 1).children.item(0).children.item(0);
+                textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+                textarea.focus();
+            }
+        }, false);
+
+        function addImages() {
+            const files = inputElement.files;
+            for (let i = 0; i < files.length; i++) {
+                let file = files.item(i)
+                imagesArray.push(file)
+                displayImage();
+            }
+            addTextArea();
+        }
+
+        function displayImage() {
+            const img = document.createElement("img");
+            img.setAttribute("src", URL.createObjectURL(imagesArray[imagesArray.length - 1]));
+            img.id = 'image' + imagesArray.length;
+            img.className = 'create-thread-content-image';
+            const content = document.getElementById(contentId);
+            content.appendChild(img);
+        }
+
+        function addTextArea() {
+            const content = document.getElementById(contentId);
+            const textArea = document.createElement("div");
+            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            content.appendChild(textArea);
+            content.dataset.index++;
+        }
+
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = (this.scrollHeight) + "px";
+        }
+    </script>
 {% endblock %}

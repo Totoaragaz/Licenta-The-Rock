@@ -41,7 +41,7 @@ register.passwordInstructions: At least 8 characters, one uppercase character, o
 
 #Confirmation Email
 confirm.welcome: Welcome on the Rock!
-confirm.helloUser:   Hello %username%!
+confirm.helloUser: Hello %username%!
 confirm.verifyEmail: In order to be able to use your account, please click the following link to verify your email.
 confirm.verifyEmailLink: Verify my email
 
@@ -109,3 +109,16 @@ forum.message: Message
 forum.viewProfile: View Profile
 forum.noUsersFound: "No users were found for '%query%'"
 forum.noThreadsFound: "No threads were found for '%query%'"
+
+#Create Thread Page
+createThread.createThreadTitle: Create a Thread
+createThread.threadTitle: Thread Title
+createThread.titleInstructions: The title should shortly summarize the main problem. Try not to add any irrelevant information to it. The title must be between 5 and 100 characters long
+createThread.threadContent: Thread Content
+createThread.contentInstructions: Here is where you should add everything relevant to your situation. Explain the problem in as much detail as possible and mention what you already tried. Try not to deviate from the main subject. You can add pictures using the paperclip in the bottom corner.
+createThread.title.placeholder: Write your title here...
+createThread.content.placeholder: Explain your problem here...
+createThread.createThread: Create Thread
+createThread.threadTags: Thread Tags
+createThread.tagsInstructions: Tags are used to categorize threads. Try adding as many as you can, while still keeping them relevant. Tags are separated by a comma and should not contain special characters or spaces.
+createThread.tags.placeholder: Tag1, Tag2, Tag3, ...

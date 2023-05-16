@@ -12,6 +12,7 @@ class ThreadTransformer
         return (new ThreadDto())
             ->setTitle($thread->getTitle())
             ->setTags($thread->getTagNames())
-            ->setUploadDate($thread->getUploadDate());
+            ->setUploadDate($thread->getUploadDate())
+            ->setAuthor($thread->getAuthor()->getUsername());
     }
 }

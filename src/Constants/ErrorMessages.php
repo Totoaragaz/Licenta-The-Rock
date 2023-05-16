@@ -19,4 +19,5 @@ class ErrorMessages
     public const INSERT_VALID_EMAIL = 'error.insertValidEmail';
     public const ENTER_TITLE = 'error.enterTitle';
     public const TITLE_LENGTH_ERROR = 'error.titleLengthError';
+    public const ENTER_TAGS = 'error.enterTags';
 }

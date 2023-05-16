@@ -31,7 +31,106 @@
     </div>
     <div class="forum-body">
         <div id="threadsResults" class="search-results">
-            threads {{ users|length }}
+            {% if threads|length == 0 %}
+            <div class="forum-nothing-found">
+                {{ 'forum.noThreadsFound'|trans({'%query%': query}) }}
+            </div>
+            {% else %}
+                {% for thread in threads %}
+                    {{ thread.title }}
+                    {{ thread.author }}
+                    {{ thread.uploadDate }}
+                    {% for tag in thread.tags %}
+                        {{ tag }}
+                    {% endfor %}
+                    <br>
+                {% endfor %}
+                <div class="forum-pages-container">
+                    {% if currentPage == 1 %}
+                        <div class="forum-page-number-disabled">
+                            <i class="fa fa-arrow-left"></i>
+                        </div>
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage - 1, select: 'threads'}) }}">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                    {% endif %}
+                    {% if threadsNumberOfPages <= 5 %}
+                        {% for page in 1..threadsNumberOfPages %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'threads'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                    {% elseif currentPage < 4 %}
+                        {% for page in 1..4 %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'threads'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: threadsNumberOfPages, select: 'threads'}) }}">
+                            {{ threadsNumberOfPages }}
+                        </a>
+                    {% elseif threadsNumberOfPages - currentPage < 3 %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: 1, select: 'threads'}) }}">
+                            1
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        {% for page in threadsNumberOfPages - 3..threadsNumberOfPages %}
+                            <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                               href="{{ path('search', {query: query, page: page, select: 'threads'}) }}">
+                                {{ page }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: 1, select: 'threads'}) }}">
+                            1
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage - 1, select: 'threads'}) }}">
+                            {{ currentPage - 1 }}
+                        </a>
+                        <a class="forum-page-number-selected"
+                           href="{{ path('search', {query: query, page: currentPage, select: 'threads'}) }}">
+                            {{ currentPage }}
+                        </a>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage + 1, select: 'threads'}) }}">
+                            {{ currentPage + 1 }}
+                        </a>
+                        <div class="forum-page-dots">
+                            ...
+                        </div>
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: threadsNumberOfPages, select: 'threads'}) }}">
+                            {{ threadsNumberOfPages }}
+                        </a>
+                    {% endif %}
+                    {% if currentPage == threadsNumberOfPages %}
+                        <div class="forum-page-number-disabled">
+                            <i class="fa fa-arrow-right"></i>
+                        </div>
+                    {% else %}
+                        <a class="forum-page-number"
+                           href="{{ path('search', {query: query, page: currentPage + 1, select: 'threads'}) }}">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
         <div id="peopleResults" class="search-results">
             {% if users|length == 0 %}
@@ -87,8 +186,8 @@
                             <i class="fa fa-arrow-left"></i>
                         </a>
                     {% endif %}
-                    {% if numberOfPages <= 5 %}
-                        {% for page in 1..numberOfPages %}
+                    {% if usersNumberOfPages <= 5 %}
+                        {% for page in 1..usersNumberOfPages %}
                             <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
                                href="{{ path('search', {query: query, page: page, select: 'people'}) }}">
                                 {{ page }}
@@ -105,10 +204,10 @@
                             ...
                         </div>
                         <a class="forum-page-number"
-                           href="{{ path('search', {query: query, page: numberOfPages, select: 'people'}) }}">
-                            {{ numberOfPages }}
+                           href="{{ path('search', {query: query, page: usersNumberOfPages, select: 'people'}) }}">
+                            {{ usersNumberOfPages }}
                         </a>
-                    {% elseif numberOfPages - currentPage < 3 %}
+                    {% elseif usersNumberOfPages - currentPage < 3 %}
                         <a class="forum-page-number"
                            href="{{ path('search', {query: query, page: 1, select: 'people'}) }}">
                             1
@@ -116,7 +215,7 @@
                         <div class="forum-page-dots">
                             ...
                         </div>
-                        {% for page in numberOfPages - 3..numberOfPages %}
+                        {% for page in usersNumberOfPages - 3..usersNumberOfPages %}
                             <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
                                href="{{ path('search', {query: query, page: page, select: 'people'}) }}">
                                 {{ page }}
@@ -146,11 +245,11 @@
                             ...
                         </div>
                         <a class="forum-page-number"
-                           href="{{ path('search', {query: query, page: numberOfPages, select: 'people'}) }}">
-                            {{ numberOfPages }}
+                           href="{{ path('search', {query: query, page: usersNumberOfPages, select: 'people'}) }}">
+                            {{ usersNumberOfPages }}
                         </a>
                     {% endif %}
-                    {% if currentPage == numberOfPages %}
+                    {% if currentPage == usersNumberOfPages %}
                         <div class="forum-page-number-disabled">
                             <i class="fa fa-arrow-right"></i>
                         </div>

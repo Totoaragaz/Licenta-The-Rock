@@ -21,13 +21,13 @@ class Thread
     private ?string $title = null;
 
     #[ORM\Column]
-    private array $content = [];
+    private ?array $content = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $uploadDate = null;
 
     #[ORM\Column]
-    private ?bool $closed = null;
+    private ?bool $closed = false;
 
     #[ORM\ManyToOne(inversedBy: 'threads')]
     #[ORM\JoinColumn(nullable: false)]

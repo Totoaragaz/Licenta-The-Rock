@@ -9,6 +9,7 @@ use DateTime;
 class ThreadDto
 {
     private ?string $title;
+    private ?string $author;
     private ?array $tags;
     private ?string $uploadDate;
 
@@ -42,6 +43,17 @@ class ThreadDto
     public function setUploadDate(?DateTime $uploadDate): ThreadDto
     {
         $this->uploadDate = $uploadDate->format('d/m/Y');
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author): ThreadDto
+    {
+        $this->author = $author;
         return $this;
     }
 }

@@ -16,3 +16,6 @@ error.passwordTooShort: Your Password should be at least 8 characters long.
 error.usernameLengthError: Username must be between 4 and 30 characters long.
 error.bioLengthError: Bio must be a maximum of 255 characters long.
 error.insertValidEmail: Please use a valid email address.
+error.enterTitle: Please enter a title.
+error.titleLengthError: Title should be between 5 and 100 characters long.
+error.enterTags: Please enter at least 1 tag.

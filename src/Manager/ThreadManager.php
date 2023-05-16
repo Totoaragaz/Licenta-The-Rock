@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
+use App\Entity\Thread;
 use App\Service\Implementations\ThreadService;
 
 class ThreadManager
@@ -22,4 +25,13 @@ class ThreadManager
         return $this->threadService->getAllThreadsNumberOfPages($username);
     }
 
+    public function createThread(Thread $thread): bool
+    {
+        return $this->threadService->createThread($thread);
+    }
+
+    public function setThreadContent(array $text, array $images): array
+    {
+        return $this->threadService->setThreadContent($text,$images);
+    }
 }

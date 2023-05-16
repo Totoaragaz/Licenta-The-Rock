@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,9 +17,31 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TagRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    protected EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager, ManagerRegistry $registry)
     {
         parent::__construct($registry, Tag::class);
+        $this->entityManager = $entityManager;
+    }
+
+    public function createTag(Tag $tag): bool
+    {
+        $this->getEntityManager()->persist($tag);
+        $this->getEntityManager()->flush();
+
+        return true;
+    }
+
+    public function updateTag(Tag $tag): bool
+    {
+        try {
+            $this->getEntityManager()->persist($tag);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     public function save(Tag $entity, bool $flush = false): void
@@ -37,6 +60,15 @@ class TagRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findTag(string $name): ?Tag
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

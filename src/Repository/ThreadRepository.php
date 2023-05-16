@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Thread;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,7 +22,15 @@ class ThreadRepository extends ServiceEntityRepository
     public function __construct(EntityManagerInterface $entityManager, ManagerRegistry $registry)
     {
         parent::__construct($registry, Thread::class);
-        $this->$entityManager = $entityManager;
+        $this->entityManager = $entityManager;
+    }
+
+    public function createThread(Thread $thread): bool
+    {
+        $this->getEntityManager()->persist($thread);
+        $this->getEntityManager()->flush();
+
+        return true;
     }
 
     public function getAllThreads(string $user): array
