@@ -1,7 +1,65 @@
 {% extends 'page.html.twig' %}
 
-{% block title %} {% endblock %}
+{% block title %}{{ thread.title }}{% endblock %}
 
 {% block content %}
+    <div class="view-thread-bottom-white-space">
+        <div class="view-thread-container">
+            <div class="view-thread-title">
+                {{ thread.title }}
+                {% if thread.closed %}
+                    <span class="view-thread-closed">
+                        <i title="{{ 'viewThread.threadClosed'|trans }}" class="fa fa-check"></i>
+                    </span>
+                {% endif %}
+            </div>
+            <div class="view-thread-author">
+                {{ 'viewThread.author'|trans }}: <a href="{{ path('profile', {username: thread.author}) }}" class="view-thread-author">{{ thread.author }}</a>
+            </div>
+            <div class="view-thread-uploaded-on">
+                {{ 'viewThread.uploadedOn'|trans }} {{ thread.uploadDate }}
+            </div>
+            <div class="view-thread-content">
+                {% for contentBit in thread.content %}
+                    <div class="view-thread-content-bit">
+                        {% if file_exists('img/' ~ contentBit) %}
+                            <img src="{{ asset('img/' ~ contentBit) }}" alt="{{ contentBit }}">
+                        {% else %}
+                        {{ contentBit }}
+                            {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="view-thread-comments">
+            leave a comment comes here
+            <div class="view-thread-comment">
+                <div class="view-thread-comment-profile-picture">
+                    <img src="{{ asset('img/DefaultUser.png') }}">
+                </div>
+                <div class="view-thread-comment-info">
+                    <div class="view-thread-comment-username">
+                        Username
+                    </div>
+                    <div class="view-thread-comment-content">
+                        Ceva chestie retardata zisa de un retardat
+                    </div>
+                </div>
+            </div>
 
+            <div class="view-thread-comment">
+                <div class="view-thread-comment-profile-picture">
+                    <img src="{{ asset('img/DefaultUser.png') }}">
+                </div>
+                <div class="view-thread-comment-info">
+                    <div class="view-thread-comment-username">
+                        Username
+                    </div>
+                    <div class="view-thread-comment-content">
+                        Ceva chestie retardata zisa de un retardat
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

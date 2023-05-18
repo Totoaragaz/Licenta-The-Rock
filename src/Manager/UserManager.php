@@ -101,14 +101,4 @@ class UserManager
     {
         return $this->userService->getSearchedUsers($user, $query, $page);
     }
-
-    public function getAllOtherUsersNumberOfPages(string $username): int
-    {
-        return $this->userService->getAllOtherUsersNumberOfPages($username);
-    }
-
-    public function getSearchedUsersNumberOfPages(string $username, string $query): int
-    {
-        return $this->userService->getSearchedUsersNumberOfPages($username, $query);
-    }
 }

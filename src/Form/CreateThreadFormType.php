@@ -71,7 +71,10 @@ class CreateThreadFormType extends AbstractType
                 'required' => false,
                 'entry_type' => TextareaType::class,
                 'entry_options' => [
-                    'attr' => ['class' => 'create-thread-content-text'],
+                    'attr' => [
+                        'class' => 'create-thread-content-text',
+                        'onchange' => 'validateForm()'
+                        ],
                     'required' => false,
                     'label' => false,
                 ],

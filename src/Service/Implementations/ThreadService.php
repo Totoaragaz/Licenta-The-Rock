@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Implementations;
 
+use App\Dto\ViewThreadDto;
 use App\Entity\Thread;
 use App\Repository\ThreadRepository;
 use App\Transformer\ThreadTransformer;
@@ -24,7 +25,7 @@ class ThreadService
         if ($threads) {
             $threadDTOs = [];
             foreach ($threads as $thread) {
-                $threadDTOs[] = $this->transformer->transformThreadIntoDto($thread);
+                $threadDTOs[] = $this->transformer->transformThreadIntoSearchDto($thread);
             }
 
             return $threadDTOs;
@@ -33,42 +34,47 @@ class ThreadService
         return [];
     }
 
-    public function getAllThreadsNumberOfPages(string $username): int
-    {
-        $threads = $this->threadRepository->getAllThreads($username);
-        return intdiv(sizeof($threads), 10) - (sizeof($threads) % 10 === 0) + 1;
-    }
-
     public function createThread(Thread $thread): bool
     {
         $thread->setUploadDate(date_create());
         return $this->threadRepository->createThread($thread);
     }
 
-    public function setThreadContent(array $text, array $files): array
+    public function setThreadContent(array $text, array $images): array
     {
         $content = [];
-        $images = $this->handleImages($files);
+        $imageNumber = 0;
         for ($i = 0; $i < sizeof($text); $i++) {
             if ($text[$i] != null) {
                 $content[] = $text[$i];
             }
-            if ($i < sizeof($images)) {
-                $content[] = $images[$i];
+            if ($imageNumber < sizeof($images)) {
+                $content[] = $images[$imageNumber];
+                $imageNumber++;
             }
         }
 
         return $content;
     }
 
-    private function handleImages(array $files): array
+    public function getSearchedThreads(string $username, string $searchQuery, array $words, int $page): array
     {
-        $images = [];
-        foreach ($files as $file) {
-            $path = $this->uploadPictureServiceImpl->uploadPicture($file);
-            $images[] = 'img:' . $path;
+        $threads = $this->threadRepository->getSearchedThreadsWithPage($username, $searchQuery, $words, $page);
+
+        if ($threads) {
+            $threadDTOs = [];
+            foreach ($threads as $thread) {
+                $threadDTOs[] = $this->transformer->transformThreadIntoSearchDto($thread);
+            }
+
+            return $threadDTOs;
         }
 
-        return $images;
+        return [];
+    }
+
+    public function getThreadById(string $threadId): ViewThreadDto
+    {
+        return $this->transformer->transformThreadIntoViewDto($this->threadRepository->getThreadById($threadId));
     }
 }

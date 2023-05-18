@@ -6,8 +6,9 @@ namespace App\Dto;
 
 use DateTime;
 
-class ThreadDto
+class SearchThreadDto
 {
+    private ?int $id;
     private ?string $title;
     private ?string $author;
     private ?array $tags;
@@ -18,7 +19,7 @@ class ThreadDto
         return $this->title;
     }
 
-    public function setTitle(?string $title): ThreadDto
+    public function setTitle(?string $title): SearchThreadDto
     {
         $this->title = $title;
         return $this;
@@ -29,7 +30,7 @@ class ThreadDto
         return $this->tags;
     }
 
-    public function setTags(?array $tags): ThreadDto
+    public function setTags(?array $tags): SearchThreadDto
     {
         $this->tags = $tags;
         return $this;
@@ -40,7 +41,7 @@ class ThreadDto
         return $this->uploadDate;
     }
 
-    public function setUploadDate(?DateTime $uploadDate): ThreadDto
+    public function setUploadDate(?DateTime $uploadDate): SearchThreadDto
     {
         $this->uploadDate = $uploadDate->format('d/m/Y');
         return $this;
@@ -51,9 +52,20 @@ class ThreadDto
         return $this->author;
     }
 
-    public function setAuthor(?string $author): ThreadDto
+    public function setAuthor(?string $author): SearchThreadDto
     {
         $this->author = $author;
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): SearchThreadDto
+    {
+        $this->id = $id;
         return $this;
     }
 }

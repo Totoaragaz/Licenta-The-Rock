@@ -19,15 +19,6 @@ class FriendsController extends AbstractController
     {
     }
 
-    #[Route(path: '/friends', name: 'friends')]
-    public function renderHomeScreen(Request $request): Response
-    {
-        $darkMode = $request->query->get('darkMode');
-        return new Response($this->twig->render('friends.html.twig',
-            ['darkMode' => $darkMode]
-        ));
-    }
-
     #[Route(path: '/removeFriend/{username}', name: 'removeFriend')]
     public function removeFriend(string $username): void
     {

@@ -227,7 +227,7 @@
 
         let url = '{{ path("removeFriend", {username: 'username'}) }}';
         url = url.replace("username", username);
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST', keepalive: true});
         document.getElementById('friendsMenu').removeChild(document.getElementById('friend-' + username));
         const friendNumber = document.getElementById('friendNumber');
         const newNumber = (parseInt(friendNumber.innerText) - 1).toString();
@@ -242,7 +242,7 @@
     function acceptFriendRequest(username, img) {
         let url = '{{ path("acceptFriendRequest", {username: 'username'}) }}';
         url = url.replace("username", username);
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST', keepalive: true});
         removeIncomingRequest(username);
         addFriend(username, img);
         const friendNumber = document.getElementById('friendNumber');
@@ -253,7 +253,7 @@
     function declineFriendRequest(username) {
         let url = '{{ path("declineFriendRequest", {username: 'username'}) }}';
         url = url.replace("username", username);
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST', keepalive: true});
         removeIncomingRequest(username);
         showNoFriends()
     }
@@ -261,7 +261,7 @@
     function revokeFriendRequest(username) {
         let url = '{{ path("revokeFriendRequest", {username: 'username'}) }}';
         url = url.replace("username", username);
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST', keepalive: true});
         removeOutgoingRequest(username);
         showNoFriends()
     }

@@ -4,7 +4,7 @@
     {% if app.session.get('darkMode') %}
         <link id="pageStyle"  href="{{asset('css/dark1.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
     {% else %}
-        <link id="pageStyle"  href="{{asset('css/light4.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
+        <link id="pageStyle"  href="{{asset('css/light2.css')}}" media="screen, projection" rel="stylesheet" type="text/css"/>
     {% endif %}
 {% endblock %}
 
@@ -185,32 +185,32 @@
         }
 
         function setMainColumn() {
-            fetch('{{ path('setMainColumn') }}', { method: 'POST'});
+            fetch('{{ path('setMainColumn') }}', { method: 'POST', keepalive: true});
             openMainColumn();
         }
 
         function setChatColumn() {
-            fetch('{{ path('setChatColumn') }}', { method: 'POST'});
+            fetch('{{ path('setChatColumn') }}', { method: 'POST', keepalive: true});
             openChatColumn();
         }
 
         function setFriendColumn() {
-            fetch('{{ path('setFriendColumn') }}', { method: 'POST'});
+            fetch('{{ path('setFriendColumn') }}', { method: 'POST', keepalive: true});
             openFriendColumn();
         }
 
         function setIncomingRequests() {
-            fetch('{{ path('setIncomingRequests') }}', { method: 'POST'});
+            fetch('{{ path('setIncomingRequests') }}', { method: 'POST', keepalive: true});
             openIncomingRequests();
         }
 
         function setOutgoingRequests() {
-            fetch('{{ path('setOutgoingRequests') }}', { method: 'POST'});
+            fetch('{{ path('setOutgoingRequests') }}', { method: 'POST', keepalive: true});
             openOutgoingRequests();
         }
 
         function setFriends() {
-            fetch('{{ path('setFriends') }}', { method: 'POST'});
+            fetch('{{ path('setFriends') }}', { method: 'POST', keepalive: true});
             openFriends();
         }
 

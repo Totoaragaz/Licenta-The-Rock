@@ -59,6 +59,32 @@ class ThreadRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getSearchedThreadsWithPage(string $username, string $query, array $words, int $page): array
+    {
+        $queryBuilder = $this->createQueryBuilder('t');
+        $queryBuilder
+            ->select('t')
+            ->innerJoin('t.author', 'u')
+            ->innerJoin('t.tags', 'tt')
+            ->where('u.username != :author and t.title like :query')
+            ->setParameter('author', $username)
+            ->setParameter('query', '%' . $query .'%');
+
+        for ($i = 0; $i < sizeof($words); $i++) {
+            $queryBuilder
+                ->addSelect('t')
+                ->orWhere('u.username != :author and tt.name = :word' . $i)
+                ->setParameter('word' . $i, $words[$i]);
+        }
+
+        return $queryBuilder
+            ->distinct()
+            ->setFirstResult(($page - 1) * 10)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(Thread $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -75,6 +101,11 @@ class ThreadRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getThreadById(string $threadId): Thread
+    {
+        return $this->findOneBy(['id' => $threadId]);
     }
 
 //    /**

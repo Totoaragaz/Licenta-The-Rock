@@ -160,12 +160,6 @@ class UserServiceImpl
         return [];
     }
 
-    public function getAllOtherUsersNumberOfPages(string $username): int
-    {
-        $users = $this->userRepository->getAllOtherUsers($username);
-        return intdiv(sizeof($users), 10) - (sizeof($users) % 5 === 10) + 1;
-    }
-
     public function getSearchedUsers(User $user, string $query, int $page): array
     {
         $users = $this->userRepository->getSearchedUsersWithPage(strtolower($user->getUsername()), $query, $page);
@@ -181,11 +175,5 @@ class UserServiceImpl
         }
 
         return [];
-    }
-
-    public function getSearchedUsersNumberOfPages(string $username, string $query): int
-    {
-        $users = $this->userRepository->getSearchedUsers(strtolower($username), $query);
-        return intdiv(sizeof($users), 10) - (sizeof($users) % 10 === 0) + 1;
     }
 }

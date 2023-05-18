@@ -33,11 +33,11 @@ class ForumController extends AbstractController
         $currentPage = $request->query->get('page', 1);
         $select = $request->query->get('select', 'threads');
 
-        $usersNumberOfPages = $this->userManager->getAllOtherUsersNumberOfPages($user->getUsername());
-        $threadsNumberOfPages = $this->threadManager->getAllThreadsNumberOfPages($user->getUsername());
-
         $threads = $this->threadManager->getAllThreads($user->getUsername(), $currentPage - 0);
         $users = $this->userManager->getAllOtherUsers($user, $currentPage - 0);
+
+        $usersNumberOfPages = $this->getNumberOfPages($users);
+        $threadsNumberOfPages = $this->getNumberOfPages($threads);
 
         return new Response($this->twig->render('forum.html.twig', [
             'user' => $user,
@@ -61,11 +61,11 @@ class ForumController extends AbstractController
 
         if ($query == ' ') {
 
-            $usersNumberOfPages = $this->userManager->getAllOtherUsersNumberOfPages($user->getUsername());
-            $threadsNumberOfPages = $this->threadManager->getAllThreadsNumberOfPages($user->getUsername());
-
             $threads = $this->threadManager->getAllThreads($user->getUsername(), $currentPage - 0);
             $users = $this->userManager->getAllOtherUsers($user, $currentPage - 0);
+
+            $usersNumberOfPages = $this->getNumberOfPages($users);
+            $threadsNumberOfPages = $this->getNumberOfPages($threads);
 
             return new Response($this->twig->render('forum.html.twig', [
                 'user' => $user,
@@ -79,17 +79,27 @@ class ForumController extends AbstractController
             ]));
         } else {
 
-            $numberOfPages = $this->userManager->getSearchedUsersNumberOfPages($user->getUsername(), strtolower($query));
             $users = $this->userManager->getSearchedUsers($user, $query , $currentPage - 0);
+            $threads = $this->threadManager->getSearchedThreads($user->getUsername(), $query, $currentPage - 0);
+
+            $usersNumberOfPages = $this->getNumberOfPages($users);
+            $threadsNumberOfPages = $this->getNumberOfPages($threads);
 
             return new Response($this->twig->render('forum.html.twig', [
                 'user' => $user,
                 'users' => $users,
+                'threads' => $threads,
+                'threadsNumberOfPages' => $threadsNumberOfPages,
                 'currentPage' => $currentPage,
-                'numberOfPages' => $numberOfPages,
+                'usersNumberOfPages' => $usersNumberOfPages,
                 'select' => $select,
                 'query' => $query,
             ]));
         }
+    }
+
+    private function getNumberOfPages (array $array): int
+    {
+        return intdiv(sizeof($array), 10) - (sizeof($array) % 10 === 0) + 1;
     }
 }

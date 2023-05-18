@@ -72,5 +72,6 @@ class PageController extends AbstractController
     #[Route('/logout', name: 'logout', methods: ['GET'])]
     public function logout(): void
     {
+        session_destroy();
     }
 }

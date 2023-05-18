@@ -37,13 +37,32 @@
             </div>
             {% else %}
                 {% for thread in threads %}
-                    {{ thread.title }}
-                    {{ thread.author }}
-                    {{ thread.uploadDate }}
-                    {% for tag in thread.tags %}
-                        {{ tag }}
-                    {% endfor %}
-                    <br>
+                    <div class="thread-container">
+                        <a class="thread-button" href="{{ path('viewThread', {threadId: thread.id}) }}">
+                            {{ 'forum.viewThread'|trans }}
+                        </a>
+                        <a title="{{ thread.title }}" class="thread-title" href="{{ path('viewThread', {threadId: thread.id}) }}">
+                            {% if thread.title|length < 30 %}
+                                {{ thread.title }}
+                            {% else %}
+                                {{ thread.title|slice(0,30) }}...
+                            {% endif %}
+                        </a>
+                        <div class="thread-author">
+                            {{ 'forum.createdBy'|trans }}
+                            <a href="{{ path('profile', {username: thread.author}) }}">
+                                {{ thread.author }}
+                            </a>
+                        </div>
+                        <div class="thread-upload-date">
+                            {{ 'forum.uploadedOn'|trans }} {{ thread.uploadDate }}
+                        </div>
+                        {% for tag in thread.tags %}
+                            <a class="thread-tag" href="{{ path('search', {query: tag}) }}">
+                                {{ tag }}
+                            </a>
+                        {% endfor %}
+                    </div>
                 {% endfor %}
                 <div class="forum-pages-container">
                     {% if currentPage == 1 %}
