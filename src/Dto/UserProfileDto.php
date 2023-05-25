@@ -20,6 +20,10 @@ class UserProfileDto
 
     private ?string $friendState = 'none';
 
+    private ?array $threads = [];
+
+    private ?int $numberOfPages = 1;
+
     public function getUsername(): string
     {
         return $this->username;
@@ -85,9 +89,31 @@ class UserProfileDto
         return $this->friendState;
     }
 
-    public function setFriendState(?string $friendState): UserProfileDto
+    public function setFriendState(?string $friendState): self
     {
         $this->friendState = $friendState;
+        return $this;
+    }
+
+    public function getThreads(): ?array
+    {
+        return $this->threads;
+    }
+
+    public function setThreads(?array $threads): self
+    {
+        $this->threads = $threads;
+        return $this;
+    }
+
+    public function getNumberOfPages(): ?int
+    {
+        return $this->numberOfPages;
+    }
+
+    public function setNumberOfPages(): self
+    {
+        $this->numberOfPages = intdiv(sizeof($this->threads), 10) - (sizeof($this->threads) % 10 === 0) + 1;
         return $this;
     }
 }

@@ -13,7 +13,6 @@ use Twig\Environment;
 class FriendsController extends AbstractController
 {
     public function __construct(
-        private Environment $twig,
         private UserManager $userManager
     )
     {

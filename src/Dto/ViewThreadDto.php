@@ -15,6 +15,7 @@ class ViewThreadDto
     private ?array $tags;
     private ?string $uploadDate;
     private ?bool $closed;
+    private ?array $comments;
 
     public function getClosed(): ?bool
     {
@@ -90,6 +91,17 @@ class ViewThreadDto
     public function setContent(?array $content): self
     {
         $this->content = $content;
+        return $this;
+    }
+
+    public function getComments(): ?array
+    {
+        return $this->comments;
+    }
+
+    public function setComments(?array $comments): self
+    {
+        $this->comments = $comments;
         return $this;
     }
 }

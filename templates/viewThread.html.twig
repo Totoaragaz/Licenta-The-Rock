@@ -14,7 +14,8 @@
                 {% endif %}
             </div>
             <div class="view-thread-author">
-                {{ 'viewThread.author'|trans }}: <a href="{{ path('profile', {username: thread.author}) }}" class="view-thread-author">{{ thread.author }}</a>
+                {{ 'viewThread.author'|trans }}: <a href="{{ path('profile', {username: thread.author}) }}"
+                                                    class="view-thread-author">{{ thread.author }}</a>
             </div>
             <div class="view-thread-uploaded-on">
                 {{ 'viewThread.uploadedOn'|trans }} {{ thread.uploadDate }}
@@ -25,41 +26,93 @@
                         {% if file_exists('img/' ~ contentBit) %}
                             <img src="{{ asset('img/' ~ contentBit) }}" alt="{{ contentBit }}">
                         {% else %}
-                        {{ contentBit }}
-                            {% endif %}
+                            {{ contentBit }}
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
+            {% if thread.author == user.username %}
+                <div class="view-thread-button-bar">
+                    <a href="{{ path('editThread', {threadId: thread.id}) }}" class="view-thread-submit-button">
+                        {{ 'viewThread.editThread'|trans }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
-        <div class="view-thread-comments">
-            leave a comment comes here
+        <div class="view-thread-comments" id="comments">
             <div class="view-thread-comment">
                 <div class="view-thread-comment-profile-picture">
-                    <img src="{{ asset('img/DefaultUser.png') }}">
+                    <img src="{{ asset('img/' ~ user.image) }}">
                 </div>
                 <div class="view-thread-comment-info">
                     <div class="view-thread-comment-username">
-                        Username
+                        {{ user.username }}
                     </div>
+                    {{ form_start(commentForm, {'action': path('viewThread', {threadId: thread.id})}) }}
                     <div class="view-thread-comment-content">
-                        Ceva chestie retardata zisa de un retardat
+                        {{ form_widget(commentForm.content) }}
                     </div>
+                    <div class="comment-button-bar">
+                        {{ form_row(commentForm.submit) }}
+                    </div>
+                    {{ form_end(commentForm) }}
                 </div>
             </div>
-
-            <div class="view-thread-comment">
-                <div class="view-thread-comment-profile-picture">
-                    <img src="{{ asset('img/DefaultUser.png') }}">
+            {% if thread.comments|length == 0 %}
+                <div class="view-thread-no-comments">
+                    {{ 'viewThread.noComments'|trans }}
                 </div>
-                <div class="view-thread-comment-info">
-                    <div class="view-thread-comment-username">
-                        Username
+            {% else %}
+                {% for comment in thread.comments %}
+                    <div id="comment{{ comment.id }}" class="view-thread-comment">
+                        <div class="view-thread-comment-upload-date">
+                            {{ comment.uploadDate }}
+                        </div>
+                        <a href="{{ path('profile', {username: comment.author}) }}"
+                           class="view-thread-comment-profile-picture">
+                            <img src="{{ asset('img/' ~ comment.authorImage) }}">
+                        </a>
+                        <div class="view-thread-comment-info">
+                            <a href="{{ path('profile', {username: comment.author}) }}"
+                               class="view-thread-comment-username">
+                                {{ comment.author }}
+                            </a>
+                            <div class="view-thread-comment-content">
+                                {{ comment.content }}
+                            </div>
+                        </div>
+                        {% if (not thread.closed) and comment.author == user.username %}
+                            <div class="comment-button-bar">
+                                <div class="view-thread-delete-button" onclick="deleteComment('{{ comment.id }}')">
+                                    {{ 'viewThread.deleteComment'|trans }}
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="view-thread-comment-content">
-                        Ceva chestie retardata zisa de un retardat
-                    </div>
-                </div>
-            </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
+
+    <script>
+
+        function deleteComment(commentId) {
+            const comment = document.getElementById("comment" + commentId);
+            document.getElementById("comments").removeChild(comment);
+            let url = '{{ path("deleteComment", {commentId: 'commentId'}) }}';
+            url = url.replace("commentId", commentId);
+            fetch(url, {method: 'POST', keepalive: true});
+        }
+
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", setTextareaHeight, false);
+        }
+
+        function setTextareaHeight() {
+            this.style.height = 80 + "px";
+            this.style.height = (this.scrollHeight) + "px";
+        }
+    </script>
 {% endblock %}

@@ -33,6 +33,12 @@ class ThreadRepository extends ServiceEntityRepository
         return true;
     }
 
+    public function deleteThread(string $threadId): void
+    {
+        $this->entityManager->remove($this->findOneBy(['id' => $threadId]));
+        $this->entityManager->flush();
+    }
+
     public function getAllThreads(string $user): array
     {
         return $this->createQueryBuilder('t')

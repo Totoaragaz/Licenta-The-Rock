@@ -7,27 +7,22 @@ namespace App\Service\Implementations;
 use App\Dto\UserProfileDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Transformer\ThreadTransformer;
 use App\Transformer\UserTransformer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserServiceImpl
 {
-    protected UserRepository $userRepository;
-    protected EntityManagerInterface $entityManager;
-    protected UserPasswordHasherInterface $passwordHasher;
-    protected UserTransformer $transformer;
 
     public function __construct(
-        UserRepository $userRepository,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        UserTransformer $transformer
-    ) {
-        $this->userRepository = $userRepository;
-        $this->entityManager = $entityManager;
-        $this->passwordHasher = $passwordHasher;
-        $this->transformer = $transformer;
+        protected UserRepository $userRepository,
+        protected EntityManagerInterface $entityManager,
+        protected UserPasswordHasherInterface $passwordHasher,
+        protected UserTransformer $transformer,
+        protected ThreadTransformer $threadTransformer,
+    )
+    {
     }
 
     public function addUserToDB(User $user): bool
@@ -69,6 +64,17 @@ class UserServiceImpl
         return $this->userRepository->getChatColumn($userId);
     }
 
+    public function transformUserIntoProfileDto(User $user): UserProfileDto
+    {
+        $threads = $user->getThreads();
+        $threadDTOs = [];
+        foreach ($threads as $thread) {
+            $threadDTOs[] = $this->threadTransformer->transformThreadIntoSearchDto($thread);
+        }
+
+        return $this->transformer->transformUserIntoUserProfileDto($user, $threadDTOs);
+    }
+
     public function getUserByUsername(string $username): ?UserProfileDto
     {
         $user = $this->userRepository->getUserByUsername($username);
@@ -76,7 +82,7 @@ class UserServiceImpl
             return null;
         }
 
-        return $this->transformer->transformUserIntoUserProfileDto($user);
+        return $this->transformUserIntoProfileDto($user);
     }
 
     public function updateUser(User $user): bool

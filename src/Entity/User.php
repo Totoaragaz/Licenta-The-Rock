@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $image = 'DefaultUser.png';
 
     #[ORM\Column(type: 'date')]
-    private \DateTime $registrationDate;
+    private ?DateTime $registrationDate = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $darkMode = false;
@@ -78,11 +79,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: 'User', inversedBy: 'incomingFriendRequests')]
     private Collection $outgoingFriendRequests;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Comment::class)]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->threads = new ArrayCollection();
         $this->incomingFriendRequests = new ArrayCollection();
         $this->outgoingFriendRequests = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -179,11 +184,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRegistrationDate(): \DateTime
+    public function getRegistrationDate(): DateTime
     {
         return $this->registrationDate;
     }
-    public function setRegistrationDate(\DateTime $registrationDate): User
+    public function setRegistrationDate(DateTime $registrationDate): User
     {
         $this->registrationDate = $registrationDate;
         return $this;
@@ -361,5 +366,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $friendRequests;
     }
 
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
 
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
 }

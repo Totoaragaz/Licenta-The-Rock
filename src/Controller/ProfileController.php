@@ -25,18 +25,21 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/profile/{username}', name: 'profile')]
-    public function renderProfileScreen(string $username): Response
+    public function renderProfileScreen(Request $request, string $username): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+        $currentPage = $request->query->get('page', 1);
 
         if ($user->getUsername() == $username) {
             $registrationDate = ' ' . $user->getRegistrationDate()->format('d/m/Y');
+            $viewedUser = $this->userManager->transformUserIntoProfileDTO($user);
             return new Response($this->twig->render('profile.html.twig', [
                 'user' => $user,
-                'viewedUser' => $user,
+                'viewedUser' => $viewedUser,
                 'registrationDate' => $registrationDate,
                 'ownProfile' => true,
+                'currentPage' => $currentPage,
                 'friendState' => ''
             ]));
         } else {
@@ -45,13 +48,13 @@ class ProfileController extends AbstractController
                 throw $this->createNotFoundException('User ' . $username . ' does not exist');
             }
 
-
             $registrationDate = ' ' . $viewedUser->getRegistrationDate();
             return new Response($this->twig->render('profile.html.twig', [
                 'user' => $user,
                 'viewedUser' => $viewedUser,
                 'registrationDate' => $registrationDate,
                 'ownProfile' => false,
+                'currentPage' => $currentPage,
                 'friendState' => $this->userManager->getFriendState($user, $username)
             ]));
         }
@@ -62,7 +65,7 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $registrationDate = ' ' . $user->getRegistrationDate()->format('d/m/Y');
+        $currentPage = $request->query->get('page', 1);
 
         $form = $this->createForm(EditProfileFormType::class, $user);
         $form->handleRequest($request);
@@ -85,10 +88,16 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('profile', ['username' => $user->getUsername()]);
             }
         }
+
+        $registrationDate = ' ' . $user->getRegistrationDate()->format('d/m/Y');
+        $userDTO = $this->userManager->transformUserIntoProfileDTO($user);
+
         return new Response($this->twig->render('editProfile.html.twig', [
-                'user' => $user,
-                'registrationDate' => $registrationDate,
-                'editProfileForm' => $form->createView()
-            ]));
+            'user' => $user,
+            'viewedUser' => $userDTO,
+            'registrationDate' => $registrationDate,
+            'editProfileForm' => $form->createView(),
+            'currentPage' => $currentPage
+        ]));
     }
 }

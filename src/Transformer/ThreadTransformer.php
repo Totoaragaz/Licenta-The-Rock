@@ -18,7 +18,7 @@ class ThreadTransformer
             ->setAuthor($thread->getAuthor()->getUsername());
     }
 
-    public function transformThreadIntoViewDto(Thread $thread): ViewThreadDto
+    public function transformThreadIntoViewDto(Thread $thread, array $comments): ViewThreadDto
     {
         return (new ViewThreadDto())
             ->setId($thread->getId())
@@ -27,6 +27,7 @@ class ThreadTransformer
             ->setTags($thread->getTagNames())
             ->setUploadDate($thread->getUploadDate())
             ->setAuthor($thread->getAuthor()->getUsername())
-            ->setClosed($thread->isClosed());
+            ->setClosed($thread->isClosed())
+            ->setComments($comments);
     }
 }

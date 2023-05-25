@@ -1,0 +1,186 @@
+{% extends 'page.html.twig' %}
+
+{% block title %}{{ thread.title }}{% endblock %}
+
+{% block content %}
+    <div class="view-thread-bottom-white-space">
+        <div class="view-thread-container">
+            <div class="view-thread-title">
+                {{ thread.title }}
+            </div>
+            <div class="view-thread-author">
+                {{ 'viewThread.author'|trans }}: <a class="view-thread-author">{{ user.username }}</a>
+            </div>
+            <div class="view-thread-uploaded-on">
+                {{ 'viewThread.uploadedOn'|trans }} {{ uploadDate }}
+            </div>
+            {{ form_start(editThreadForm) }}
+            {{ form_widget(editThreadForm.content) }}
+            <div class="view-thread-button-bar">
+                {{ form_widget(editThreadForm.closed) }}
+                {{ form_label(editThreadForm.closed) }}
+                {{ form_row(editThreadForm.submit) }}
+                <a href="{{ path('viewThread', {threadId: thread.id}) }}" class="view-thread-submit-button">
+                    {{ 'editThread.cancel'|trans }}
+                </a>
+                <div class="view-thread-delete-button" onclick="deleteThread({{ thread.id }})">
+                    {{ 'editThread.deleteThread'|trans }}
+                </div>
+                {{ form_row(editThreadForm.images) }}
+            </div>
+            {{ form_end(editThreadForm) }}
+        </div>
+    </div>
+
+    <script>
+        const content = document.getElementById("edit_thread_form_content");
+
+        const inputElement = document.getElementById("{{ editThreadForm.images.vars.id }}");
+        inputElement.addEventListener("change", addImages, false);
+        let imagesArray = []
+        let div;
+
+        function generateThread(){
+            {% for contentBit in thread.content %}
+                {% if file_exists('img/' ~ contentBit) %}
+                    generateImage(content, "{{ asset('img/' ~ contentBit) }}");
+                    generateTextArea(content, "");
+                {% else %}
+                    generateTextArea(content, "{{ contentBit }}");
+                {% endif %}
+            {% endfor %}
+        }
+
+        generateThread();
+
+        function deleteThread(threadId) {
+            let url = "{{ path('deleteThread', {threadId: 'threadId'}) }}"
+            url = url.replace('threadId', threadId);
+            fetch(url, {method: 'POST', keepalive: true})
+            window.location.href = "{{ path('forum') }}";
+        }
+
+        content.addEventListener('click', function (e) {
+            if (e.target.className !== 'create-thread-content-text') {
+                const children = content.children;
+                const textarea = children.item(children.length - 1).children.item(0).children.item(0);
+                textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+                textarea.focus();
+            }
+        }, false);
+
+        window.addEventListener('unload', function () {
+            fetch('{{ path('removeAllImages') }}', {method: 'POST', keepalive: true})
+        });
+
+        function addImages() {
+            const files = inputElement.files;
+            for (let i = 0; i < files.length; i++) {
+                let file = files.item(i);
+                for (let j = 0; j < 5; j++) {
+                    if (typeof imagesArray[j] == 'undefined') {
+                        imagesArray[j] = file;
+                        displayImage(j);
+                        uploadImage(j);
+                        addTextArea();
+                        break;
+                    }
+                }
+            }
+        }
+
+        function uploadImage(number) {
+            const data = new FormData;
+            data.append('image' + number, imagesArray[number]);
+            data.append('number', number);
+            fetch('{{ path('uploadImage') }}', {method: 'POST', keepalive: true, body: data});
+        }
+
+        function generateTextArea(parent, value) {
+            const textArea = document.createElement("div");
+            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            const actualTextArea = textArea.children.item(0).children.item(0)
+            actualTextArea.value = value;
+            actualTextArea.style.height = 0;
+            actualTextArea.style.height = actualTextArea.scrollHeight + "px";
+            parent.appendChild(textArea);
+            content.dataset.index++;
+        }
+
+        function generateImage(parent, value) {
+            const div = document.createElement('div');
+            div.className = 'create-thread-content-image-container';
+
+            const img = document.createElement("img");
+            img.src = value;
+            img.className = 'create-thread-content-image';
+
+            const button = document.createElement('div');
+            button.innerText = '{{ 'createThread.deleteImage'|trans }}';
+            button.className = 'create-thread-content-image-delete'
+
+            for (let i = 0; i < 5; i++) {
+                if (typeof imagesArray[i] == 'undefined') {
+                    div.id = 'image' + i;
+                    imagesArray[i] = img.src;
+                    button.onclick = function () {
+                        deleteImage(i);
+                    }
+                    break;
+                }
+            }
+
+            div.appendChild(img);
+            div.appendChild(button);
+            parent.appendChild(div);
+        }
+
+        function displayImage(number) {
+            const div = document.createElement('div');
+            div.className = 'create-thread-content-image-container';
+
+            const img = document.createElement("img");
+            img.setAttribute("src", URL.createObjectURL(imagesArray[number]));
+            div.id = 'image' + number;
+            img.className = 'create-thread-content-image';
+            div.appendChild(img);
+
+            const button = document.createElement('div');
+            button.innerText = '{{ 'createThread.deleteImage'|trans }}';
+            button.className = 'create-thread-content-image-delete'
+            button.onclick = function () {
+                deleteImage(number);
+            }
+            div.appendChild(button);
+            content.appendChild(div);
+        }
+
+        function addTextArea() {
+            const textArea = document.createElement("div");
+            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            content.appendChild(textArea);
+            content.dataset.index++;
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const tx = document.getElementsByTagName("textarea");
+            for (let i = 0; i < tx.length; i++) {
+                tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+                tx[i].addEventListener("input", OnInput, false);
+            }
+        })
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = (this.scrollHeight) + "px";
+        }
+
+        function deleteImage(number) {
+            content.removeChild(document.getElementById('image' + number));
+            imagesArray[number] = undefined;
+            const data = new FormData;
+            data.append('number', number);
+            fetch('{{ path('removeImage') }}', {method: 'POST', keepalive: true, body: data});
+        }
+    </script>
+{% endblock %}

@@ -7,6 +7,7 @@ namespace App\Service\Implementations;
 use App\Dto\ViewThreadDto;
 use App\Entity\Thread;
 use App\Repository\ThreadRepository;
+use App\Transformer\CommentTransformer;
 use App\Transformer\ThreadTransformer;
 
 class ThreadService
@@ -14,7 +15,7 @@ class ThreadService
     public function __construct(
         private ThreadRepository $threadRepository,
         private ThreadTransformer $transformer,
-        private UploadPictureServiceImpl $uploadPictureServiceImpl
+        private CommentTransformer $commentTransformer
     )
     {
     }
@@ -73,8 +74,25 @@ class ThreadService
         return [];
     }
 
-    public function getThreadById(string $threadId): ViewThreadDto
+    public function getThreadDtoById(string $threadId): ViewThreadDto
     {
-        return $this->transformer->transformThreadIntoViewDto($this->threadRepository->getThreadById($threadId));
+        $thread = $this->threadRepository->getThreadById($threadId);
+        $comments = $thread->getComments();
+        $commentDTOs = [];
+        foreach ($comments as $comment) {
+            $commentDTOs[] = $this->commentTransformer->transformCommentIntoDto($comment);
+        }
+
+        return $this->transformer->transformThreadIntoViewDto($thread, $commentDTOs);
+    }
+
+    public function getThreadObjectById(string $threadId): Thread
+    {
+        return $this->threadRepository->getThreadById($threadId);
+    }
+
+    public function deleteThread(string $threadId): void
+    {
+        $this->threadRepository->deleteThread($threadId);
     }
 }

@@ -101,4 +101,9 @@ class UserManager
     {
         return $this->userService->getSearchedUsers($user, $query, $page);
     }
+
+    public function transformUserIntoProfileDto(User $user): UserProfileDto
+    {
+        return $this->userService->transformUserIntoProfileDto($user);
+    }
 }

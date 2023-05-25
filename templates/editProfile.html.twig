@@ -9,7 +9,7 @@
         <div class="profile-picture-container">
             {{ form_start(editProfileForm) }}
             <div class="profile-picture">
-                <img id="profilePicture" src="{{asset('img/' ~ user.image)}}" width=100% height=100%>
+                <img id="profilePicture" src="{{asset('img/' ~ viewedUser.image)}}" width=100% height=100%>
                 {{ form_label(editProfileForm.image) }}
                     {{ form_widget(editProfileForm.image) }}
             </div>
@@ -17,9 +17,9 @@
         <div class="profile-info-container">
             <div class="profile-info">
                 <div class="profile-username">
-                    {{ user.username }}
+                    {{ viewedUser.username }}
                 </div>
-                {% if user.role == 'ROLE_ADMIN' %}
+                {% if viewedUser.role == 'ROLE_ADMIN' %}
                     <div class="profile-admin">
                         <i class="fa fa-shield"></i> {{ 'profile.admin'|trans }}
                     </div>
@@ -37,7 +37,7 @@
                     </label>
                     <input type="checkbox" id="delete-image-checkbox" name="delete-image-checkbox">
                     {{ form_widget(editProfileForm.save) }}
-                    <a href="{{ path('profile', {username: user.username}) }}" class="profile-button">
+                    <a href="{{ path('profile', {username: viewedUser.username}) }}" class="profile-button">
                         {{ 'profile.cancel'|trans }}
                     </a>
                 </div>
@@ -49,10 +49,120 @@
         <div class="profile-threads-title">
             {{ 'profile.yourThreads'|trans }}
         </div>
-
-        <div class="profile-no-threads">
-            {{ 'profile.youHaveNoThreadsYet'|trans }}
-        </div>
+        {% if viewedUser.threads|length == 0 %}
+            <div class="profile-no-threads">
+                {{ 'profile.youHaveNoThreadsYet'|trans }}
+            </div>
+        {% else %}
+            {% for thread in viewedUser.threads %}
+                <div class="thread-container">
+                    <a class="thread-button" href="{{ path('viewThread', {threadId: thread.id}) }}">
+                        {{ 'forum.viewThread'|trans }}
+                    </a>
+                    <a title="{{ thread.title }}" class="thread-title"
+                       href="{{ path('viewThread', {threadId: thread.id}) }}">
+                        {% if thread.title|length < 30 %}
+                            {{ thread.title }}
+                        {% else %}
+                            {{ thread.title|slice(0,30) }}...
+                        {% endif %}
+                    </a>
+                    <div class="thread-upload-date">
+                        {{ 'forum.uploadedOn'|trans }} {{ thread.uploadDate }}
+                    </div>
+                    {% for tag in thread.tags %}
+                        <a class="thread-tag" href="{{ path('search', {query: tag}) }}">
+                            {{ tag }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="forum-pages-container">
+                {% if currentPage == 1 %}
+                    <div class="forum-page-number-disabled">
+                        <i class="fa fa-arrow-left"></i>
+                    </div>
+                {% else %}
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: currentPage - 1}) }}">
+                        <i class="fa fa-arrow-left"></i>
+                    </a>
+                {% endif %}
+                {% if viewedUser.numberOfPages <= 5 %}
+                    {% for page in 1..viewedUser.numberOfPages %}
+                        <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                           href="{{ path('profile', {username: viewedUser.username, page: page}) }}">
+                            {{ page }}
+                        </a>
+                    {% endfor %}
+                {% elseif currentPage < 4 %}
+                    {% for page in 1..4 %}
+                        <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                           href="{{ path('profile', {username: viewedUser.username, page: page}) }}">
+                            {{ page }}
+                        </a>
+                    {% endfor %}
+                    <div class="forum-page-dots">
+                        ...
+                    </div>
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: viewedUser.numberOfPages}) }}">
+                        {{ viewedUser.numberOfPages }}
+                    </a>
+                {% elseif viewedUser.numberOfPages - currentPage < 3 %}
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: 1}) }}">
+                        1
+                    </a>
+                    <div class="forum-page-dots">
+                        ...
+                    </div>
+                    {% for page in viewedUser.numberOfPages - 3..viewedUser.numberOfPages %}
+                        <a class="forum-page-number{% if page == currentPage %}-selected{% endif %}"
+                           href="{{ path('profile', {username: viewedUser.username, page: page }) }}">
+                            {{ page }}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: 1}) }}">
+                        1
+                    </a>
+                    <div class="forum-page-dots">
+                        ...
+                    </div>
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: currentPage - 1}) }}">
+                        {{ currentPage - 1 }}
+                    </a>
+                    <a class="forum-page-number-selected"
+                       href="{{ path('profile', {username: viewedUser.username, page: currentPage}) }}">
+                        {{ currentPage }}
+                    </a>
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: currentPage + 1}) }}">
+                        {{ currentPage + 1 }}
+                    </a>
+                    <div class="forum-page-dots">
+                        ...
+                    </div>
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: viewedUser.numberOfPages}) }}">
+                        {{ viewedUser.numberOfPages }}
+                    </a>
+                {% endif %}
+                {% if currentPage == viewedUser.numberOfPages %}
+                    <div class="forum-page-number-disabled">
+                        <i class="fa fa-arrow-right"></i>
+                    </div>
+                {% else %}
+                    <a class="forum-page-number"
+                       href="{{ path('profile', {username: viewedUser.username, page: currentPage + 1 }) }}">
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 
     <script>

@@ -8,14 +8,16 @@ use App\Entity\User;
 
 class UserTransformer
 {
-    public function transformUserIntoUserProfileDto(User $user): UserProfileDto
+    public function transformUserIntoUserProfileDto(User $user, $threads): UserProfileDto
     {
         return (new UserProfileDto())
             ->setUsername($user->getUsername())
             ->setImage($user->getImage())
             ->setBio($user->getBio())
             ->setRole($user->getRole())
-            ->setRegistrationDate($user->getRegistrationDate());
+            ->setRegistrationDate($user->getRegistrationDate())
+            ->setThreads($threads)
+            ->setNumberOfPages();
     }
 
     public function transformUserIntoUserSearchDto(User $user): UserSearchDto

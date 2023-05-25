@@ -84,6 +84,7 @@ profile.changeProfilePicture: Change Profile Picture
 profile.acceptFriendRequest: Accept Friend Request
 profile.revokeFriendRequest: Revoke Friend Request
 profile.declineFriendRequest: Decline Friend Request
+profile.youAndUserAreFriends: "You and %user% are friends."
 
 #Settings Page
 settings.settings: Settings
@@ -131,3 +132,14 @@ createThread.deleteImage: Delete image
 viewThread.uploadedOn: Uploaded on
 viewThread.author: Author
 viewThread.threadClosed: Thread Closed
+viewThread.noComments: This thread has no comments yet.
+viewThread.comment.placeholder: Leave a comment here ...
+viewThread.submitComment: Submit Comment
+viewThread.deleteComment: Delete Comment
+viewThread.editThread: Edit Thread
+
+#Edit Thread Page
+editThread.cancel: Cancel
+editThread.deleteThread: Delete Thread
+editThread.saveChanges: Save Changes
+editThread.closeThread: Close Thread?
