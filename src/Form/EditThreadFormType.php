@@ -75,7 +75,6 @@ class EditThreadFormType extends AbstractType
                 'label' => 'editThread.saveChanges',
                 'attr' => [
                     'class' => 'view-thread-submit-button',
-                    'onClick' => 'editThread'
                 ]
             ]);
     }

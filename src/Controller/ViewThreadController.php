@@ -46,7 +46,7 @@ class ViewThreadController extends AbstractController
         return new Response($this->twig->render('viewThread.html.twig', [
             'user' => $user,
             'thread' => $thread,
-            'commentForm' => $form->createView()
+            'commentForm' => $form->createView(),
         ]));
     }
 

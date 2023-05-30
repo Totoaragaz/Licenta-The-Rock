@@ -1,6 +1,6 @@
 {% extends 'page.html.twig' %}
 
-{% block title %}{{ thread.title }}{% endblock %}
+{% block title %}{{ thread.title }} - The Rock{% endblock %}
 
 {% block content %}
     <div class="view-thread-bottom-white-space">
@@ -14,7 +14,7 @@
             <div class="view-thread-uploaded-on">
                 {{ 'viewThread.uploadedOn'|trans }} {{ uploadDate }}
             </div>
-            {{ form_start(editThreadForm) }}
+            {{ form_start(editThreadForm, {'action': path('editThread', {threadId: thread.id})}) }}
             {{ form_widget(editThreadForm.content) }}
             <div class="view-thread-button-bar">
                 {{ form_widget(editThreadForm.closed) }}
@@ -41,14 +41,20 @@
         let div;
 
         function generateThread(){
+            let lastWasImage = true;
             {% for contentBit in thread.content %}
                 {% if file_exists('img/' ~ contentBit) %}
+                    if (lastWasImage) {
+                        generateTextArea(content, "");
+                    }
                     generateImage(content, "{{ asset('img/' ~ contentBit) }}");
-                    generateTextArea(content, "");
+                    lastWasImage = true;
                 {% else %}
                     generateTextArea(content, "{{ contentBit }}");
+                    lastWasImage = false;
                 {% endif %}
             {% endfor %}
+            console.log(imagesArray);
         }
 
         generateThread();
@@ -67,6 +73,7 @@
                 textarea.setSelectionRange(textarea.value.length, textarea.value.length);
                 textarea.focus();
             }
+            console.log(imagesArray);
         }, false);
 
         window.addEventListener('unload', function () {
@@ -82,7 +89,7 @@
                         imagesArray[j] = file;
                         displayImage(j);
                         uploadImage(j);
-                        addTextArea();
+                        generateTextArea(content, "");
                         break;
                     }
                 }

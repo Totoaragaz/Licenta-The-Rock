@@ -9,9 +9,9 @@
         <div class="profile-picture-container">
             {{ form_start(editProfileForm) }}
             <div class="profile-picture">
-                <img id="profilePicture" src="{{asset('img/' ~ viewedUser.image)}}" width=100% height=100%>
+                <img id="profilePicture" src="{{ asset('img/' ~ viewedUser.image) }}" width=100% height=100%>
                 {{ form_label(editProfileForm.image) }}
-                    {{ form_widget(editProfileForm.image) }}
+                {{ form_widget(editProfileForm.image) }}
             </div>
         </div>
         <div class="profile-info-container">

@@ -34,6 +34,7 @@ class RegisterController extends AbstractController
     public function register(Request $request): Response
     {
         $user = new User();
+        $user->setRegistrationDate(date_create());
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 

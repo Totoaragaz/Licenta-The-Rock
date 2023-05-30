@@ -15,7 +15,8 @@ class ThreadService
     public function __construct(
         private ThreadRepository $threadRepository,
         private ThreadTransformer $transformer,
-        private CommentTransformer $commentTransformer
+        private CommentTransformer $commentTransformer,
+        private UploadPictureServiceImpl $uploadPictureServiceImpl
     )
     {
     }
@@ -93,6 +94,12 @@ class ThreadService
 
     public function deleteThread(string $threadId): void
     {
+        $thread = $this->threadRepository->getThreadById($threadId);
+        foreach ($thread->getContent() as $contentBit) {
+            if (file_exists('img/' . $contentBit)) {
+                $this->uploadPictureServiceImpl->deletePicture($contentBit);
+            }
+        }
         $this->threadRepository->deleteThread($threadId);
     }
 }

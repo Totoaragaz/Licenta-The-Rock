@@ -90,7 +90,9 @@ class CreateThreadController extends AbstractController
         $number = $request->request->get('number');
         $image = $session->get('image' . $number);
         if ($image != null) {
-            $this->uploadPictureServiceImpl->deleteTemporaryPicture($session->get('image' . $number));
+            if (!file_exists('img/' . $image)) {
+                $this->uploadPictureServiceImpl->deleteTemporaryPicture($session->get('image' . $number));
+            }
             $session->remove('image' . $number);
         }
     }
