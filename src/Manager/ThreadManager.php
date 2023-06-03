@@ -7,8 +7,6 @@ namespace App\Manager;
 use App\Dto\ViewThreadDto;
 use App\Entity\Thread;
 use App\Service\Implementations\ThreadService;
-use App\Transformer\ThreadTransformer;
-use Doctrine\Common\Collections\Collection;
 
 class ThreadManager
 {
@@ -34,9 +32,9 @@ class ThreadManager
         return $this->threadService->createThread($thread);
     }
 
-    public function setThreadContent(array $text, array $images): array
+    public function setThreadContent(Thread &$thread,array $text, array $images): void
     {
-        return $this->threadService->setThreadContent($text,$images);
+        $this->threadService->setThreadContent($thread, $text, $images);
     }
 
     public function getThreadDtoById(string $threadId): ViewThreadDto
@@ -52,5 +50,15 @@ class ThreadManager
     public function getThreadObjectById(string $threadId): Thread
     {
         return $this->threadService->getThreadObjectById($threadId);
+    }
+
+    public function getChatThreads(string $username): array
+    {
+        return $this->threadService->getChatThreads($username);
+    }
+
+    public function editThreadContent(Thread &$thread, array $newContent, array $images): void
+    {
+        $this->threadService->editThreadContent($thread, $newContent, $images);
     }
 }

@@ -38,13 +38,12 @@ class CreateThreadController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() and $form->isValid()) {
-            sleep(10);
+            sleep(5);
             $images = $this->keepTemporaryImages($request);
-            $thread->setContent($this->threadManager->setThreadContent($form->get('content')->getData(), $images));
             $thread->setAuthor($user);
             $thread->setTags($this->tagManager->createTags($form->get('tags')->getData()));
-
             if ($this->threadManager->createThread($thread)) {
+                $this->threadManager->setThreadContent($thread, $form->get('content')->getData(), $images);
                 $this->tagManager->saveTags($thread);
                 return $this->redirectToRoute('viewThread', [
                     'threadId' => $thread->getId()]);
@@ -59,42 +58,48 @@ class CreateThreadController extends AbstractController
     }
 
     #[Route(path: '/uploadImage', name: 'uploadImage')]
-    public function addTemporaryImage(Request $request): void
+    public function addTemporaryImage(Request $request): Response
     {
         $session = $request->getSession();
-        $number = $request->request->get('number');
+        $number = $request->get('number');
         $image = $request->files->get('image' . $number);
         if ($image != null) {
             $session->set('image' . $number, $this->uploadPictureServiceImpl->uploadTemporaryPicture($image));
         }
+
+        return $this->json(Response::HTTP_OK);
     }
 
     #[Route(path: '/removeAllImages', name: 'removeAllImages')]
-    public function removeAllTemporaryImages(Request $request): void
+    public function removeAllTemporaryImages(Request $request): Response
     {
         sleep(30);
         $session = $request->getSession();
         for ($i = 0; $i < 5; $i++) {
             $image = $session->get('image' . $i);
             if ($image != null) {
-                $this->uploadPictureServiceImpl->deleteTemporaryPicture($session->get('image' . $i));
+                $this->uploadPictureServiceImpl->deleteTemporaryPicture($image);
                 $session->remove('image' . $i);
             }
         }
+
+        return $this->json(Response::HTTP_OK);
     }
 
     #[Route(path: '/removeImage', name: 'removeImage')]
-    public function removeTemporaryImage(Request $request): void
+    public function removeTemporaryImage(Request $request): Response
     {
         $session = $request->getSession();
-        $number = $request->request->get('number');
+        $number = $request->get('number');
         $image = $session->get('image' . $number);
         if ($image != null) {
             if (!file_exists('img/' . $image)) {
-                $this->uploadPictureServiceImpl->deleteTemporaryPicture($session->get('image' . $number));
+                $this->uploadPictureServiceImpl->deleteTemporaryPicture($image);
             }
-            $session->remove('image' . $number);
         }
+        $session->remove('image' . $number);
+
+        return $this->json($session,Response::HTTP_OK);
     }
 
     private function keepTemporaryImages(Request $request): array

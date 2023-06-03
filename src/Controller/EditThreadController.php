@@ -30,16 +30,17 @@ class EditThreadController extends AbstractController
         $user = $this->getUser();
         $thread = $this->threadManager->getThreadObjectById($threadId);
 
+        $this->initializeImageSession($request, $thread);
+
         $form = $this->createForm(EditThreadFormType::class, $thread);
         $form->handleRequest($request);
 
-        $this->initializeImageSession($request, $thread);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $originalContent = $thread->getContent();
+            $session = $request->getSession();
             $images = $this->keepTemporaryImages($request);
             sleep(5);
-            var_dump([$form->get('content')->getData(), $images, $originalContent]);
+
+            $this->threadManager->editThreadContent($thread, $form->get('content')->getData(), $images);
 
             return $this->redirectToRoute('viewThread', [
                 'threadId' => $threadId,
@@ -65,11 +66,27 @@ class EditThreadController extends AbstractController
         $session = $request->getSession();
         $i = 0;
         foreach ($thread->getContent() as $contentBit) {
-            if (file_exists('img/' . $contentBit)) {
-                $session->set('image' . $i, $contentBit);
+            if ($contentBit->getType() == 'image') {
+                $session->set('image' . $i, $contentBit->getContent());
                 $i++;
             }
         }
+    }
+
+    #[Route(path: '/removeImageEdit', name: 'removeImageEdit')]
+    public function removeTemporaryImage(Request $request): Response
+    {
+        $session = $request->getSession();
+        $number = $request->get('number');
+        $image = $session->get('image' . $number);
+        if ($image != null) {
+            if (!file_exists('img/' . $image)) {
+                $this->uploadPictureServiceImpl->deleteTemporaryPicture($image);
+            }
+        }
+        $session->remove('image' . $number);
+
+        return $this->json($session,Response::HTTP_OK);
     }
 
     private function keepTemporaryImages(Request $request): array

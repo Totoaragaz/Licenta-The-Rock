@@ -182,4 +182,9 @@ class UserServiceImpl
 
         return [];
     }
+
+    public function getUserObjectById(int $id): ?User
+    {
+        return $this->userRepository->findOneBy(['id' => $id]);
+    }
 }

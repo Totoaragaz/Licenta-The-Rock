@@ -20,8 +20,6 @@ class Thread
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column]
-    private ?array $content = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $uploadDate = null;
@@ -39,10 +37,14 @@ class Thread
     #[ORM\OneToMany(mappedBy: 'thread', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\OneToMany(mappedBy: 'thread', targetEntity: ContentBit::class, orphanRemoval: true)]
+    private Collection $content;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->content = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,18 +60,6 @@ class Thread
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getContent(): array
-    {
-        return $this->content;
-    }
-
-    public function setContent(array $content): self
-    {
-        $this->content = $content;
 
         return $this;
     }
@@ -175,6 +165,41 @@ class Thread
             // set the owning side to null (unless already changed)
             if ($comment->getThread() === $this) {
                 $comment->setThread(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContentBit>
+     */
+    public function getContent(): Collection
+    {
+        return $this->content;
+    }
+
+    public function addContent(ContentBit $content): self
+    {
+        if (!$this->content->contains($content)) {
+            $this->content->add($content);
+            $content->setThread($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAllContent(): void
+    {
+        $this->content = new ArrayCollection();
+    }
+
+    public function removeContent(ContentBit $content): self
+    {
+        if ($this->content->removeElement($content)) {
+            // set the owning side to null (unless already changed)
+            if ($content->getThread() === $this) {
+                $content->setThread(null);
             }
         }
 

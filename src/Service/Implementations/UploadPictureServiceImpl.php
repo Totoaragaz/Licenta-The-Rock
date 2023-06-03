@@ -7,6 +7,7 @@ namespace App\Service\Implementations;
 use App\Service\UploadPictureService;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UploadPictureServiceImpl implements UploadPictureService
@@ -61,6 +62,9 @@ class UploadPictureServiceImpl implements UploadPictureService
 
     public function keepTemporaryPicture(string $image): void
     {
-        rename('temp/' . $image, 'img/' . $image);
+        if (!file_exists('img/' . $image)) {
+            rename('temp/' . $image, 'img/' . $image);
+        }
+
     }
 }

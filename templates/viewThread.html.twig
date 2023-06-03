@@ -23,15 +23,19 @@
             <div class="view-thread-content">
                 {% for contentBit in thread.content %}
                     <div class="view-thread-content-bit">
-                        {% if file_exists('img/' ~ contentBit) %}
-                            <img src="{{ asset('img/' ~ contentBit) }}" alt="{{ contentBit }}">
+                        {% if (contentBit is not iterable) %}
+                            {% if (contentBit[:4] == 'img:') %}
+                                <img src="{{ asset('img/' ~ contentBit[4:]) }}" alt="{{ contentBit[4:] }}">
+                            {% elseif (contentBit[:4] == 'txt:') %}
+                                {{ contentBit[4:] }}
+                            {% endif %}
                         {% else %}
-                            {{ contentBit }}
+                            conversation comes here BUT LATER LOLOLOLOLOLOL
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
-            {% if thread.author == user.username %}
+            {% if thread.author == user.username and not thread.closed %}
                 <div class="view-thread-button-bar">
                     <a href="{{ path('editThread', {threadId: thread.id}) }}" class="view-thread-submit-button">
                         {{ 'viewThread.editThread'|trans }}
@@ -40,6 +44,7 @@
             {% endif %}
         </div>
         <div class="view-thread-comments" id="comments">
+            {% if not thread.closed %}
             <div class="view-thread-comment">
                 <div class="view-thread-comment-profile-picture">
                     <img src="{{ asset('img/' ~ user.image) }}">
@@ -58,6 +63,7 @@
                     {{ form_end(commentForm) }}
                 </div>
             </div>
+            {% endif %}
             {% if thread.comments|length == 0 %}
                 <div class="view-thread-no-comments">
                     {{ 'viewThread.noComments'|trans }}

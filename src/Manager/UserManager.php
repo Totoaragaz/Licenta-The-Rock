@@ -106,4 +106,9 @@ class UserManager
     {
         return $this->userService->transformUserIntoProfileDto($user);
     }
+
+    public function getUserObjectById(int $id): ?User
+    {
+        return $this->userService->getUserObjectById($id);
+    }
 }

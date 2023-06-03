@@ -1,1 +1,340 @@
-chat stuff
+<div class="chat-consent-tab">
+    <div class="chat-consent-title">
+        {{ 'chat.consentRequests'|trans }}
+    </div>
+</div>
+<div class="chat-consent-requests">
+    <div class="chat-recent-user">
+        <div class="chat-recent-user-profile-picture">
+            <img src="{{ asset('img/DefaultUser.png') }}" height="100%" width="100%">
+        </div>
+        <div class="chat-recent-user-username">
+            Batchu
+        </div>
+        <div class="chat-consent-message">
+            {{ 'chat.previewChanges'|trans }}
+        </div>
+    </div>
+</div>
+<div class="chat-recent-tab-button" onclick="toggleRecentChats()">
+    <div class="chat-recent-title">
+        {{ 'chat.recentChats'|trans }}
+    </div>
+    <span class="chat-recent-arrow"><i id="recentChatsArrow" class="fa fa-angle-down"></i></span>
+</div>
+<div id="chat-recent-menu" class="chat-recent-menu">
+    <div class="chat-recent-user" onclick="selectConversation()">
+        <div class="chat-recent-user-profile-picture">
+            <img src="{{ asset('img/DefaultUser.png') }}" height="100%" width="100%">
+        </div>
+        <div class="chat-recent-user-username">
+            Batchu
+        </div>
+        <div class="chat-most-recent-message">
+
+            ba ma intreaba unu cand mai vii prin MN...
+        </div>
+    </div>
+    <div class="chat-recent-user">
+        <div class="chat-recent-user-profile-picture">
+            <img src="{{ asset('img/DefaultUser.png') }}" height="100%" width="100%">
+        </div>
+        <div class="chat-recent-user-username">
+            Dem Coconuts
+        </div>
+        <div class="chat-most-recent-message">
+            ba coaie de te prind prin MNST ai belit p...
+        </div>
+    </div>
+</div>
+<div id="chat-conversation">
+    <div class="chat-recipient">
+        Batchu
+    </div>
+    <div id="message1" class="chat-messages-container" onclick="selectMessage(1)">
+        <div class="chat-message">
+            <div id="bubble1" class="chat-message-select-bubble other">
+                <i class="fa fa-check"></i>
+            </div>
+            <div class="chat-message-content other">
+                salut sefule
+            </div>
+        </div>
+    </div>
+    <div id="message2" class="chat-message" onclick="selectMessage(2)">
+        <div id="bubble2" class="chat-message-select-bubble me">
+            <i class="fa fa-check"></i>
+        </div>
+        <div class="chat-message-content me">
+            te salut onorabilule maestru al conversatiilor
+        </div>
+    </div>
+    <div id="message3" class="chat-message" onclick="selectMessage(3)">
+        <div id="bubble3" class="chat-message-select-bubble me">
+            <i class="fa fa-check"></i>
+        </div>
+        <div class="chat-message-content me">
+            XD
+        </div>
+    </div>
+    <div id="chat-bar" class="chat-bar">
+        <div id="normal-chat-bar">
+            <div title="{{ 'chat.attachToThread'|trans }}" class="chat-bar-attach-button" onclick="startSelectMode()">
+                <i class="fa fa-paperclip"></i>
+            </div>
+            <input placeholder="{{ 'chat.writeAMessage'|trans }}" id="chat-input">
+            <div title="{{ 'chat.sendMessage'|trans }}" class="chat-bar-send-button">
+                <i class="fa fa-angle-right"></i>
+            </div>
+        </div>
+        <div id="select-chat-bar">
+            <div class="chat-bar-cancel-button" onclick="stopSelectMode()">
+                {{ 'chat.cancel'|trans }}
+            </div>
+            <div class="chat-bar-preview-button" onclick="openSelectThreadPopUp()">
+                {{ 'chat.selectThread'|trans }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectMode = false;
+
+    function getConversations()
+    {
+        fetch('{{ path('conversations.getConversations') }}')
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result);
+            })
+    }
+
+    getConversations();
+
+    const eventSource = new EventSource("{{ mercure('http://127.0.0.1:8080')|escape('js') }}");
+    eventSource.onmessage = event => {
+        // Will be called every time an update is published by the server
+        console.log(JSON.parse(event.data));
+    }
+
+    function toggleRecentChats() {
+        const recents = document.getElementById('chat-recent-menu');
+        const arrow = document.getElementById('recentChatsArrow');
+        if (recents.style.display === 'none') {
+            recents.style.display = 'block';
+            arrow.className = 'fa fa-angle-up';
+        } else {
+            recents.style.display = 'none';
+            arrow.className = 'fa fa-angle-down';
+        }
+        fetch('{{ path('setRecents') }}', {keepalive: true, method: 'POST'})
+    }
+
+    function startSelectMode() {
+        selectMode = true;
+        const bubbles = document.querySelectorAll('.chat-message-select-bubble');
+        bubbles.forEach(bubble => bubble.style.display = 'block');
+        setSelectChatBar();
+    }
+
+    function stopSelectMode() {
+        selectMode = false;
+        const bubbles = document.querySelectorAll('.chat-message-select-bubble');
+        bubbles.forEach(bubble => {
+                bubble.style.display = 'none';
+                if (bubble.className.includes('selected')) {
+                    bubble.className = bubble.className.slice(0, -9);
+                }
+                //remove from array idk
+            }
+        )
+        setNormalChatBar();
+    }
+
+    function setSelectChatBar() {
+        document.getElementById('normal-chat-bar').style.display = 'none';
+        document.getElementById('select-chat-bar').style.display = 'block';
+    }
+
+    function setNormalChatBar() {
+        document.getElementById('select-chat-bar').style.display = 'none';
+        document.getElementById('normal-chat-bar').style.display = 'block';
+    }
+
+    function selectMessage(messageId) {
+        if (selectMode) {
+            const bubble = document.getElementById('bubble' + messageId);
+            if (bubble.className.includes('selected')) {
+                bubble.className = bubble.className.slice(0, -9);
+            } else {
+                bubble.className += ' selected';
+            }
+            //some other shit
+        }
+    }
+
+    function openSelectThreadPopUp() {
+        createPopUp('{{ 'chat.selectThread'|trans }}', '{{ 'chat.selectThreadInstructions'|trans }}');
+    }
+
+    async function createPopUp(title, instructions) {
+
+        const darkScreen = document.createElement('div');
+        darkScreen.className = 'dark-screen';
+        darkScreen.id = 'popUp';
+
+        const popUp = document.createElement('div');
+        popUp.className = 'pop-up';
+
+        const popUpTitle = document.createElement('div');
+        popUpTitle.className = 'pop-up-title';
+        popUpTitle.id = 'popUpTitle';
+        popUpTitle.innerHTML = title;
+
+        const popUpInstructions = document.createElement('div');
+        popUpInstructions.className = 'pop-up-instructions';
+        popUpInstructions.id = 'popUpInstructions';
+        popUpInstructions.innerHTML = instructions;
+
+        const popUpContent = document.createElement('div');
+        popUpContent.id = 'popUpContent';
+        popUpContent.className = 'pop-up-content';
+
+        const popUpButtons = document.createElement('div');
+        popUpButtons.className = 'pop-up-buttons';
+
+        const cancelButton = document.createElement('div');
+        cancelButton.className = 'chat-bar-cancel-button';
+        cancelButton.innerHTML = '{{ 'chat.cancel'|trans }}';
+        cancelButton.onclick = function () {
+            closePopUp();
+        }
+
+        const consentButton = document.createElement('div');
+        consentButton.className = 'chat-bar-preview-button';
+        consentButton.innerHTML = '{{ 'chat.askForConsent'|trans }}'
+        consentButton.onclick = function () {
+            askForConsent()
+        }
+
+        popUpButtons.appendChild(cancelButton);
+        popUpButtons.appendChild(consentButton);
+
+        popUp.appendChild(popUpTitle);
+        popUp.appendChild(popUpInstructions);
+        popUp.appendChild(popUpContent);
+        popUp.appendChild(popUpButtons);
+
+        darkScreen.appendChild(popUp);
+
+        document.body.appendChild(darkScreen);
+        await fetch('{{ path('getChatThreads') }}', {method: 'GET', keepalive: true})
+            .then((response) => response.json())
+            .then((data) => {
+                for (const thread of data) {
+                    addThreadToPopUp(thread, popUpContent); //ADD RECIPIENT
+                }
+            })
+    }
+
+    function addThreadToPopUp(thread, parent, recipient = 'someGuy') {
+        const container = document.createElement('div');
+        container.id = 'chatThread' + thread.id;
+        container.className = 'pop-up-thread-container';
+        container.onclick = function () {
+            selectThread(thread.id, recipient);
+        }
+
+        const title = document.createElement('div');
+        title.className = 'pop-up-thread-title';
+        title.innerHTML = thread.title;
+        container.appendChild(title);
+
+        const uploadDate = document.createElement('div');
+        uploadDate.className = 'pop-up-thread-upload-date';
+        uploadDate.innerHTML = thread.uploadDate;
+        container.appendChild(uploadDate);
+
+        const tags = document.createElement('div');
+        tags.className = 'pop-up-thread-tags';
+        container.appendChild(tags);
+
+        for (const tag of thread.tags) {
+            const tagDiv = document.createElement('div');
+            tagDiv.className = 'pop-up-thread-tag';
+            tagDiv.innerHTML = tag;
+
+            tags.appendChild(tagDiv);
+        }
+
+        parent.appendChild(container)
+    }
+
+
+    function selectThread(threadId, recipient) {
+        const popUpContent = document.getElementById('popUpContent');
+        popUpContent.innerHTML = '';
+        document.getElementById('popUpTitle').innerHTML = '{{ 'chat.previewThread'|trans }}';
+        document.getElementById('popUpInstructions').innerHTML = '{{ 'chat.previewThreadInstructions'|trans }} ' + recipient;
+        const data = new FormData;
+        data.append('threadId', threadId);
+        fetch('{{ path('getThreadPreview') }}', {method: 'POST', keepalive: true, body: data})
+            .then((response) => response.json())
+            .then((thread) => {
+                displayThread(thread);
+            });
+    }
+
+    async function displayThread(thread) {
+        const popUpContent = document.getElementById('popUpContent');
+        let content = `
+        <div class="view-thread-container">
+            <div class="view-thread-title">` + thread.title;
+        if (thread.closed) {
+            content +=
+                `<span class="view-thread-closed">
+                        <i title="{{ 'viewThread.threadClosed'|trans }}" class="fa fa-check"></i>
+                    </span>`
+        }
+        content += `
+            </div>
+            <div class="view-thread-author">
+                {{ 'viewThread.author'|trans }}:` + thread.author + `
+            </div>
+            <div class="view-thread-uploaded-on">
+                {{ 'viewThread.uploadedOn'|trans }} ` + thread.uploadDate + `
+            </div>
+            <div class="view-thread-content">`;
+
+        for (const contentBit of thread.content) {
+            content += `<div class="view-thread-content-bit">`
+            const data = new FormData;
+            data.append('file', contentBit);
+            await fetch('{{ path('fileExists') }}', { method:'POST', keepalive: true, body: data})
+                .then((response) => {
+                    if (response.ok) {
+                        content += `<img src="img/` + contentBit + `" alt="` + contentBit + `">`;
+                    } else {
+                        content += contentBit;
+                    }
+                }).catch()
+
+            content += `</div>`
+        }
+
+        //messages come here
+
+        content += `</div></div>`;
+        popUpContent.innerHTML = content;
+    }
+
+    function closePopUp() {
+        const popUp = document.getElementById('popUp');
+        document.body.removeChild(popUp);
+    }
+
+    function askForConsent() {
+
+    }
+</script>

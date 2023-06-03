@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Service\Implementations;
 
 use App\Dto\ViewThreadDto;
+use App\Entity\ContentBit;
 use App\Entity\Thread;
+use App\Repository\ContentBitRepository;
 use App\Repository\ThreadRepository;
 use App\Transformer\CommentTransformer;
 use App\Transformer\ThreadTransformer;
+use Doctrine\Common\Collections\Collection;
 
 class ThreadService
 {
@@ -16,7 +19,8 @@ class ThreadService
         private ThreadRepository $threadRepository,
         private ThreadTransformer $transformer,
         private CommentTransformer $commentTransformer,
-        private UploadPictureServiceImpl $uploadPictureServiceImpl
+        private UploadPictureServiceImpl $uploadPictureServiceImpl,
+        private ContentBitRepository $contentBitRepository
     )
     {
     }
@@ -36,27 +40,50 @@ class ThreadService
         return [];
     }
 
+    public function getChatThreads(string $username): array
+    {
+        $threads = $this->threadRepository->getUsersOpenThreads($username);
+        if ($threads) {
+            $threadDTOs = [];
+            foreach ($threads as $thread) {
+                $threadDTOs[] = $this->transformer->transformThreadIntoChatDto($thread);
+            }
+
+            return $threadDTOs;
+        }
+
+        return [];
+    }
+
     public function createThread(Thread $thread): bool
     {
         $thread->setUploadDate(date_create());
         return $this->threadRepository->createThread($thread);
     }
 
-    public function setThreadContent(array $text, array $images): array
+    public function setThreadContent(Thread &$thread, array $text, array $images): void
     {
-        $content = [];
         $imageNumber = 0;
         for ($i = 0; $i < sizeof($text); $i++) {
             if ($text[$i] != null) {
-                $content[] = $text[$i];
+                $contentBit = new ContentBit();
+                $contentBit->setThread($thread);
+                $contentBit->setType('text');
+                $contentBit->setContent($text[$i]);
+                $thread->addContent($contentBit);
+                $this->contentBitRepository->save($contentBit, true);
             }
             if ($imageNumber < sizeof($images)) {
-                $content[] = $images[$imageNumber];
+                $contentBit = new ContentBit();
+                $contentBit->setThread($thread);
+                $contentBit->setType('image');
+                $contentBit->setContent($images[$imageNumber]);
+                $thread->addContent($contentBit);
+                $this->contentBitRepository->save($contentBit, true);
                 $imageNumber++;
             }
-        }
 
-        return $content;
+        }
     }
 
     public function getSearchedThreads(string $username, string $searchQuery, array $words, int $page): array
@@ -96,10 +123,98 @@ class ThreadService
     {
         $thread = $this->threadRepository->getThreadById($threadId);
         foreach ($thread->getContent() as $contentBit) {
-            if (file_exists('img/' . $contentBit)) {
-                $this->uploadPictureServiceImpl->deletePicture($contentBit);
+            if ($contentBit->getType() == 'image') {
+                $this->uploadPictureServiceImpl->deletePicture($contentBit->getContent());
             }
         }
+
         $this->threadRepository->deleteThread($threadId);
+    }
+
+    public function editThreadContent(Thread &$thread, array $newContent, array $images): void
+    {
+        $originalContent = clone $thread->getContent();
+        $this->removeContent($thread);
+        $this->deleteOldImages($originalContent, $images);
+        $textNumber = 0;
+        $imageNumber = 0;
+        $conversations = [];
+        for ($i = 0; $i < sizeof($originalContent); $i++) {
+            if ($originalContent[$i]->getType() == 'text') {
+                for ($j = $textNumber; $j < sizeof($newContent); $j++) {
+                    if (!is_null($newContent[$j])) {
+                        $contentBit = new ContentBit();
+                        $contentBit->setThread($thread);
+                        $contentBit->setType('text');
+                        $contentBit->setContent($newContent[$j]);
+                        $thread->addContent($contentBit);
+                        $this->contentBitRepository->save($contentBit, true);
+                        $textNumber = $j + 1;
+                        break;
+                    }
+                }
+            } elseif ($originalContent[$i]->getType() == 'image') {
+                for ($j = $imageNumber; $j < sizeof($images); $j++) {
+                    if (!is_null($images[$j])) {
+                        $contentBit = new ContentBit();
+                        $contentBit->setThread($thread);
+                        $contentBit->setType('image');
+                        $contentBit->setContent($images[$j]);
+                        $thread->addContent($contentBit);
+                        $this->contentBitRepository->save($contentBit, true);
+                        $imageNumber = $j + 1;
+                        break;
+                    }
+                }
+            } elseif ($originalContent[$i]->getType() == 'conversation') {
+                $conversations[] = $originalContent[$i]->getConversation();
+            }
+        }
+        for ($i = $textNumber; $i < sizeof($newContent); $i++) {
+            if (!is_null($newContent[$i])) {
+                $contentBit = new ContentBit();
+                $contentBit->setThread($thread);
+                $contentBit->setType('text');
+                $contentBit->setContent($newContent[$i]);
+                $thread->addContent($contentBit);
+                $this->contentBitRepository->save($contentBit, true);
+            }
+        }
+        for ($i = $imageNumber; $i < sizeof($images); $i++) {
+            if (!is_null($images[$i])) {
+                $contentBit = new ContentBit();
+                $contentBit->setThread($thread);
+                $contentBit->setType('image');
+                $contentBit->setContent($images[$i]);
+                $thread->addContent($contentBit);
+                $this->contentBitRepository->save($contentBit, true);
+            }
+        }
+
+        foreach ($conversations as $conversation) {
+            $contentBit = new ContentBit();
+            $contentBit->setThread($thread);
+            $contentBit->setType('conversation');
+            $contentBit->setConversation($conversation);
+            $thread->addContent($contentBit);
+            $this->contentBitRepository->save($contentBit, true);
+        }
+    }
+
+    private function removeContent(Thread &$thread): void
+    {
+        $this->contentBitRepository->removeThreadContentBits($thread->getId());
+        $thread->removeAllContent();
+    }
+
+    private function deleteOldImages(Collection $originalContent, array $newImages): void
+    {
+        foreach ($originalContent as $contentBit) {
+            if ($contentBit->getType() == 'image') {
+                if (!in_array($contentBit->getContent(), $newImages)) {
+                    $this->uploadPictureServiceImpl->deletePicture($contentBit->getContent());
+                }
+            }
+        }
     }
 }

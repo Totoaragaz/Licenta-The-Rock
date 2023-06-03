@@ -143,3 +143,17 @@ editThread.cancel: Cancel
 editThread.deleteThread: Delete Thread
 editThread.saveChanges: Save Changes
 editThread.closeThread: Close Thread?
+
+#Chat
+chat.recentChats: Recent Chats
+chat.attachToThread: Attach Messages to Thread
+chat.sendMessage: Send Message
+chat.writeAMessage: Write A Message...
+chat.consentRequests: Consent Requests
+chat.previewChanges: Preview Changes
+chat.cancel: Cancel
+chat.selectThread: Select Thread
+chat.askForConsent: Ask for Consent
+chat.selectThreadInstructions: Select the thread to which you would like to attach the conversation.
+chat.previewThread: Preview Thread
+chat.previewThreadInstructions: Please make sure everything looks good, then press the 'Ask for Consent' button to send a request to update the thread to

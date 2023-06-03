@@ -91,6 +91,18 @@ class ThreadRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getUsersOpenThreads(string $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t')
+            ->innerJoin('t.author', 'u')
+            ->where('u.username != :author and t.closed = 0')
+            ->setParameter('author', $user)
+            ->orderBy('t.uploadDate')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(Thread $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

@@ -194,6 +194,8 @@
     function showNoFriends() {
         if (checkButtons()){
             document.getElementById('no-friends').style.display = 'inline-block';
+        } else {
+            document.getElementById('no-friends').style.display = 'none';
         }
     }
 
@@ -209,6 +211,7 @@
         } else {
             incomingRequestNumber.innerText = newNumber;
         }
+        showNoFriends();
     }
 
     function removeOutgoingRequest(username) {
@@ -221,6 +224,7 @@
         } else {
             outgoingRequestNumber.innerText = newNumber;
         }
+        showNoFriends()
     }
 
     function removeFriend(username) {
@@ -269,11 +273,12 @@
     function sendFriendRequest(username, img) {
         let url = '{{ path("sendFriendRequest", {username: 'username'}) }}';
         url = url.replace("username", username);
-        fetch(url, {method: 'POST'});
+        fetch(url, {method: 'POST', keepalive: true});
         addOutgoingRequest(username, img);
         document.getElementById('outgoingRequestButton').style.display = 'block';
         const outgoingRequestNumber = document.getElementById('outgoingRequestNumber');
         outgoingRequestNumber.innerText = (parseInt(outgoingRequestNumber.innerText) + 1).toString();
+        showNoFriends();
     }
 
     window.onclick = function (event) {

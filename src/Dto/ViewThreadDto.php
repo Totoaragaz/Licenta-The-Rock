@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Dto;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 
 class ViewThreadDto
 {
@@ -88,9 +89,32 @@ class ViewThreadDto
         return $this->content;
     }
 
-    public function setContent(?array $content): self
+    public function setContent(?Collection $content): self
     {
-        $this->content = $content;
+        $this->content = [];
+        foreach ($content as $contentBit) {
+            switch ($contentBit->getType()) {
+                case 'image':
+                    $this->content[] = 'img:' . $contentBit->getContent();
+                    break;
+                case 'text':
+                    $this->content[] = 'txt:' . $contentBit->getContent();
+                    break;
+                case 'conversation':
+                    $conversation = [];
+                    $messages = $contentBit->getConversation()->getMessages();
+                    foreach ($messages as $message) {
+                        if ($message->isAuthorMe()) {
+                            $conversation[] = 'me:' . $message->getContent();
+                        } else {
+                            $conversation[] = 'ot:' . $message->getContent();
+                        }
+                    }
+
+                    $this->content[] = $conversation;
+                    break;
+            }
+        }
         return $this;
     }
 

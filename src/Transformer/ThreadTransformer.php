@@ -2,6 +2,7 @@
 
 namespace App\Transformer;
 
+use App\Dto\ChatThreadDto;
 use App\Dto\SearchThreadDto;
 use App\Dto\ViewThreadDto;
 use App\Entity\Thread;
@@ -29,5 +30,14 @@ class ThreadTransformer
             ->setAuthor($thread->getAuthor()->getUsername())
             ->setClosed($thread->isClosed())
             ->setComments($comments);
+    }
+
+    public function transformThreadIntoChatDto(Thread $thread): ChatThreadDto
+    {
+        return (new ChatThreadDto())
+            ->setId($thread->getId())
+            ->setTitle($thread->getTitle())
+            ->setTags($thread->getTagNames())
+            ->setUploadDate($thread->getUploadDate());
     }
 }

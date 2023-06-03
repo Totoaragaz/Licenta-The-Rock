@@ -40,18 +40,20 @@
         let imagesArray = []
         let div;
 
-        function generateThread(){
+        function generateThread() {
             let lastWasImage = true;
             {% for contentBit in thread.content %}
-                {% if file_exists('img/' ~ contentBit) %}
+                {% if (contentBit.type == 'image') %}
                     if (lastWasImage) {
                         generateTextArea(content, "");
                     }
-                    generateImage(content, "{{ asset('img/' ~ contentBit) }}");
+                    generateImage(content, "{{ asset('img/' ~ contentBit.content) }}");
                     lastWasImage = true;
-                {% else %}
-                    generateTextArea(content, "{{ contentBit }}");
+                {% elseif (contentBit.type == 'text') %}
+                    generateTextArea(content, "{{ contentBit.content }}");
                     lastWasImage = false;
+                {% elseif (contentBit.type == 'conversation') %}
+                    console.log('conversation comes here')
                 {% endif %}
             {% endfor %}
             console.log(imagesArray);
@@ -169,7 +171,7 @@
             content.dataset.index++;
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             const tx = document.getElementsByTagName("textarea");
             for (let i = 0; i < tx.length; i++) {
                 tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
@@ -187,7 +189,9 @@
             imagesArray[number] = undefined;
             const data = new FormData;
             data.append('number', number);
-            fetch('{{ path('removeImage') }}', {method: 'POST', keepalive: true, body: data});
+            fetch('{{ path('removeImageEdit') }}', {method: 'POST', keepalive: true, body: data})
+                .then((response) => response.json())
+                .then((data) => console.log(data));
         }
     </script>
 {% endblock %}
