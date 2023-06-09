@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
 use App\Entity\Message;
-use App\Service\MessageService;
+use App\Service\Implementations\MessageService;
 
 class MessageManager
 {

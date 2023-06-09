@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security\Voter;
 
 use App\Entity\Conversation;
@@ -17,7 +19,6 @@ class ConversationVoter extends Voter
     )
     {
     }
-
 
     protected function supports(string $attribute, mixed $subject): bool
     {

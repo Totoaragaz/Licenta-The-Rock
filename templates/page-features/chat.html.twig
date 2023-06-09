@@ -72,14 +72,13 @@
     const eventSource = new EventSource("{{ mercure('/conversations/' ~ user.username)|escape('js') }}", {withCredentials: true})
     eventSource.onmessage = event => {
         // Will be called every time an update is published by the server
-        const message = JSON.parse(event.data)
-        console.log(message);
+        const message = JSON.parse(event.data);
         generateMessage(message);
         updateRecentConversations(message, message.conversation.id)
     };
 
     async function addConversation(username, image) {
-        noRecentChats(false)
+        noRecentChats(false);
         if (document.getElementById('chat-column').style.display === 'none') {
             openChatColumn();
         }
@@ -124,7 +123,7 @@
                 } else {
                     response.json()
                         .then(async (conversation) => {
-                            await getMessages(conversation.conversation, conversation.recipient)
+                            await getMessages(conversation.conversation, conversation.recipient);
                         })
                 }
             })
@@ -203,13 +202,11 @@
         await fetch('{{ path('conversations.getConversations') }}')
             .then((response) => response.json())
             .then(async (result) => {
-                console.log('res:', result);
                 if (result.length === 0) {
                     noRecentChats(true);
                     document.getElementById('chat-recent-conversations').style.display = 'none';
                 } else {
                     for (const conversation of result) {
-                        console.log(conversation);
                         await generateRecentConversation(conversation.conversationId, conversation.username,
                             conversation.image, conversation.content, conversation.createdAt);
                     }
@@ -270,7 +267,6 @@
 
     async function getMessages(conversationId, user) {
         if (activeConversation !== conversationId) {
-            console.log('ac:' + activeConversation + ' cId:' + conversationId)
 
             addLoadingScreen(document.getElementById('chat-conversation'));
             removeChatWarning();
@@ -285,7 +281,7 @@
 
             const newConversation = document.getElementById('conversation' + conversationId);
             newConversation.className = 'chat-recent-user active';
-            const data = new FormData
+            const data = new FormData;
             data.append('conversationId', conversationId);
             data.append('recipient', user);
             fetch("{{ path('setActiveConversation') }}", {method: 'POST', keepalive: true, body: data})
@@ -303,7 +299,6 @@
                     document.getElementById('chat-recipient').innerText = user;
                     document.getElementById('chat-messages-container').innerHTML = '';
                     document.getElementById('chat-conversation').style.display = 'block';
-                    console.log(messages);
                     for (const message of messages) {
                         const messageIsNotMine = generateMessage(message);
                         chatWarning = messageIsNotMine && chatWarning;
@@ -432,7 +427,7 @@
 
     function createPendingMessage(messageContent) {
         const container = document.createElement('div');
-        container.className = 'chat-message'
+        container.className = 'chat-message';
 
         const content = document.createElement('div');
         content.innerHTML = messageContent;
@@ -474,12 +469,11 @@
     }
 
     function toggleRecentChats() {
-        openRecentChats()
-        fetch('{{ path('setRecents') }}', {keepalive: true, method: 'POST'})
+        openRecentChats();
+        fetch('{{ path('setRecents') }}', {keepalive: true, method: 'POST'});
     }
 
     function openRecentChats() {
-        console.log('chats');
         const menu = document.getElementById('chat-recent-conversations');
         const recents = document.getElementById('chat-recent-menu');
         const arrow = document.getElementById('recentChatsArrow');
@@ -532,7 +526,6 @@
 
     function selectMessage(messageId) {
         if (selectMode) {
-            console.log('called');
             const bubble = document.getElementById('bubble' + messageId);
             if (bubble.className.includes('selected')) {
                 delete uploadedMessages[messageId];
@@ -545,7 +538,6 @@
                 }
                 bubble.className += ' selected';
             }
-            console.log(uploadedMessages);
         }
     }
 
@@ -623,7 +615,6 @@
         await fetch('{{ path('getChatThreads') }}', {method: 'GET', keepalive: true})
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 for (const thread of data) {
                     addThreadToPopUp(thread);
                 }
@@ -662,7 +653,7 @@
         }
 
         const popUp = document.getElementById('popUpContent');
-        popUp.appendChild(container)
+        popUp.appendChild(container);
     }
 
 
@@ -692,7 +683,6 @@
     }
 
     async function displayThread(thread, messages, recipient) {
-        console.log(thread);
         const popUpContent = document.getElementById('popUpContent');
         let content = `
         <div class="view-thread-container">
@@ -716,7 +706,6 @@
         let conversationsExist = false;
         for (const contentBit of thread.content) {
             if (!(contentBit instanceof Object)) {
-                console.log(contentBit);
                 content += `<div class="view-thread-content-bit">`;
                 if (contentBit.slice(0, 4) === 'txt:') {
                     content += contentBit.slice(4);
@@ -738,7 +727,6 @@
         if (conversationsExist) {
             for (const contentBit of thread.content) {
                 if (contentBit instanceof Object) {
-                    console.log('bit', contentBit);
                     content += `<div class="view-thread-conversation-with">{{ 'chat.conversationWith'|trans }} `;
                     if (contentBit['helper']) {
                         content += `<a class="view-thread-conversation-helper"><span class="view-thread-conversation-helper">` + contentBit['helper'] + `</span></a></div>`;
@@ -774,13 +762,13 @@
                 <div class="chat-message-content`;
 
             if (message.mine) {
-                content += ` me">`
+                content += ` me">`;
             } else {
-                content += ` other">`
+                content += ` other">`;
             }
 
             content += message.content;
-            content += `</div></div>`
+            content += `</div></div>`;
         }
 
         content += `</div></div></div>`;
@@ -797,14 +785,10 @@
         data.append('messages', JSON.stringify(Object.keys(uploadedMessages)));
         data.append('recipient', currentRecipient);
         data.append('threadId', threadId);
-        fetch('{{ path('consentRequests.create') }}', {method: 'POST', keepalive: true, body: data})
-            .then((response) => {
-                console.log(response);
-            })
+        fetch('{{ path('consentRequests.create') }}', {method: 'POST', keepalive: true, body: data});
 
         closePopUp();
         stopSelectMode();
-        console.log(uploadedMessages, currentRecipient);
     }
 
     async function openConsentRequest(requestId, requester) {
@@ -821,7 +805,6 @@
         await fetch(url, {method: 'GET'})
             .then((response) => response.json())
             .then((consentRequest) => {
-                console.log(consentRequest)
                 const popUpButtons = document.getElementById('pop-up-buttons');
 
                 const acceptButton = document.createElement('div');
@@ -861,9 +844,8 @@
         const data = new FormData;
         data.append('id', requestId);
         data.append('anonymous', document.getElementById('anonymousCheckBox').checked);
-        fetch('{{ path('consentRequests.accept') }}', { method: 'POST', keepalive: true, body: data })
-            .then((response) => response.text())
-            .then((data) => {console.log(data)})
+        fetch('{{ path('consentRequests.accept') }}', { method: 'POST', keepalive: true, body: data });
+
         removeConsentRequest(requestId);
         closePopUp();
     }
@@ -913,7 +895,7 @@
             parentCover.appendChild(image);
 
             if (parent.children.length > 0) {
-                parent.insertBefore(parentCover, parent.firstChild)
+                parent.insertBefore(parentCover, parent.firstChild);
             } else {
                 parent.appendChild(parentCover);
             }

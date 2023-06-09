@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
 use App\Entity\Participant;
-use App\Service\ParticipantService;
+use App\Service\Implementations\ParticipantService;
 
 class ParticipantManager
 {

@@ -46,10 +46,10 @@
 </div>
 
 <script>
-    const assetDir = "{{ asset('img/') }}"
+    const assetDir = "{{ asset('img/') }}";
 
     function addIncomingRequest(username, img) {
-        const friendRequest = document.createElement('div')
+        const friendRequest = document.createElement('div');
         friendRequest.className = 'friend-request';
         friendRequest.id = 'request-' + username;
         const imgSrc = assetDir + img;
@@ -90,7 +90,7 @@
     }
 
     function addOutgoingRequest(username, img) {
-        const friendRequest = document.createElement('div')
+        const friendRequest = document.createElement('div');
         friendRequest.className = 'friend-request';
         friendRequest.id = 'request-' + username;
         const imgSrc = assetDir + img;
@@ -128,7 +128,7 @@
     }
 
     function addFriend(username, img) {
-        const friendRequest = document.createElement('div')
+        const friendRequest = document.createElement('div');
         friendRequest.className = 'friend-request';
         friendRequest.id = 'friend-' + username;
         const imgSrc = assetDir + img;
@@ -224,7 +224,7 @@
         } else {
             outgoingRequestNumber.innerText = newNumber;
         }
-        showNoFriends()
+        showNoFriends();
     }
 
     function removeFriend(username) {
@@ -240,7 +240,7 @@
         } else {
             friendNumber.innerText = newNumber;
         }
-        showNoFriends()
+        showNoFriends();
     }
 
     function acceptFriendRequest(username, img) {
@@ -259,7 +259,7 @@
         url = url.replace("username", username);
         fetch(url, {method: 'POST', keepalive: true});
         removeIncomingRequest(username);
-        showNoFriends()
+        showNoFriends();
     }
 
     function revokeFriendRequest(username) {
@@ -267,7 +267,7 @@
         url = url.replace("username", username);
         fetch(url, {method: 'POST', keepalive: true});
         removeOutgoingRequest(username);
-        showNoFriends()
+        showNoFriends();
     }
 
     function sendFriendRequest(username, img) {

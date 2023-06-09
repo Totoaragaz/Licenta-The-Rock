@@ -327,7 +327,7 @@
         }
 
         function addForumFriend(username, image) {
-            const button = document.getElementById('forumAddFriendButton-' + username)
+            const button = document.getElementById('forumAddFriendButton-' + username);
             button.className = 'person-button-disabled';
             button.style.fontSize = '0.7em';
             button.innerHTML = `{{ 'forum.revokeFriendRequest'|trans }} <i class='fa fa-remove'><i>`;
@@ -336,13 +336,13 @@
             delay(1000).then(() => {
                 button.className = 'person-button';
                 button.onclick = function () {
-                    revokeForumFriendRequest(username, image)
+                    revokeForumFriendRequest(username, image);
                 }
             });
         }
 
         function revokeForumFriendRequest(username, image) {
-            const button = document.getElementById('forumAddFriendButton-' + username)
+            const button = document.getElementById('forumAddFriendButton-' + username);
             button.className = 'person-button-disabled';
             button.style.fontSize = '1em';
             button.innerHTML = `{{ 'forum.addFriend'|trans }} <i class='fa fa-plus'><i>`;
@@ -355,8 +355,5 @@
                 }
             });
         }
-
-
-
     </script>
 {% endblock %}

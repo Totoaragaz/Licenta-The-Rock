@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
@@ -46,11 +48,6 @@ class UserRepository extends ServiceEntityRepository
         }
 
         return false;
-    }
-
-    public function deleteUser(int $userId): void
-    {
-        $this->getEntityManager()->remove($this->find($userId));
     }
 
     public function getUserMode(int $userId): bool
@@ -111,36 +108,13 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAllOtherUsers(string $username): ?array
-    {
-        return $this->createQueryBuilder('u')
-            ->select('u')
-            ->where('u.username != :username and u.isVerified = true')
-            ->setParameter('username', $username)
-            ->orderBy('u.username', 'asc')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getSearchedUsers(string $username, string $query): ?array
-    {
-        return $this->createQueryBuilder('u')
-            ->select('u')
-            ->where('LOWER(u.username) LIKE :query and LOWER(u.username) != :username and u.isVerified = true')
-            ->setParameter('query', '%' . $query . '%')
-            ->setParameter('username', $username)
-            ->orderBy('u.username', 'asc')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function updateUserRepo(User $user): bool
     {
         try {
             $this->getEntityManager()->persist($user);
             $this->getEntityManager()->flush();
             return true;
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -155,51 +129,5 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('email', $email)
             ->getQuery();
         $rows = $query->execute();
-    }
-
-    public function getAllEmployees(string $query): array
-    {
-        return $this->createQueryBuilder('u')
-            ->select('u')
-            ->innerJoin('u.hotels', 'h')
-            ->andWhere($query)
-            ->distinct()
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getEmailVerification(string $email): array
-    {
-        return $this->createQueryBuilder('u')
-            ->select('u.isVerified')
-            ->andWhere('u.email = :email')
-            ->setParameter('email', $email)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getUserWithEmail(string $email): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->select('u')
-            ->andWhere('u.email = :email')
-            ->setParameter('email', $email)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    public function deleteUsers(array $users): void
-    {
-        $this->createQueryBuilder('u')
-            ->delete()
-            ->where("u.id in (:userIds)")
-            ->setParameter('userIds', $users)
-            ->getQuery()
-            ->execute();
-    }
-
-    public function getUserById(int $userId): ?User
-    {
-        return $this->find($userId);
     }
 }

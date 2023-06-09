@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
@@ -18,5 +20,4 @@ class FileExistsExtension extends AbstractExtension
     {
         return file_exists($file);
     }
-
 }

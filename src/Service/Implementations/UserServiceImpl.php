@@ -32,8 +32,10 @@ class UserServiceImpl
         $user->setRole('ROLE_USER');
         $user->setVerified(false);
         if ($this->userRepository->createUser($user)) {
+
             return true;
         }
+
         return false;
     }
 
@@ -42,26 +44,6 @@ class UserServiceImpl
         $user->setPassword(
             $this->passwordHasher->hashPassword($user, $user->getPassword())
         );
-    }
-
-    public function getUserMode(int $userId): bool
-    {
-        return $this->userRepository->getUserMode($userId);
-    }
-
-    public function getMainColumn(int $userId): bool
-    {
-        return $this->userRepository->getMainColumn($userId);
-    }
-
-    public function getFriendColumn(int $userId): bool
-    {
-        return $this->userRepository->getFriendColumn($userId);
-    }
-
-    public function getChatColumn(int $userId): bool
-    {
-        return $this->userRepository->getChatColumn($userId);
     }
 
     public function updateUser(User $user): bool
@@ -156,12 +138,16 @@ class UserServiceImpl
     {
         $friend = $this->userRepository->getUserByUsername($friendUsername);
         if ($user->getFriends()->contains($friend)) {
+
             return 'friends';
         } else if ($user->getIncomingFriendRequests()->contains($friend)) {
+
             return 'incomingRequest';
         } else if ($user->getOutgoingFriendRequests()->contains($friend)) {
+
             return 'outgoingRequest';
         } else {
+
             return 'none';
         }
     }

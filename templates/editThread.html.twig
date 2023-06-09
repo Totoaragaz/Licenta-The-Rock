@@ -87,7 +87,6 @@
                     lastWasImage = false;
                 {% endif %}
             {% endfor %}
-            console.log(imagesArray);
 
             const tx = document.getElementsByTagName("textarea");
             for (let i = 0; i < tx.length; i++) {
@@ -113,7 +112,6 @@
                 textarea.setSelectionRange(textarea.value.length, textarea.value.length);
                 textarea.focus();
             }
-            console.log(imagesArray);
         }, false);
 
         window.addEventListener('unload', function () {
@@ -170,7 +168,7 @@
 
             const button = document.createElement('div');
             button.innerText = '{{ 'createThread.deleteImage'|trans }}';
-            button.className = 'create-thread-content-image-delete'
+            button.className = 'create-thread-content-image-delete';
 
             for (let i = 0; i < 5; i++) {
                 if (typeof imagesArray[i] == 'undefined') {
@@ -200,7 +198,7 @@
 
             const button = document.createElement('div');
             button.innerText = '{{ 'createThread.deleteImage'|trans }}';
-            button.className = 'create-thread-content-image-delete'
+            button.className = 'create-thread-content-image-delete';
             button.onclick = function () {
                 deleteImage(number);
             }
@@ -210,7 +208,7 @@
 
         function addTextArea() {
             const textArea = document.createElement("div");
-            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index);
             content.appendChild(textArea);
             content.dataset.index++;
         }
@@ -233,9 +231,7 @@
             imagesArray[number] = undefined;
             const data = new FormData;
             data.append('number', number);
-            fetch('{{ path('removeImageEdit') }}', {method: 'POST', keepalive: true, body: data})
-                .then((response) => response.json())
-                .then((data) => console.log(data));
+            fetch('{{ path('removeImageEdit') }}', {method: 'POST', keepalive: true, body: data});
         }
     </script>
 {% endblock %}

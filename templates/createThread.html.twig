@@ -121,7 +121,6 @@
                 characters += textarea.value.length;
             }
             const bubble = document.getElementById('content-bubble');
-            console.log(characters);
             if (characters > 20) {
                 bubble.style.backgroundColor = 'green';
                 bubble.innerHTML = ' <i class="fa fa-check"></i>';
@@ -139,7 +138,7 @@
 
         const inputElement = document.getElementById("{{ createThreadForm.images.vars.id }}");
         inputElement.addEventListener("change", addImages, false);
-        let imagesArray = []
+        let imagesArray = [];
 
         content.addEventListener('click', function (e) {
             if (e.target.className !== 'create-thread-content-text') {
@@ -199,7 +198,7 @@
 
         function addTextArea() {
             const textArea = document.createElement("div");
-            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index);
             textArea.children[0].className = 'thread-textarea';
             content.appendChild(textArea);
             content.dataset.index++;

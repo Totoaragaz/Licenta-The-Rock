@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Implementations;
 
 use App\Entity\ConsentRequest;
@@ -40,11 +42,6 @@ class ConsentRequestService
     public function getConsentRequestPreview(int $requestId): array
     {
         return $this->consentRequestRepository->getConsentRequestPreview($requestId);
-    }
-
-    public function deleteConsentRequestById(int $requestId): void
-    {
-        $this->consentRequestRepository->remove($this->consentRequestRepository->findOneBy(['id' => $requestId]), 1);
     }
 
     public function deleteConsentRequestByObject(ConsentRequest $consentRequest): void

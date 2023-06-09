@@ -40,16 +40,15 @@
                                 {% if error %}
                                     <div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                 {% endif %}
-                            <div class="slight-text">
-                                {{ 'login.noAccount' | trans }}
-                                <a href="{{ path('register') }}" class="register-link">{{ 'login.registerHere'|trans }}</a>
-                                <button type="submit" name="_submit" class="button">{{ 'login.login'|trans }}</button>
-                            </div>
+                                <div class="slight-text">
+                                    {{ 'login.noAccount' | trans }}
+                                    <a href="{{ path('register') }}" class="register-link">{{ 'login.registerHere'|trans }}</a>
+                                    <button type="submit" name="_submit" class="button">{{ 'login.login'|trans }}</button>
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 {% endblock %}

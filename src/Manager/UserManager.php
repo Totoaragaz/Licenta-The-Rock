@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
-use App\Dto\RequestDtoUsers;
 use App\Dto\UserProfileDto;
 use App\Entity\User;
 use App\Service\Implementations\MailServiceImpl;
@@ -30,26 +31,6 @@ class UserManager
         }
 
         return false;
-    }
-
-    public function getUserMode(int $userId): bool
-    {
-        return $this->userService->getUserMode($userId);
-    }
-
-    public function getMainColumn(int $userId): bool
-    {
-        return $this->userService->getMainColumn($userId);
-    }
-
-    public function getFriendColumn(int $userId): bool
-    {
-        return $this->userService->getFriendColumn($userId);
-    }
-
-    public function getChatColumn(int $userId): bool
-    {
-        return $this->userService->getChatColumn($userId);
     }
 
     public function getUserByUsername(string $username): ?UserProfileDto
@@ -100,11 +81,6 @@ class UserManager
     public function getSearchedUsers(User $user, string $query, int $page): array
     {
         return $this->userService->getSearchedUsers($user, $query, $page);
-    }
-
-    public function transformUserIntoProfileDto(User $user): UserProfileDto
-    {
-        return $this->userService->transformUserIntoProfileDto($user);
     }
 
     public function getUserObjectByUsername(string $username): ?User
