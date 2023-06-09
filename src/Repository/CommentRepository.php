@@ -25,7 +25,7 @@ class CommentRepository extends ServiceEntityRepository
         $this->entityManager = $entityManager;
     }
 
-    public function saveComment(Comment $comment):bool
+    public function saveComment(Comment $comment): bool
     {
         $this->entityManager->persist($comment);
         $this->entityManager->flush();
@@ -39,18 +39,18 @@ class CommentRepository extends ServiceEntityRepository
         $this->entityManager->flush();
     }
 
-    public function save(Comment $entity, bool $flush = false): void
+    public function remove(Comment $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
 
-    public function remove(Comment $entity, bool $flush = false): void
+    public function save(Comment $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->persist($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();

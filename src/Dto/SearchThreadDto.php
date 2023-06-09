@@ -22,6 +22,7 @@ class SearchThreadDto
     public function setTitle(?string $title): SearchThreadDto
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -33,6 +34,7 @@ class SearchThreadDto
     public function setTags(?array $tags): SearchThreadDto
     {
         $this->tags = $tags;
+
         return $this;
     }
 
@@ -44,6 +46,7 @@ class SearchThreadDto
     public function setUploadDate(?DateTime $uploadDate): SearchThreadDto
     {
         $this->uploadDate = $uploadDate->format('d/m/Y');
+
         return $this;
     }
 
@@ -55,6 +58,7 @@ class SearchThreadDto
     public function setAuthor(?string $author): SearchThreadDto
     {
         $this->author = $author;
+
         return $this;
     }
 
@@ -66,6 +70,7 @@ class SearchThreadDto
     public function setId(?int $id): SearchThreadDto
     {
         $this->id = $id;
+
         return $this;
     }
 }

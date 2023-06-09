@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ThreadRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -22,7 +25,7 @@ class Thread
 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $uploadDate = null;
+    private ?DateTimeInterface $uploadDate = null;
 
     #[ORM\Column]
     private ?bool $closed = false;
@@ -39,6 +42,7 @@ class Thread
 
     #[ORM\OneToMany(mappedBy: 'thread', targetEntity: ContentBit::class, orphanRemoval: true)]
     private Collection $content;
+
 
     public function __construct()
     {
@@ -64,12 +68,12 @@ class Thread
         return $this;
     }
 
-    public function getUploadDate(): ?\DateTimeInterface
+    public function getUploadDate(): ?DateTimeInterface
     {
         return $this->uploadDate;
     }
 
-    public function setUploadDate(\DateTimeInterface $uploadDate): self
+    public function setUploadDate(DateTimeInterface $uploadDate): self
     {
         $this->uploadDate = $uploadDate;
 
@@ -124,6 +128,12 @@ class Thread
         return $this->tags;
     }
 
+    public function setTags(Collection $tags): Thread
+    {
+        $this->tags = $tags;
+        return $this;
+    }
+
     public function getTagNames(): array
     {
         $tagNames = [];
@@ -135,15 +145,6 @@ class Thread
 
     }
 
-    public function setTags(Collection $tags): Thread
-    {
-        $this->tags = $tags;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comment>
-     */
     public function getComments(): Collection
     {
         return $this->comments;
@@ -171,9 +172,6 @@ class Thread
         return $this;
     }
 
-    /**
-     * @return Collection<int, ContentBit>
-     */
     public function getContent(): Collection
     {
         return $this->content;
@@ -189,9 +187,13 @@ class Thread
         return $this;
     }
 
-    public function removeAllContent(): void
+    public function removeTextAndImages(): void
     {
-        $this->content = new ArrayCollection();
+        foreach ($this->content as $contentBit) {
+            if ($contentBit->getType() != 'conversation') {
+                $this->content->removeElement($contentBit);
+            }
+        }
     }
 
     public function removeContent(ContentBit $content): self
@@ -204,5 +206,17 @@ class Thread
         }
 
         return $this;
+    }
+
+    public function hasConversations(): bool
+    {
+        foreach ($this->content as $contentBit) {
+            if ($contentBit->getType() == 'conversation') {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

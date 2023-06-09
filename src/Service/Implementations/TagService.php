@@ -14,7 +14,9 @@ class TagService
 {
     public function __construct(
         private TagRepository $tagRepository,
-    ){}
+    )
+    {
+    }
 
     public function createTags(array $stringTags): Collection
     {

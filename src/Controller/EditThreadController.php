@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Thread;
@@ -16,8 +18,8 @@ use Twig\Environment;
 class EditThreadController extends AbstractController
 {
     public function __construct(
-        private Environment $twig,
-        protected ThreadManager $threadManager,
+        private Environment                $twig,
+        protected ThreadManager            $threadManager,
         protected UploadPictureServiceImpl $uploadPictureServiceImpl,
     )
     {
@@ -34,9 +36,9 @@ class EditThreadController extends AbstractController
 
         $form = $this->createForm(EditThreadFormType::class, $thread);
         $form->handleRequest($request);
+        $conversationsExist = $thread->hasConversations();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $session = $request->getSession();
             $images = $this->keepTemporaryImages($request);
             sleep(5);
 
@@ -51,14 +53,9 @@ class EditThreadController extends AbstractController
             'user' => $user,
             'uploadDate' => $thread->getUploadDate()->format('d/m/Y h:i:s'),
             'thread' => $thread,
-            'editThreadForm' => $form->createView()
+            'editThreadForm' => $form->createView(),
+            'conversationsExist' => $conversationsExist
         ]));
-    }
-
-    #[Route(path: '/deleteThread/{threadId}', name: 'deleteThread')]
-    public function deleteThread(string $threadId): void
-    {
-        $this->threadManager->deleteThread($threadId);
     }
 
     private function initializeImageSession(Request $request, Thread $thread): void
@@ -71,22 +68,6 @@ class EditThreadController extends AbstractController
                 $i++;
             }
         }
-    }
-
-    #[Route(path: '/removeImageEdit', name: 'removeImageEdit')]
-    public function removeTemporaryImage(Request $request): Response
-    {
-        $session = $request->getSession();
-        $number = $request->get('number');
-        $image = $session->get('image' . $number);
-        if ($image != null) {
-            if (!file_exists('img/' . $image)) {
-                $this->uploadPictureServiceImpl->deleteTemporaryPicture($image);
-            }
-        }
-        $session->remove('image' . $number);
-
-        return $this->json($session,Response::HTTP_OK);
     }
 
     private function keepTemporaryImages(Request $request): array
@@ -103,5 +84,27 @@ class EditThreadController extends AbstractController
         }
 
         return $images;
+    }
+
+    #[Route(path: '/deleteThread/{threadId}', name: 'deleteThread')]
+    public function deleteThread(string $threadId): void
+    {
+        $this->threadManager->deleteThread($threadId);
+    }
+
+    #[Route(path: '/removeImageEdit', name: 'removeImageEdit')]
+    public function removeTemporaryImage(Request $request): Response
+    {
+        $session = $request->getSession();
+        $number = $request->get('number');
+        $image = $session->get('image' . $number);
+        if ($image != null) {
+            if (!file_exists('img/' . $image)) {
+                $this->uploadPictureServiceImpl->deleteTemporaryPicture($image);
+            }
+        }
+        $session->remove('image' . $number);
+
+        return $this->json($session, Response::HTTP_OK);
     }
 }

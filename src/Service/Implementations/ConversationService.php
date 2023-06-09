@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Implementations;
 
 use App\Entity\Conversation;
@@ -41,7 +43,15 @@ class ConversationService
 
     public function getConversations(int $userId): array
     {
-        return $this->conversationRepository->getConversations($userId);
+        $conversations = $this->conversationRepository->getConversations($userId);
+
+        foreach ($conversations as $key => $conversation) {
+            if (!is_null($conversation['createdAt'])) {
+                $conversations[$key]['createdAt'] = date_format($conversation['createdAt'], "H:i j/n/y");
+            }
+        }
+
+        return $conversations;
     }
 
     public function checkIfUserIsParticipant(int $conversationId, int $userId): bool
@@ -56,6 +66,6 @@ class ConversationService
 
     public function updateConversation(Conversation $conversation): void
     {
-        $this->conversationRepository->save($conversation, 1);
+        $this->conversationRepository->save($conversation, true);
     }
 }

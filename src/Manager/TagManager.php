@@ -18,7 +18,7 @@ class TagManager
 
     public function createTags(string $tagText): Collection
     {
-        $tags = explode(',', str_replace(' ', '',strtolower($tagText)));
+        $tags = explode(',', str_replace(' ', '', strtolower($tagText)));
         return $this->tagService->createTags($tags);
     }
 

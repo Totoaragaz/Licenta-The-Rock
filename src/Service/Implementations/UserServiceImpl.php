@@ -16,11 +16,11 @@ class UserServiceImpl
 {
 
     public function __construct(
-        protected UserRepository $userRepository,
-        protected EntityManagerInterface $entityManager,
+        protected UserRepository              $userRepository,
+        protected EntityManagerInterface      $entityManager,
         protected UserPasswordHasherInterface $passwordHasher,
-        protected UserTransformer $transformer,
-        protected ThreadTransformer $threadTransformer,
+        protected UserTransformer             $transformer,
+        protected ThreadTransformer           $threadTransformer,
     )
     {
     }
@@ -64,27 +64,6 @@ class UserServiceImpl
         return $this->userRepository->getChatColumn($userId);
     }
 
-    public function transformUserIntoProfileDto(User $user): UserProfileDto
-    {
-        $threads = $user->getThreads();
-        $threadDTOs = [];
-        foreach ($threads as $thread) {
-            $threadDTOs[] = $this->threadTransformer->transformThreadIntoSearchDto($thread);
-        }
-
-        return $this->transformer->transformUserIntoUserProfileDto($user, $threadDTOs);
-    }
-
-    public function getUserByUsername(string $username): ?UserProfileDto
-    {
-        $user = $this->userRepository->getUserByUsername($username);
-        if (!$user) {
-            return null;
-        }
-
-        return $this->transformUserIntoProfileDto($user);
-    }
-
     public function updateUser(User $user): bool
     {
         return $this->userRepository->updateUserRepo($user);
@@ -97,6 +76,27 @@ class UserServiceImpl
         $friend->removeFriend($user);
 
         return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
+    }
+
+    public function getUserByUsername(string $username): ?UserProfileDto
+    {
+        $user = $this->userRepository->getUserByUsername($username);
+        if (!$user) {
+            return null;
+        }
+
+        return $this->transformUserIntoProfileDto($user);
+    }
+
+    public function transformUserIntoProfileDto(User $user): UserProfileDto
+    {
+        $threads = $user->getThreads();
+        $threadDTOs = [];
+        foreach ($threads as $thread) {
+            $threadDTOs[] = $this->threadTransformer->transformThreadIntoSearchDto($thread);
+        }
+
+        return $this->transformer->transformUserIntoUserProfileDto($user, $threadDTOs);
     }
 
     public function acceptFriendRequest(User $user, string $friendUsername): bool
@@ -135,20 +135,6 @@ class UserServiceImpl
         return $this->userRepository->updateUserRepo($user) && $this->userRepository->updateUserRepo($friend);
     }
 
-    public function getFriendState(User $user, string $friendUsername): string
-    {
-        $friend = $this->userRepository->getUserByUsername($friendUsername);
-        if ($user->getFriends()->contains($friend)) {
-            return 'friends';
-        } else if ($user->getIncomingFriendRequests()->contains($friend)) {
-            return 'incomingRequest';
-        } else if ($user->getOutgoingFriendRequests()->contains($friend)) {
-            return 'outgoingRequest';
-        } else {
-            return 'none';
-        }
-    }
-
     public function getAllOtherUsers(User $user, int $page): array
     {
         $users = $this->userRepository->getAllOtherUsersWithPage($user->getUsername(), $page);
@@ -164,6 +150,20 @@ class UserServiceImpl
         }
 
         return [];
+    }
+
+    public function getFriendState(User $user, string $friendUsername): string
+    {
+        $friend = $this->userRepository->getUserByUsername($friendUsername);
+        if ($user->getFriends()->contains($friend)) {
+            return 'friends';
+        } else if ($user->getIncomingFriendRequests()->contains($friend)) {
+            return 'incomingRequest';
+        } else if ($user->getOutgoingFriendRequests()->contains($friend)) {
+            return 'outgoingRequest';
+        } else {
+            return 'none';
+        }
     }
 
     public function getSearchedUsers(User $user, string $query, int $page): array
@@ -183,8 +183,8 @@ class UserServiceImpl
         return [];
     }
 
-    public function getUserObjectById(int $id): ?User
+    public function getUserObjectByUsername(string $username): ?User
     {
-        return $this->userRepository->findOneBy(['id' => $id]);
+        return $this->userRepository->findOneBy(['username' => $username]);
     }
 }

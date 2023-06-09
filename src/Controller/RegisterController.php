@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -15,19 +17,12 @@ use Twig\Environment;
 
 class RegisterController extends AbstractController
 {
-
-    private UploadPictureServiceImpl $uploadPictureServiceImpl;
-    private UserManager $userManager;
-    private Environment $twig;
-
     public function __construct(
-        Environment $twig,
-        UploadPictureServiceImpl $uploadPictureServiceImpl,
-        UserManager $userManager
-    ) {
-        $this->twig = $twig;
-        $this->uploadPictureServiceImpl = $uploadPictureServiceImpl;
-        $this->userManager = $userManager;
+        private Environment              $twig,
+        private UploadPictureServiceImpl $uploadPictureServiceImpl,
+        private UserManager              $userManager
+    )
+    {
     }
 
     #[Route('/register', name: 'register')]
@@ -47,6 +42,7 @@ class RegisterController extends AbstractController
             }
 
             if ($this->userManager->saveUser($user)) {
+
                 return $this->redirectToRoute('login', ['successfulRegistration' => true]);
             }
         }

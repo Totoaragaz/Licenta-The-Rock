@@ -137,6 +137,7 @@ viewThread.comment.placeholder: Leave a comment here ...
 viewThread.submitComment: Submit Comment
 viewThread.deleteComment: Delete Comment
 viewThread.editThread: Edit Thread
+viewThread.conversations: Conversations
 
 #Edit Thread Page
 editThread.cancel: Cancel
@@ -157,3 +158,13 @@ chat.askForConsent: Ask for Consent
 chat.selectThreadInstructions: Select the thread to which you would like to attach the conversation.
 chat.previewThread: Preview Thread
 chat.previewThreadInstructions: Please make sure everything looks good, then press the 'Ask for Consent' button to send a request to update the thread to
+chat.chatWarning: This user is not in your friends list.
+chat.conversationWith: Conversation with
+chat.consentRequest: Consent Request
+chat.consentRequestInstructions: would like to attach some messages from your conversation to a thread. Please review it and decide whether or not you accept it. You may also remain anonymous using the checkbox below.
+chat.accept: Accept
+chat.decline: Decline
+chat.remainAnonymous: Remain Anonymous
+chat.noChats: You have no conversations yet. When you message someone, the conversation will appear here.
+chat.anonymous: "[Anonymous]"
+chat.dependingOn: depending on

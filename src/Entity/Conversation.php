@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ConversationRepository;
@@ -40,9 +42,6 @@ class Conversation
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, Participant>
-     */
     public function getParticipants(): Collection
     {
         return $this->participants;
@@ -82,9 +81,6 @@ class Conversation
         return $this;
     }
 
-    /**
-     * @return Collection<int, Message>
-     */
     public function getMessages(): Collection
     {
         return $this->messages;

@@ -23,7 +23,7 @@ class ThreadManager
 
     public function getSearchedThreads(string $username, string $query, int $page): array
     {
-        $words = explode(' ',strtolower($query));
+        $words = explode(' ', strtolower($query));
         return $this->threadService->getSearchedThreads($username, strtolower($query), $words, $page);
     }
 
@@ -32,7 +32,7 @@ class ThreadManager
         return $this->threadService->createThread($thread);
     }
 
-    public function setThreadContent(Thread &$thread,array $text, array $images): void
+    public function setThreadContent(Thread &$thread, array $text, array $images): void
     {
         $this->threadService->setThreadContent($thread, $text, $images);
     }

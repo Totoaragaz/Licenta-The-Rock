@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Thread;
@@ -17,9 +19,9 @@ use Twig\Environment;
 class CreateThreadController extends AbstractController
 {
     public function __construct(
-        private Environment   $twig,
-        private ThreadManager $threadManager,
-        private TagManager $tagManager,
+        private Environment              $twig,
+        private ThreadManager            $threadManager,
+        private TagManager               $tagManager,
         private UploadPictureServiceImpl $uploadPictureServiceImpl,
     )
     {
@@ -42,9 +44,11 @@ class CreateThreadController extends AbstractController
             $images = $this->keepTemporaryImages($request);
             $thread->setAuthor($user);
             $thread->setTags($this->tagManager->createTags($form->get('tags')->getData()));
+
             if ($this->threadManager->createThread($thread)) {
                 $this->threadManager->setThreadContent($thread, $form->get('content')->getData(), $images);
                 $this->tagManager->saveTags($thread);
+
                 return $this->redirectToRoute('viewThread', [
                     'threadId' => $thread->getId()]);
             }
@@ -55,6 +59,23 @@ class CreateThreadController extends AbstractController
             'user' => $user,
             'createThreadForm' => $form->createView()
         ]));
+    }
+
+    private function keepTemporaryImages(Request $request): array
+    {
+        $session = $request->getSession();
+        $images = [];
+
+        for ($i = 0; $i < 5; $i++) {
+            $image = $session->get('image' . $i);
+            if ($image != null) {
+                $this->uploadPictureServiceImpl->keepTemporaryPicture($image);
+                $images[] = $image;
+                $session->remove('image' . $i);
+            }
+        }
+
+        return $images;
     }
 
     #[Route(path: '/uploadImage', name: 'uploadImage')]
@@ -99,22 +120,6 @@ class CreateThreadController extends AbstractController
         }
         $session->remove('image' . $number);
 
-        return $this->json($session,Response::HTTP_OK);
-    }
-
-    private function keepTemporaryImages(Request $request): array
-    {
-        $session = $request->getSession();
-        $images = [];
-        for ($i = 0; $i < 5; $i++) {
-            $image = $session->get('image' . $i);
-            if ($image != null) {
-                $this->uploadPictureServiceImpl->keepTemporaryPicture($image);
-                $images[] = $image;
-                $session->remove('image' . $i);
-            }
-        }
-
-        return $images;
+        return $this->json($session, Response::HTTP_OK);
     }
 }

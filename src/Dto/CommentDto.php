@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
 use DateTime;
@@ -45,7 +47,8 @@ class CommentDto
 
     public function setUploadDate(?DateTime $uploadDate): self
     {
-        $this->uploadDate = $uploadDate->format('d/m/Y h:i:s');
+        $this->uploadDate = $uploadDate->format('d/m/Y h:i');
+
         return $this;
     }
 
@@ -57,6 +60,7 @@ class CommentDto
     public function setAuthorImage(?string $authorImage): CommentDto
     {
         $this->authorImage = $authorImage;
+
         return $this;
     }
 
@@ -68,6 +72,7 @@ class CommentDto
     public function setId(?string $id): CommentDto
     {
         $this->id = $id;
+
         return $this;
     }
 }

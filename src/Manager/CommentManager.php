@@ -12,7 +12,7 @@ class CommentManager
 {
     public function __construct(
         protected CommentService $commentService,
-        protected ThreadService $threadService,
+        protected ThreadService  $threadService,
     )
     {
     }

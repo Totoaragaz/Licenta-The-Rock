@@ -53,7 +53,7 @@ class EditThreadFormType extends AbstractType
                 'entry_options' => [
                     'attr' => [
                         'class' => 'create-thread-content-text',
-                        ],
+                    ],
                     'required' => false,
                     'label' => false,
                 ],

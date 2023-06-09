@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\ContentBit;
-use App\Entity\Thread;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use function Doctrine\ORM\QueryBuilder;
@@ -66,13 +65,16 @@ class ContentBitRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function removeThreadContentBits(int $threadId): void
+    public function removeThreadTextAndImages(int $threadId): void
     {
         $qb = $this->createQueryBuilder('c');
         $qb
             ->delete('c')
             ->where(
-                $qb->expr()->eq('c.thread', ':thread')
+                $qb->expr()->andX(
+                    $qb->expr()->eq('c.thread', ':thread'),
+                    $qb->expr()->neq('c.type', 'conversation')
+                )
             )
             ->setParameter(':thread', $threadId);
     }

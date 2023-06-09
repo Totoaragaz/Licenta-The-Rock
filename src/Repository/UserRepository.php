@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -101,7 +102,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->select('u')
             ->where('LOWER(u.username) LIKE :query and LOWER(u.username) != :username and u.isVerified = true')
-            ->setParameter('query', '%' . $query. '%')
+            ->setParameter('query', '%' . $query . '%')
             ->setParameter('username', $username)
             ->orderBy('u.username', 'asc')
             ->setFirstResult(($page - 1) * 10)
@@ -126,7 +127,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->select('u')
             ->where('LOWER(u.username) LIKE :query and LOWER(u.username) != :username and u.isVerified = true')
-            ->setParameter('query', '%' . $query. '%')
+            ->setParameter('query', '%' . $query . '%')
             ->setParameter('username', $username)
             ->orderBy('u.username', 'asc')
             ->getQuery()
@@ -139,7 +140,7 @@ class UserRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($user);
             $this->getEntityManager()->flush();
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }
@@ -155,6 +156,7 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery();
         $rows = $query->execute();
     }
+
     public function getAllEmployees(string $query): array
     {
         return $this->createQueryBuilder('u')

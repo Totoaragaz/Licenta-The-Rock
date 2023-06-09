@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
@@ -8,7 +10,7 @@ use Doctrine\ORM\Mapping\Index;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 /**
- *  @ORM\Table(indexes={@Index(name="created_at_index", columns={"created_at"})})
+ * @ORM\Table(indexes={@Index(name="created_at_index", columns={"created_at"})})
  */
 #[ORM\HasLifecycleCallbacks]
 class Message
@@ -41,6 +43,7 @@ class Message
     public function setMine(bool $mine): Message
     {
         $this->mine = $mine;
+
         return $this;
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -16,30 +18,29 @@ use Symfony\Component\WebLink\Link;
 class ConversationController extends AbstractController
 {
     public function __construct(
-        private UserManager $userManager,
+        private UserManager         $userManager,
         private ConversationManager $conversationManager,
     )
     {
     }
 
-    #[Route('/', name: 'newConversations', methods: 'POST')]
+    #[Route('/', name: 'newConversation', methods: 'POST')]
     public function newConversation(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $otherUserId = $request->get('otherUserId', 0);
-
-        $otherUser = $this->userManager->getUserObjectById($otherUserId);
+        $otherUserUsername = $request->get('otherUserUsername', '');
+        $otherUser = $this->userManager->getUserObjectByUsername($otherUserUsername);
 
         if (is_null($otherUser)) {
             throw new NotFoundHttpException('The user was not found');
         }
 
-        $conversation = $this->conversationManager->findConversationByParticipants($otherUserId, $user->getId());
+        $conversation = $this->conversationManager->findConversationByParticipants($otherUser->getId(), $user->getId());
 
         if (count($conversation)) {
-            throw new \Exception('Conversation exists.');
+            return $this->json(['id' => $conversation[0]['id']], Response::HTTP_OK);
         }
 
         $conversation = $this->conversationManager->createNewConversation($user, $otherUser);
@@ -58,8 +59,8 @@ class ConversationController extends AbstractController
 
         $hubUrl = $this->getParameter('mercure.default_hub');
 
-        //$this->addLink($request, new Link('mercure', $hubUrl));
+        $this->addLink($request, new Link('mercure', $hubUrl));
 
-        return $this->json([$conversations ,$hubUrl]);
+        return $this->json($conversations);
     }
 }

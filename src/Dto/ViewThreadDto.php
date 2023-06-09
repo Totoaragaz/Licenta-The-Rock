@@ -26,6 +26,7 @@ class ViewThreadDto
     public function setClosed(?bool $closed): self
     {
         $this->closed = $closed;
+
         return $this;
     }
 
@@ -37,6 +38,7 @@ class ViewThreadDto
     public function setTitle(?string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -48,6 +50,7 @@ class ViewThreadDto
     public function setTags(?array $tags): self
     {
         $this->tags = $tags;
+
         return $this;
     }
 
@@ -58,7 +61,8 @@ class ViewThreadDto
 
     public function setUploadDate(?DateTime $uploadDate): self
     {
-        $this->uploadDate = $uploadDate->format('d/m/Y h:i:s');
+        $this->uploadDate = $uploadDate->format('d/m/Y h:i');
+
         return $this;
     }
 
@@ -70,6 +74,7 @@ class ViewThreadDto
     public function setAuthor(?string $author): self
     {
         $this->author = $author;
+
         return $this;
     }
 
@@ -81,6 +86,7 @@ class ViewThreadDto
     public function setId(?int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -94,20 +100,26 @@ class ViewThreadDto
         $this->content = [];
         foreach ($content as $contentBit) {
             switch ($contentBit->getType()) {
+
                 case 'image':
                     $this->content[] = 'img:' . $contentBit->getContent();
                     break;
+
                 case 'text':
                     $this->content[] = 'txt:' . $contentBit->getContent();
                     break;
+
                 case 'conversation':
                     $conversation = [];
+                    $conversation['helper'] = $contentBit->getConversation()->getHelper();
+                    $conversation['messages'] = [];
                     $messages = $contentBit->getConversation()->getMessages();
+
                     foreach ($messages as $message) {
                         if ($message->isAuthorMe()) {
-                            $conversation[] = 'me:' . $message->getContent();
+                            $conversation['messages'][] = 'me:' . $message->getContent();
                         } else {
-                            $conversation[] = 'ot:' . $message->getContent();
+                            $conversation['messages'][] = 'ot:' . $message->getContent();
                         }
                     }
 
@@ -115,6 +127,7 @@ class ViewThreadDto
                     break;
             }
         }
+
         return $this;
     }
 
@@ -126,6 +139,7 @@ class ViewThreadDto
     public function setComments(?array $comments): self
     {
         $this->comments = $comments;
+
         return $this;
     }
 }

@@ -20,7 +20,7 @@ class ParticipantRepository extends ServiceEntityRepository
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ManagerRegistry $registry)
+        private ManagerRegistry        $registry)
     {
         parent::__construct($registry, Participant::class);
     }
@@ -80,10 +80,10 @@ class ParticipantRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         return $qb
-            ->innerJoin('conversation', 'c')
+            ->innerJoin('p.conversation', 'c')
             ->where(
-                $qb->expr()->eq('p.conversation', 'conversationId'),
-                $qb->expr()->neq('p.user', 'userId')
+                $qb->expr()->eq('p.conversation', ':conversationId'),
+                $qb->expr()->neq('p.user', ':userId')
             )
             ->setParameters([
                 'conversationId' => $conversationId,

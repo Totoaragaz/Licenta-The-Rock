@@ -166,7 +166,7 @@
                             <a class="person-button" href="{{ path('profile', {username: resultUser.username}) }}">
                                 {{ 'forum.viewProfile'|trans }}
                             </a>
-                            <a class="person-button" href="#">
+                            <a class="person-button" onclick="addConversation('{{ resultUser.username }}','{{ resultUser.image }}')">
                                 {{ 'forum.message'|trans }} <i class="fa fa-comment"></i>
                             </a>
                             {% if resultUser.friendState == 'none' %}

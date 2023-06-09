@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ThreadConversationRepository;
@@ -16,13 +18,13 @@ class ThreadConversation
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'conversation', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ContentBit $contentBit = null;
 
     #[ORM\OneToMany(mappedBy: 'conversation', targetEntity: ThreadMessage::class, orphanRemoval: true)]
     private Collection $messages;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $helper = null;
 
     public function __construct()
@@ -47,9 +49,6 @@ class ThreadConversation
         return $this;
     }
 
-    /**
-     * @return Collection<int, ThreadMessage>
-     */
     public function getMessages(): Collection
     {
         return $this->messages;
@@ -82,7 +81,7 @@ class ThreadConversation
         return $this->helper;
     }
 
-    public function setHelper(string $helper): self
+    public function setHelper(?string $helper): self
     {
         $this->helper = $helper;
 

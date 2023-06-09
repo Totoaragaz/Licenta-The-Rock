@@ -15,11 +15,9 @@ use Twig\Environment;
 
 class ForumController extends AbstractController
 {
-
-
     public function __construct(
-        private Environment $twig,
-        protected UserManager $userManager,
+        private Environment     $twig,
+        protected UserManager   $userManager,
         protected ThreadManager $threadManager
     )
     {
@@ -51,6 +49,11 @@ class ForumController extends AbstractController
         ]));
     }
 
+    private function getNumberOfPages(array $array): int
+    {
+        return intdiv(sizeof($array), 10) - (sizeof($array) % 10 === 0) + 1;
+    }
+
     #[Route(path: '/search/{query}', name: 'search', methods: ['GET'])]
     public function search(Request $request, string $query): Response
     {
@@ -79,7 +82,7 @@ class ForumController extends AbstractController
             ]));
         } else {
 
-            $users = $this->userManager->getSearchedUsers($user, $query , $currentPage - 0);
+            $users = $this->userManager->getSearchedUsers($user, $query, $currentPage - 0);
             $threads = $this->threadManager->getSearchedThreads($user->getUsername(), $query, $currentPage - 0);
 
             $usersNumberOfPages = $this->getNumberOfPages($users);
@@ -97,9 +100,5 @@ class ForumController extends AbstractController
             ]));
         }
     }
-
-    private function getNumberOfPages (array $array): int
-    {
-        return intdiv(sizeof($array), 10) - (sizeof($array) % 10 === 0) + 1;
-    }
 }
+

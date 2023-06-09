@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<Tag>
@@ -39,7 +40,7 @@ class TagRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($tag);
             $this->getEntityManager()->flush();
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }

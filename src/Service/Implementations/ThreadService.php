@@ -7,7 +7,9 @@ namespace App\Service\Implementations;
 use App\Dto\ViewThreadDto;
 use App\Entity\ContentBit;
 use App\Entity\Thread;
+use App\Entity\ThreadConversation;
 use App\Repository\ContentBitRepository;
+use App\Repository\ThreadConversationRepository;
 use App\Repository\ThreadRepository;
 use App\Transformer\CommentTransformer;
 use App\Transformer\ThreadTransformer;
@@ -16,11 +18,12 @@ use Doctrine\Common\Collections\Collection;
 class ThreadService
 {
     public function __construct(
-        private ThreadRepository $threadRepository,
-        private ThreadTransformer $transformer,
-        private CommentTransformer $commentTransformer,
-        private UploadPictureServiceImpl $uploadPictureServiceImpl,
-        private ContentBitRepository $contentBitRepository
+        private ThreadRepository             $threadRepository,
+        private ThreadTransformer            $transformer,
+        private CommentTransformer           $commentTransformer,
+        private UploadPictureServiceImpl     $uploadPictureServiceImpl,
+        private ContentBitRepository         $contentBitRepository,
+        private ThreadConversationRepository $threadConversationRepository,
     )
     {
     }
@@ -138,7 +141,6 @@ class ThreadService
         $this->deleteOldImages($originalContent, $images);
         $textNumber = 0;
         $imageNumber = 0;
-        $conversations = [];
         for ($i = 0; $i < sizeof($originalContent); $i++) {
             if ($originalContent[$i]->getType() == 'text') {
                 for ($j = $textNumber; $j < sizeof($newContent); $j++) {
@@ -166,8 +168,6 @@ class ThreadService
                         break;
                     }
                 }
-            } elseif ($originalContent[$i]->getType() == 'conversation') {
-                $conversations[] = $originalContent[$i]->getConversation();
             }
         }
         for ($i = $textNumber; $i < sizeof($newContent); $i++) {
@@ -190,21 +190,12 @@ class ThreadService
                 $this->contentBitRepository->save($contentBit, true);
             }
         }
-
-        foreach ($conversations as $conversation) {
-            $contentBit = new ContentBit();
-            $contentBit->setThread($thread);
-            $contentBit->setType('conversation');
-            $contentBit->setConversation($conversation);
-            $thread->addContent($contentBit);
-            $this->contentBitRepository->save($contentBit, true);
-        }
     }
 
     private function removeContent(Thread &$thread): void
     {
-        $this->contentBitRepository->removeThreadContentBits($thread->getId());
-        $thread->removeAllContent();
+        $this->contentBitRepository->removeThreadTextAndImages($thread->getId());
+        $thread->removeTextAndImages();
     }
 
     private function deleteOldImages(Collection $originalContent, array $newImages): void
@@ -216,5 +207,26 @@ class ThreadService
                 }
             }
         }
+    }
+
+    public function addThreadConversation(Thread $thread, ThreadConversation $conversation, bool $anonymous): void
+    {
+        if ($anonymous) {
+            $conversation->setHelper(null);
+            $this->threadConversationRepository->save($conversation);
+        }
+
+        $contentBit = new ContentBit();
+        $contentBit->setThread($thread);
+        $contentBit->setType('conversation');
+        $contentBit->setConversation($conversation);
+
+        $this->contentBitRepository->save($contentBit, true);
+
+        $conversation->setContentBit($contentBit);
+        $thread->addContent($contentBit);
+        $this->contentBitRepository->save($contentBit, true);
+
+        $this->threadConversationRepository->save($conversation, true);
     }
 }

@@ -7,7 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Conversation>
@@ -21,7 +20,7 @@ class ConversationRepository extends ServiceEntityRepository
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ManagerRegistry $registry)
+        private ManagerRegistry        $registry)
     {
         parent::__construct($registry, Conversation::class);
     }
@@ -69,12 +68,13 @@ class ConversationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
     public function findConversationByParticipants(int $otherUserId, int $myId): array
     {
         $qb = $this->createQueryBuilder('c');
 
         return $qb
-            ->select($qb->expr()->count('p.conversation'))
+            ->select($qb->expr()->count('p.conversation'), 'c.id')
             ->innerJoin('c.participants', 'p')
             ->where(
                 $qb->expr()->orX(

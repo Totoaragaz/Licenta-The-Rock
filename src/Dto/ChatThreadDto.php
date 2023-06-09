@@ -21,6 +21,7 @@ class ChatThreadDto
     public function setTitle(?string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -32,6 +33,7 @@ class ChatThreadDto
     public function setTags(?array $tags): self
     {
         $this->tags = $tags;
+
         return $this;
     }
 
@@ -43,6 +45,7 @@ class ChatThreadDto
     public function setUploadDate(?DateTime $uploadDate): self
     {
         $this->uploadDate = $uploadDate->format('d/m/Y');
+
         return $this;
     }
 
@@ -54,6 +57,7 @@ class ChatThreadDto
     public function setId(?int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 }

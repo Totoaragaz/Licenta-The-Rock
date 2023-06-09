@@ -39,6 +39,15 @@ class ThreadRepository extends ServiceEntityRepository
         $this->entityManager->flush();
     }
 
+    public function remove(Thread $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function getAllThreads(string $user): array
     {
         return $this->createQueryBuilder('t')
@@ -74,7 +83,7 @@ class ThreadRepository extends ServiceEntityRepository
             ->innerJoin('t.tags', 'tt')
             ->where('u.username != :author and t.title like :query')
             ->setParameter('author', $username)
-            ->setParameter('query', '%' . $query .'%');
+            ->setParameter('query', '%' . $query . '%');
 
         for ($i = 0; $i < sizeof($words); $i++) {
             $queryBuilder
@@ -96,7 +105,7 @@ class ThreadRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->select('t')
             ->innerJoin('t.author', 'u')
-            ->where('u.username != :author and t.closed = 0')
+            ->where('u.username = :author and t.closed = 0')
             ->setParameter('author', $user)
             ->orderBy('t.uploadDate')
             ->getQuery()
@@ -106,15 +115,6 @@ class ThreadRepository extends ServiceEntityRepository
     public function save(Thread $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(Thread $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();

@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Manager\ThreadManager;
 use Lcobucci\JWT\Encoding\ChainedFormatter;
 use Lcobucci\JWT\Encoding\JoseEncoder;
-use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\Builder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -37,12 +39,13 @@ class PageController extends AbstractController
         $session->set('outgoingRequests', true);
         $session->set('friends', true);
         $session->set('recents', true);
+        $session->set('activeConversation', 0);
 
         $token = (new Builder(new JoseEncoder(), ChainedFormatter::default()))
-            ->withClaim('mercure', ['subscribe' => [sprintf( "/%s", $user->getUsername())]])
+            ->withClaim('mercure', ['subscribe' => [sprintf("/%s", $user->getUsername())]])
             ->getToken(
                 new Sha256(),
-                InMemory::plainText('!ChangeThisMercureHubJWTSecretKey!')
+                InMemory::plainText($this->getParameter('mercure_secret_key'))
             );
 
         $response = $this->redirectToRoute('forum');
@@ -51,9 +54,8 @@ class PageController extends AbstractController
             new Cookie(
                 name: 'mercureAuthorization',
                 value: $token->toString(),
-                expire: (new \DateTime())->add(new \DateInterval('PT2H')),
-                path: '/.well-known/mercure',
-                domain: '127.0.0.1',
+                expire: time() + (10 * 365 * 24 * 60 * 60),
+                path: '/',
                 secure: false,
                 httpOnly: true,
                 raw: false,
@@ -69,6 +71,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('mainColumn', !$session->get('mainColumn'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -77,6 +80,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('friendColumn', !$session->get('friendColumn'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -85,6 +89,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('chatColumn', !$session->get('chatColumn'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -93,6 +98,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('incomingRequests', !$session->get('incomingRequests'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -101,6 +107,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('outgoingRequests', !$session->get('outgoingRequests'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -109,6 +116,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('friends', !$session->get('friends'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -117,6 +125,7 @@ class PageController extends AbstractController
     {
         $session = $request->getSession();
         $session->set('recents', !$session->get('recents'));
+
         return $this->json(Response::HTTP_OK);
     }
 
@@ -127,6 +136,7 @@ class PageController extends AbstractController
         $user = $this->getUser();
 
         $threads = $this->threadManager->getChatThreads($user->getUsername());
+
         return $this->json($threads, Response::HTTP_OK, [], [
             'attributes' => ['id', 'title', 'tags', 'uploadDate']
         ]);
@@ -141,16 +151,29 @@ class PageController extends AbstractController
         return $this->json($thread, Response::HTTP_OK, [], []);
     }
 
-    #[Route(path: '/fileExists', name: 'fileExists')]
-    public function fileExists(Request $request): Response
+    #[Route('/getActiveConversation', name: 'getActiveConversation', methods: ['GET'])]
+    public function getActiveConversation(Request $request): Response
     {
-        $fileName = $request->get('file');
-        if (file_exists('img/' . $fileName)) {
+        $session = $request->getSession();
+        if ($session->get('activeConversation') != 0) {
+            $conversation = explode(',', $session->get('activeConversation'));
 
-            return $this->json(Response::HTTP_OK);
+            return $this->json(['conversation' => $conversation[0], 'recipient' => $conversation[1]], Response::HTTP_OK);
+        } else {
+
+            return $this->json(null, Response::HTTP_NO_CONTENT);
         }
+    }
 
-        return $this->json(Response::HTTP_NOT_FOUND);
+    #[Route('/setActiveConversation', name: 'setActiveConversation', methods: ['POST'])]
+    public function setActiveConversation(Request $request): Response
+    {
+        $session = $request->getSession();
+        $conversationId = $request->get('conversationId');
+        $recipient = $request->get('recipient');
+        $session->set('activeConversation', $conversationId . ',' . $recipient);
+
+        return $this->json(Response::HTTP_OK);
     }
 
     #[Route('/logout', name: 'logout', methods: ['GET'])]

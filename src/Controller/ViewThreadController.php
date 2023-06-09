@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Comment;
@@ -7,7 +9,6 @@ use App\Entity\User;
 use App\Form\CommentFormType;
 use App\Manager\CommentManager;
 use App\Manager\ThreadManager;
-use App\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,8 @@ use Twig\Environment;
 class ViewThreadController extends AbstractController
 {
     public function __construct(
-        private Environment $twig,
-        protected ThreadManager $threadManager,
+        private Environment      $twig,
+        protected ThreadManager  $threadManager,
         protected CommentManager $commentManager
     )
     {
@@ -39,6 +40,7 @@ class ViewThreadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setAuthor($user);
             if ($this->commentManager->submitComment($comment, $threadId)) {
+
                 return $this->redirectToRoute('viewThread', ['threadId' => $threadId]);
             }
         }
@@ -51,8 +53,10 @@ class ViewThreadController extends AbstractController
     }
 
     #[Route(path: '/deleteComment/{commentId}', name: 'deleteComment')]
-    public function deleteComment(string $commentId):void
+    public function deleteComment(string $commentId): Response
     {
         $this->commentManager->deleteComment($commentId);
+
+        return $this->json(Response::HTTP_OK);
     }
 }

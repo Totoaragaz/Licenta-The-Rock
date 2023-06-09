@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ThreadMessageRepository;
@@ -19,7 +21,7 @@ class ThreadMessage
     #[ORM\Column]
     private ?bool $authorMe = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'], inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ThreadConversation $conversation = null;
 

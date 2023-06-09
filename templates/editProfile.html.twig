@@ -33,7 +33,7 @@
                         {{ form_errors(editProfileForm.bio) }}
                         {{ form_errors(editProfileForm.image) }}
                     </div>
-                    <label id="question-label">{{ 'profile.deleteProfilePicture'|trans }}<br>
+                    <label class="profile-delete-picture-label" for="delete-image-checkbox" id="question-label">{{ 'profile.deleteProfilePicture'|trans }}<br>
                     </label>
                     <input type="checkbox" id="delete-image-checkbox" name="delete-image-checkbox">
                     {{ form_widget(editProfileForm.save) }}

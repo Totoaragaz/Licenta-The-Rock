@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use function Symfony\Component\Translation\t;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -82,12 +81,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Comment::class)]
     private Collection $comments;
 
+    #[ORM\OneToMany(mappedBy: 'requester', targetEntity: ConsentRequest::class, orphanRemoval: true)]
+    private Collection $outgoingConsentRequests;
+
+    #[ORM\OneToMany(mappedBy: 'recipient', targetEntity: ConsentRequest::class, orphanRemoval: true)]
+    private Collection $incomingConsentRequests;
+
     public function __construct()
     {
         $this->threads = new ArrayCollection();
         $this->incomingFriendRequests = new ArrayCollection();
         $this->outgoingFriendRequests = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->outgoingConsentRequests = new ArrayCollection();
+        $this->incomingConsentRequests = new ArrayCollection();
     }
 
 
@@ -115,7 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     /**
@@ -157,6 +164,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->isVerified;
     }
+
     public function setVerified(?bool $isVerified): User
     {
         $this->isVerified = $isVerified;
@@ -178,6 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->image;
     }
+
     public function setImage(?string $image): User
     {
         $this->image = $image;
@@ -188,11 +197,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->registrationDate;
     }
+
     public function setRegistrationDate(DateTime $registrationDate): User
     {
         $this->registrationDate = $registrationDate;
         return $this;
     }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -216,8 +227,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-    * @see UserInterface
-    */
+     * @see UserInterface
+     */
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -390,6 +401,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($comment->getAuthor() === $this) {
                 $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ConsentRequest>
+     */
+    public function getOutgoingConsentRequests(): Collection
+    {
+        return $this->outgoingConsentRequests;
+    }
+
+    public function addOutgoingConsentRequest(ConsentRequest $outgoingConsentRequest): self
+    {
+        if (!$this->outgoingConsentRequests->contains($outgoingConsentRequest)) {
+            $this->outgoingConsentRequests->add($outgoingConsentRequest);
+            $outgoingConsentRequest->setRequester($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOutgoingConsentRequest(ConsentRequest $outgoingConsentRequest): self
+    {
+        if ($this->outgoingConsentRequests->removeElement($outgoingConsentRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($outgoingConsentRequest->getRequester() === $this) {
+                $outgoingConsentRequest->setRequester(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ConsentRequest>
+     */
+    public function getIncomingConsentRequests(): Collection
+    {
+        return $this->incomingConsentRequests;
+    }
+
+    public function addIncomingConsentRequest(ConsentRequest $incomingConsentRequest): self
+    {
+        if (!$this->incomingConsentRequests->contains($incomingConsentRequest)) {
+            $this->incomingConsentRequests->add($incomingConsentRequest);
+            $incomingConsentRequest->setRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIncomingConsentRequest(ConsentRequest $incomingConsentRequest): self
+    {
+        if ($this->incomingConsentRequests->removeElement($incomingConsentRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($incomingConsentRequest->getRecipient() === $this) {
+                $incomingConsentRequest->setRecipient(null);
             }
         }
 

@@ -200,6 +200,7 @@
         function addTextArea() {
             const textArea = document.createElement("div");
             textArea.innerHTML = content.dataset.prototype.replace(/__name__/g, content.dataset.index)
+            textArea.children[0].className = 'thread-textarea';
             content.appendChild(textArea);
             content.dataset.index++;
         }

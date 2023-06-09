@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Repository\MessageRepository;
 

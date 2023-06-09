@@ -3,6 +3,7 @@
 {% block title %}{{ thread.title }} - The Rock{% endblock %}
 
 {% block content %}
+    {% set conversationsExist = false %}
     <div class="view-thread-bottom-white-space">
         <div class="view-thread-container">
             <div class="view-thread-title">
@@ -30,7 +31,7 @@
                                 {{ contentBit[4:] }}
                             {% endif %}
                         {% else %}
-                            conversation comes here BUT LATER LOLOLOLOLOLOL
+                            {% set conversationsExist = true %}
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -43,6 +44,38 @@
                 </div>
             {% endif %}
         </div>
+        {% if conversationsExist %}
+            <div class="view-thread-container">
+                <div class="view-thread-title">
+                    {{ 'viewThread.conversations'|trans }}
+                </div>
+                <div class="view-thread-content">
+                    {% for contentBit in thread.content %}
+                        <div class="view-thread-content-bit">
+                            {% if (contentBit is iterable) %}
+                                <div class="view-thread-conversation-with">
+                                    {{ 'chat.conversationWith'|trans }}
+                                    {% if contentBit.helper is null %}
+                                        <a><span class="view-thread-anonymous">{{ 'chat.anonymous'|trans }}</span></a>
+                                    {% else %}
+                                        <a class="view-thread-conversation-helper" href="{{ path('profile', {username: contentBit.helper}) }}"><span class="view-thread-conversation-helper"> {{ contentBit.helper }}</span></a>
+                                    {% endif %}
+                                </div>
+                                <div class="view-thread-conversation-container">
+                                    {% for message in contentBit.messages %}
+                                        <div class="chat-message">
+                                            <div class="chat-message-content {% if (message[:3] == 'me:') %}me{% else %}other{% endif %}">
+                                                {{ message[3:] }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
         <div class="view-thread-comments" id="comments">
             {% if not thread.closed %}
             <div class="view-thread-comment">

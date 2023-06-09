@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Message;
@@ -7,6 +9,7 @@ use App\Entity\User;
 use App\Manager\ConversationManager;
 use App\Manager\MessageManager;
 use App\Manager\ParticipantManager;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,15 +18,15 @@ use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/messages' , name: 'messages.')]
+#[Route('/messages', name: 'messages.')]
 class MessageController extends AbstractController
 {
     const ATTRIBUTES_TO_SERIALIZE = ['id', 'content', 'createdAt', 'mine'];
 
     public function __construct(
-        private MessageManager $messageManager,
+        private MessageManager      $messageManager,
         private ConversationManager $conversationManager,
-        private ParticipantManager $participantManager,
+        private ParticipantManager  $participantManager,
     )
     {
     }
@@ -38,12 +41,11 @@ class MessageController extends AbstractController
         $messages = $this->messageManager->getMessages($conversation->getId());
 
         foreach ($messages as $message) {
-            if ($message->getUser()->getId() == $user->getId()){
+            if ($message->getUser()->getId() == $user->getId()) {
                 $message->setMine(true);
             } else {
                 $message->setMine(false);
             }
-
         }
 
         return $this->json($messages, Response::HTTP_OK, [], [
@@ -51,8 +53,8 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name :'createMessage', methods: 'POST')]
-    public function newMessage(Request $request, int $id, SerializerInterface $serializer, HubInterface $hub): Response
+    #[Route('/{id}', name: 'createMessage', methods: 'POST')]
+    public function createMessage(Request $request, int $id, SerializerInterface $serializer, HubInterface $hub): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -63,7 +65,7 @@ class MessageController extends AbstractController
         $content = $request->get('content');
 
         if (is_null($content)) {
-            throw new \Exception('Message cannot be null');
+            throw new Exception('Message cannot be null');
         }
 
         $message = new Message();
@@ -82,12 +84,8 @@ class MessageController extends AbstractController
         ]);
 
         $update = new Update(
-            [
-                sprintf('/conversastions/%s', $conversation->getId()),
-                sprintf('/conversastions/%s', $recipient->getUser()->getUsername()),
-            ],
-            $messageSerialized,
-            true
+            sprintf('/conversations/%s', $recipient->getUser()->getUsername()),
+            $messageSerialized
         );
 
         $hub->publish($update);

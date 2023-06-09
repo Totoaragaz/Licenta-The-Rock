@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,7 +28,7 @@ class Comment
     private ?Thread $thread = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $uploadDate = null;
+    private ?DateTimeInterface $uploadDate = null;
 
     public function getId(): ?int
     {
@@ -68,14 +71,15 @@ class Comment
         return $this;
     }
 
-    public function getUploadDate(): ?\DateTimeInterface
+    public function getUploadDate(): ?DateTimeInterface
     {
         return $this->uploadDate;
     }
 
-    public function setUploadDate(?\DateTimeInterface $uploadDate): Comment
+    public function setUploadDate(?DateTimeInterface $uploadDate): Comment
     {
         $this->uploadDate = $uploadDate;
+
         return $this;
     }
 }

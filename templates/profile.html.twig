@@ -70,7 +70,7 @@
                                 {{ 'profile.addFriend'|trans }} <i class="fa fa-plus"></i>
                             </a>
                         {% endif %}
-                        <a href="#" class="profile-button">
+                        <a class="profile-button" onclick="addConversation('{{ viewedUser.username }}','{{ viewedUser.image }}')">
                             {{ 'profile.message'|trans }} <i class="fa fa-comment"></i>
                         </a>
                     {% endif %}

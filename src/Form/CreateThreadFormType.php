@@ -74,7 +74,7 @@ class CreateThreadFormType extends AbstractType
                     'attr' => [
                         'class' => 'create-thread-content-text',
                         'onchange' => 'validateForm()'
-                        ],
+                    ],
                     'required' => false,
                     'label' => false,
                 ],

@@ -30,6 +30,38 @@
             </div>
             {{ form_end(editThreadForm) }}
         </div>
+        {% if conversationsExist %}
+            <div class="view-thread-container">
+                <div class="view-thread-title">
+                    {{ 'viewThread.conversations'|trans }}
+                </div>
+                <div class="view-thread-content">
+                    {% for contentBit in thread.content %}
+                        <div class="view-thread-content-bit">
+                            {% if (contentBit.type == 'conversation') %}
+                                <div class="view-thread-conversation-with">
+                                    {{ 'chat.conversationWith'|trans }}
+                                    {% if contentBit.conversation.helper is null %}
+                                        <a><span class="view-thread-anonymous">{{ 'chat.anonymous'|trans }}</span></a>
+                                    {% else %}
+                                        <a class="view-thread-conversation-helper" href="{{ path('profile', {username: contentBit.conversation.helper}) }}"><span class="view-thread-conversation-helper"> {{ contentBit.conversation.helper }}</span></a>
+                                    {% endif %}
+                                </div>
+                                <div class="view-thread-conversation-container">
+                                    {% for message in contentBit.conversation.messages %}
+                                        <div class="chat-message">
+                                            <div class="chat-message-content {% if message.authorMe %}me{% else %}other{% endif %}">
+                                                {{ message.content }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <script>
@@ -42,6 +74,7 @@
 
         function generateThread() {
             let lastWasImage = true;
+            let messages = [];
             {% for contentBit in thread.content %}
                 {% if (contentBit.type == 'image') %}
                     if (lastWasImage) {
@@ -52,11 +85,16 @@
                 {% elseif (contentBit.type == 'text') %}
                     generateTextArea(content, "{{ contentBit.content }}");
                     lastWasImage = false;
-                {% elseif (contentBit.type == 'conversation') %}
-                    console.log('conversation comes here')
                 {% endif %}
             {% endfor %}
             console.log(imagesArray);
+
+            const tx = document.getElementsByTagName("textarea");
+            for (let i = 0; i < tx.length; i++) {
+                tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+                tx[i].addEventListener("input", OnInput, false);
+                resizeTextArea(tx[i]);
+            }
         }
 
         generateThread();
@@ -114,6 +152,12 @@
             actualTextArea.style.height = actualTextArea.scrollHeight + "px";
             parent.appendChild(textArea);
             content.dataset.index++;
+        }
+
+        function resizeTextArea(textarea) {
+            textarea.addEventListener('input', OnInput, false);
+            const event = new Event('input')
+            textarea.dispatchEvent(event);
         }
 
         function generateImage(parent, value) {
