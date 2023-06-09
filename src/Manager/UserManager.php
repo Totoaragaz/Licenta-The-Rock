@@ -87,4 +87,9 @@ class UserManager
     {
         return $this->userService->getUserObjectByUsername($username);
     }
+
+    public function transformUserIntoProfileDto(User $user): UserProfileDto
+    {
+        return $this->userService->transformUserIntoProfileDto($user);
+    }
 }

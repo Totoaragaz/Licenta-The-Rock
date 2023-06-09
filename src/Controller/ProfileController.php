@@ -33,7 +33,7 @@ class ProfileController extends AbstractController
 
         if ($user->getUsername() == $username) {
             $registrationDate = ' ' . $user->getRegistrationDate()->format('d/m/Y');
-            $viewedUser = $this->userManager->transformUserIntoProfileDTO($user);
+            $viewedUser = $this->userManager->transformUserIntoProfileDto($user);
 
             return new Response($this->twig->render('profile.html.twig', [
                 'user' => $user,
