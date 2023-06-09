@@ -76,10 +76,10 @@
 
         function reloadCss()
         {
-            if (document.getElementById('pageStyle').href.substring(getProtocolAndHost().length) === "{{ asset('css/light8.css') }}") {
-                swapStyleSheet('{{ asset('css/dark2.css') }}');
+            if (document.getElementById('pageStyle').href.substring(getProtocolAndHost().length) === "{{ asset('css/light.css') }}") {
+                swapStyleSheet('{{ asset('css/dark.css') }}');
             } else {
-                swapStyleSheet('{{ asset('css/light8.css') }}');
+                swapStyleSheet('{{ asset('css/light.css') }}');
             }
         }
     </script>
